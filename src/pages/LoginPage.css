@@ -1,10 +1,21 @@
 
-.formLabel{
+.form-label{
+    width: available;
+    align-self: start;
+    text-align: left;
     font-size: 15px;
 }
-.formControl{
+.invalid-feedback{
+    font-size: 15px;
+    padding-left: 2px;
+}
+.gap{
+    display: block;
+    min-height: 38px;
+}
+.form-control*{
     width: available;
 }
-.formContainer{
+.form-container{
     width: 300px
 }

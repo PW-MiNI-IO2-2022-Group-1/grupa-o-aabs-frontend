@@ -9,7 +9,8 @@ type UserLoginForm = {
     password: string;
 };
 
-const LoginPage: React.FC = () => {
+function LoginPage() {
+
     const validationSchema = Yup.object().shape({
         email: Yup.string()
             .required('Email is required')
@@ -20,7 +21,7 @@ const LoginPage: React.FC = () => {
     const {
         register,
         handleSubmit,
-        formState: { errors }
+        formState: {errors},
     } = useForm<UserLoginForm>({
         resolver: yupResolver(validationSchema)
     });
@@ -30,44 +31,39 @@ const LoginPage: React.FC = () => {
     return (
         <div className="LoginPage">
             <header className="LoginPage-header">
-                <Container className="formContainer">
-                    <Form onSubmit={handleSubmit(onSubmit)}>
-                        <Form.Group controlId="formEmail" {...register('email')}>
-
-                            <Form.Label
-                                className="formLabel">
-                                Email Address
-                            </Form.Label>
-                            <Form.Control
-                                className="formControl"
-                                type="email"
-                                placeholder="name@example.com"
-                                required
-                            />
-                            <Form.Control.Feedback type="invalid">
-                                errors.email
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group controlId="formPassword">
-                            <Form.Label
-                                className="formLabel">
-                                Password
-                            </Form.Label>
-                            <Form.Control
-                                className="formControl"
-                                type="Password"
-                                placeholder="Password"
-                                {...register('password')}
-                                isInvalid={!!errors.password}
-                                required/>
-                            <Form.Control.Feedback type="invalid">
-                                errors.password
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                        <Button variant="primary" type="submit">Login</Button>
-                    </Form>
-                </Container>
-
+                <form onSubmit={handleSubmit(onSubmit)} className="form-container" data-testid="form">
+                    <div className="form-group">
+                        <label className="form-label text-sm-start " id="email">Email</label>
+                        <input
+                            aria-labelledby="email"
+                            type="text"
+                            placeholder="email@example.com"
+                            {...register('email')}
+                            className={`form-control ${errors.email ? 'is-invalid' : ''}`}
+                        />
+                        {errors.email ?
+                        <div className="invalid-feedback text-sm-start text-small" >{errors.email?.message}</div>:
+                        <div className="gap"/>}
+                    </div>
+                    <div className="form-group">
+                        <label className="form-label text-sm-start" id="password">Password</label>
+                        <input
+                            aria-labelledby="password"
+                            placeholder="Password"
+                            type="password"
+                            {...register('password')}
+                            className={`form-control ${errors.password ? 'is-invalid' : ''}`}
+                        />
+                        {errors.password ?
+                        <div className="invalid-feedback text-sm-start text-small" >{errors.password?.message}</div>:
+                        <div className="gap"/>}
+                    </div>
+                    <div className="form-group">
+                        <button type="submit" className="btn btn-primary" name="login">
+                            Log in
+                        </button>
+                    </div>
+                </form>
             </header>
         </div>
 
