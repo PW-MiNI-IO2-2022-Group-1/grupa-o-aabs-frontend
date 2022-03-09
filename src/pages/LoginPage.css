@@ -1,0 +1,10 @@
+
+.formLabel{
+    font-size: 15px;
+}
+.formControl{
+    width: available;
+}
+.formContainer{
+    width: 300px
+}
