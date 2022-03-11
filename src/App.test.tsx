@@ -1,10 +1,9 @@
 import React from 'react';
 import {fireEvent, render, screen} from '@testing-library/react';
-import App from './App';
-// import LoginPage from "./pages/LoginPage";
+import LoginPage from "./pages/LoginPage";
 
 test('renders login button and form', () => {
-  render(<App />);
+  render(<LoginPage />);
   const linkElement = screen.getByText(/Log in/i);
   expect(screen.getByLabelText(
       'Email', {selector: 'input'}))
@@ -15,7 +14,7 @@ test('renders login button and form', () => {
   expect(linkElement).toBeInTheDocument();
 });
 test("invalidates incorrect email format", async () => {
-  render(<App/>);
+  render(<LoginPage/>);
     fireEvent.input(screen.getByPlaceholderText('email@example.com'), {
       target: {
         value:
@@ -26,12 +25,12 @@ test("invalidates incorrect email format", async () => {
   //expect two errors (objects with class "invalid-feedback"`
 });
 test("invalidates empty fields", async () => {
-  render(<App/>);
+  render(<LoginPage/>);
     fireEvent.submit(screen.getByTestId("form"));
   //expect two errors (objects with class "invalid-feedback"`
 });
 test("validates correct email", async () => {
-  render(<App/>);
+  render(<LoginPage/>);
   fireEvent.input(screen.getByPlaceholderText('email@example.com'), {
     target: {
       value:
@@ -42,7 +41,7 @@ test("validates correct email", async () => {
   //expect no error (object with class "invalid-feedback"` containing "email"
 });
 test("validates non-empty password", async () => {
-  render(<App/>);
+  render(<LoginPage/>);
   fireEvent.input(screen.getByPlaceholderText('Password'), {
     target: {
       value:
