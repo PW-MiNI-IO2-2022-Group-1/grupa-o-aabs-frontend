@@ -1,7 +1,7 @@
 import React from 'react';
-import {act, fireEvent, render, screen} from '@testing-library/react';
+import {fireEvent, render, screen} from '@testing-library/react';
 import App from './App';
-import LoginPage from "./pages/LoginPage";
+// import LoginPage from "./pages/LoginPage";
 
 test('renders login button and form', () => {
   render(<App />);
