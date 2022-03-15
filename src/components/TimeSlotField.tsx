@@ -16,7 +16,7 @@ interface timeSlotProps {
         sunSlots?: FieldError[] | undefined,
     }
     myName: string;
-    index: integer;
+    index: number;
     label: string;
     control:  Control<DoctorScheduleForm, any>;
 }

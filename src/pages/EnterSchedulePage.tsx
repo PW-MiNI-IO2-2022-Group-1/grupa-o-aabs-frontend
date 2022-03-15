@@ -33,25 +33,25 @@ function EnterSchedulePage(){
             <Form onSubmit={handleSubmit(submitForm)}>
                 <Row>
                     <Form.Group>
-                        <TimeSlotField register={register} control={control} errors={errors} myName="monSlots" index="0" label="Monday:"/>
+                        <TimeSlotField register={register} control={control} errors={errors} myName="monSlots" index={0} label="Monday:"/>
                     </Form.Group>
                     <Form.Group>
-                        <TimeSlotField register={register} control={control} errors={errors} myName="tueSlots" index="1" label="Tuesday:"/>
+                        <TimeSlotField register={register} control={control} errors={errors} myName="tueSlots" index={1} label="Tuesday:"/>
                     </Form.Group>
                     <Form.Group>
-                        <TimeSlotField register={register} control={control} errors={errors} myName="wenSlots" index="2" label="Wednesday:"/>
+                        <TimeSlotField register={register} control={control} errors={errors} myName="wenSlots" index={2} label="Wednesday:"/>
                     </Form.Group>
                     <Form.Group>
-                        <TimeSlotField register={register} control={control} errors={errors} myName="thuSlots" index="3" label="Thursday:"/>
+                        <TimeSlotField register={register} control={control} errors={errors} myName="thuSlots" index={3} label="Thursday:"/>
                     </Form.Group>
                     <Form.Group>
-                        <TimeSlotField register={register} control={control} errors={errors} myName="friSlots" index="4" label="Friday:"/>
+                        <TimeSlotField register={register} control={control} errors={errors} myName="friSlots" index={4} label="Friday:"/>
                     </Form.Group>
                     <Form.Group>
-                        <TimeSlotField register={register} control={control} errors={errors} myName="satSlots" index="5" label="Saturday:"/>
+                        <TimeSlotField register={register} control={control} errors={errors} myName="satSlots" index={5} label="Saturday:"/>
                     </Form.Group>
                     <Form.Group>
-                        <TimeSlotField register={register} control={control} errors={errors} myName="sunSlots" index="6" label="Sunday:"/>
+                        <TimeSlotField register={register} control={control} errors={errors} myName="sunSlots" index={6} label="Sunday:"/>
                     </Form.Group>
                 </Row>
                 <Form.Group>
