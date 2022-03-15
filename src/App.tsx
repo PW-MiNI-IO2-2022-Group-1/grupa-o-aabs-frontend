@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import LoginPage from "./pages/LoginPage";
+import EnterSchedulePage from "./pages/EnterSchedulePage"
 import {
     Routes,
     Route,
@@ -28,7 +29,11 @@ export default function App() {
                           </RequireAuth>
                       }
                   />
-              </Route>
+                    <Route
+                        path="/doctor/setSchedule"
+                        element={<header className="App-header"><EnterSchedulePage/></header>}
+                    />
+                  </Route>
           </Routes>
       </AuthProvider>
   );
