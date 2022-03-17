@@ -1,6 +1,6 @@
 import React from "react";
 import { useForm, Controller } from "react-hook-form";
-import { Button, Form, Container, Row } from "react-bootstrap";
+import { Button, Form, Container, Col } from "react-bootstrap";
 import DatePicker from 'react-date-picker';
 import TimeSlotField from "../components/TimeSlotField";
 import type { DoctorScheduleForm, TimeSlot} from "../components/types"
@@ -58,7 +58,6 @@ function EnterSchedulePage(){
         slots.forEach(
             function convertToDates(element: TimeSlot){
                 day.setHours(parseInt(element.beginning.hour), parseInt(element.beginning.minute));
-                console.log(day);
                 var diff = (parseInt(element.end.hour) * 60 + parseInt(element.end.minute) - parseInt(element.beginning.hour) * 60 - parseInt(element.beginning.minute));
                 var times = Math.round(diff / 15);
                 for (let i = 0; i < times; i++) {
@@ -83,11 +82,11 @@ function EnterSchedulePage(){
     };
 
     return (
-        <Container>
+        <Container style={{margin: "3px"}}>
             <h1>Select your timeslots:</h1>
             <Form onSubmit={handleSubmit(submitForm)}>
                 <Form.Group>
-                    <Form.Label>Select week:</Form.Label>
+                    <Form.Label>Select week: </Form.Label>
                     <Controller
                         control={control}
                         name='week'
@@ -99,7 +98,7 @@ function EnterSchedulePage(){
                         )}
                     />
                 </Form.Group>
-                <Row>
+                <Col className="slotsCol">
                         <TimeSlotField register={register} control={control} errors={errors} index={0} values={getValues}/>
                         <TimeSlotField register={register} control={control} errors={errors} index={1} values={getValues}/>
                         <TimeSlotField register={register} control={control} errors={errors} index={2} values={getValues}/>
@@ -107,7 +106,7 @@ function EnterSchedulePage(){
                         <TimeSlotField register={register} control={control} errors={errors} index={4} values={getValues}/>
                         <TimeSlotField register={register} control={control} errors={errors} index={5} values={getValues}/>
                         <TimeSlotField register={register} control={control} errors={errors} index={6} values={getValues}/>
-                </Row>
+                </Col>
                 <Form.Group>
                     <Button type="submit">Save</Button>
                 </Form.Group>

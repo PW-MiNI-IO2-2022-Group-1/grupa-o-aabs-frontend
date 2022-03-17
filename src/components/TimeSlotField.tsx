@@ -1,5 +1,5 @@
 import React from 'react'
-import {Button, Form, Row } from 'react-bootstrap'
+import {Button, Col, Container, Form, Row } from 'react-bootstrap'
 import {Control, useFieldArray, UseFormGetValues, UseFormRegister } from 'react-hook-form';
 import type { DoctorScheduleForm } from "./types"
 import "./TimeSlotField.css"
@@ -51,15 +51,15 @@ const TimeSlotTile: React.FC<timeSlotProps> = (props) => {
         name: myName,
         control: props.control
     });
-    return <>
+    return <Container style={{width: "500px", margin: "0px" }}>
         <Form.Group>
             <Form.Label>{myLabel}</Form.Label>
             {fields.map((field, index) => {
                 return (
-                    <Row key={field.id} className="flex-nowrap">
+                    <Row key={field.id} className="form-row">
+                        <Col>
                             <Form.Select
                                 aria-label="beginning-hour"
-                                className="timepicker"
                                 {...props.register(`${myName}.${index}.beginning.hour` as const)}
                             >
                                 <option value="0">0</option>
@@ -87,21 +87,23 @@ const TimeSlotTile: React.FC<timeSlotProps> = (props) => {
                                 <option value="22">22</option>
                                 <option value="23">23</option>
                             </Form.Select>
-                            :
+                        </Col>
+                        :
+                        <Col>
                             <Form.Select
                                 aria-label="beginning-minute"
-                                className="timepicker"
                                 {...props.register(`${myName}.${index}.beginning.minute`)}
                             >
-                                <option value="0">00</option>
+                                <option value="00">00</option>
                                 <option value="15">15</option>
                                 <option value="30">30</option>
                                 <option value="45">45</option>
                             </Form.Select>
+                        </Col>
                         -
+                        <Col>
                             <Form.Select
                                 aria-label="end-hour"
-                                className="timepicker"
                                 {...props.register(`${myName}.${index}.end.hour`)}
                             >
                                 <option value="0">0</option>
@@ -129,21 +131,25 @@ const TimeSlotTile: React.FC<timeSlotProps> = (props) => {
                                 <option value="22">22</option>
                                 <option value="23">23</option>
                             </Form.Select>
-                            :
+                        </Col>
+                        :
+                        <Col>
                             <Form.Select
                                 aria-label="end-minutes"
-                                className="timepicker"
                                 {...props.register(`${myName}.${index}.end.minute`)}
                             >
-
-                                <option value="0">00</option>
+                                <option value="00">00</option>
                                 <option value="15">15</option>
                                 <option value="30">30</option>
                                 <option value="45">45</option>
                             </Form.Select>
-                        <Button type="button" className="timepicker" onClick={() => remove(index)}>
-                            &#8722;
-                        </Button>
+                        </Col>
+                        <Col>
+                            <Button type="button" className="c_btn" onClick={() => remove(index)}>
+                                &#8722;
+                            </Button>
+                        </Col>
+
                     </Row>
                 );
             })}
@@ -164,6 +170,6 @@ const TimeSlotTile: React.FC<timeSlotProps> = (props) => {
                 Add time slot
             </Button>
         </Form.Group>
-    </>
+    </Container>
 }
 export default TimeSlotTile;

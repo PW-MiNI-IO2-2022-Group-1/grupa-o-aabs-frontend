@@ -30,7 +30,7 @@ export default function App() {
                       }
                   />
                     <Route
-                        path="/doctor/setSchedule"
+                        path="/setSchedule"
                         element={<header className="App-header"><EnterSchedulePage/></header>}
                     />
                   </Route>

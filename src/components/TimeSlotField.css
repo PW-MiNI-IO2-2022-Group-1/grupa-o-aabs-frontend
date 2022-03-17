@@ -1,5 +1,11 @@
-.timepicker{
-    width: min-content;
-    max-width: 60px;
-    padding: 3px;
+.slotsCol{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+.c_btn{
+    margin-bottom: 10px;
+}
+.react-date-picker {
+    font-size: 1em;
 }
