@@ -9,6 +9,12 @@ export type DoctorScheduleForm = {
     sunSlots: TimeSlot[]
 };
 export type TimeSlot = {
-    beginning: Date,
-    end: Date,
+    beginning: {
+        hour: string;
+        minute: string;
+    },
+    end: {
+        hour: string;
+        minute: string;
+    },
 }

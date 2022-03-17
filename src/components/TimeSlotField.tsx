@@ -1,20 +1,11 @@
 import React from 'react'
-import {Button, Container, Form, Row } from 'react-bootstrap'
-import {Control, FieldError, useFieldArray, UseFormGetValues, UseFormRegister } from 'react-hook-form';
+import {Button, Form, Row } from 'react-bootstrap'
+import {Control, useFieldArray, UseFormGetValues, UseFormRegister } from 'react-hook-form';
 import type { DoctorScheduleForm } from "./types"
 import "./TimeSlotField.css"
 interface timeSlotProps {
     register: UseFormRegister<DoctorScheduleForm>;
-    errors: {
-        week?: FieldError | undefined,
-        monSlots?: { beginning?: FieldError | undefined; end?: FieldError | undefined; }[] | undefined,
-        tueSlots?: { beginning?: FieldError | undefined; end?: FieldError | undefined; }[] | undefined,
-        wedSlots?: { beginning?: FieldError | undefined; end?: FieldError | undefined; }[] | undefined,
-        thuSlots?: { beginning?: FieldError | undefined; end?: FieldError | undefined; }[] | undefined,
-        friSlots?: { beginning?: FieldError | undefined; end?: FieldError | undefined; }[] | undefined,
-        satSlots?: { beginning?: FieldError | undefined; end?: FieldError | undefined; }[] | undefined,
-        sunSlots?: { beginning?: FieldError | undefined; end?: FieldError | undefined; }[] | undefined,
-    }
+    errors: any;
     index: number;
     control:  Control<DoctorScheduleForm, any>;
     values:  UseFormGetValues<DoctorScheduleForm>;
@@ -56,16 +47,10 @@ const TimeSlotTile: React.FC<timeSlotProps> = (props) => {
             myName = "monSlots";
             myLabel = "Monday:";
     }
-    const { fields, append, remove, update } = useFieldArray({
+    const { fields, append, remove } = useFieldArray({
         name: myName,
         control: props.control
     });
-    var thisDay = new Date(props.values("week"));
-    thisDay.setDate(thisDay.getDate() + props.index);
-    fields.forEach(function (element) {
-        element.beginning.setDate(thisDay.getDate());
-        element.end.setDate(thisDay.getDate());
-    })
     return <>
         <Form.Group>
             <Form.Label>{myLabel}</Form.Label>
@@ -75,114 +60,86 @@ const TimeSlotTile: React.FC<timeSlotProps> = (props) => {
                             <Form.Select
                                 aria-label="beginning-hour"
                                 className="timepicker"
-                                {...props.register(`${myName}.${index}.beginning` as const)}
-                                onChange={
-                                    e => {
-                                        var h = field;
-                                        h.beginning.setHours(parseInt(e.target.value));
-                                        update(index, h);
-                                    }}
-                                defaultValue={field.beginning.getHours()}
+                                {...props.register(`${myName}.${index}.beginning.hour` as const)}
                             >
-                                <option value={0}>0</option>
-                                <option value={1}>1</option>
-                                <option value={2}>2</option>
-                                <option value={3}>3</option>
-                                <option value={4}>4</option>
-                                <option value={5}>5</option>
-                                <option value={6}>6</option>
-                                <option value={7}>7</option>
-                                <option value={8}>8</option>
-                                <option value={9}>9</option>
-                                <option value={10}>10</option>
-                                <option value={11}>11</option>
-                                <option value={12}>12</option>
-                                <option value={13}>13</option>
-                                <option value={14}>14</option>
-                                <option value={15}>15</option>
-                                <option value={16}>16</option>
-                                <option value={17}>17</option>
-                                <option value={18}>18</option>
-                                <option value={19}>19</option>
-                                <option value={20}>20</option>
-                                <option value={21}>21</option>
-                                <option value={22}>22</option>
-                                <option value={23}>23</option>
+                                <option value="0">0</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12">12</option>
+                                <option value="13">13</option>
+                                <option value="14">14</option>
+                                <option value="15">15</option>
+                                <option value="16">16</option>
+                                <option value="17">17</option>
+                                <option value="18">18</option>
+                                <option value="19">19</option>
+                                <option value="20">20</option>
+                                <option value="21">21</option>
+                                <option value="22">22</option>
+                                <option value="23">23</option>
                             </Form.Select>
                             :
                             <Form.Select
                                 aria-label="beginning-minute"
                                 className="timepicker"
-                                {...props.register(`${myName}.${index}.beginning`)}
-                                onChange={
-                                    e => {
-                                        var h = field;
-                                        h.beginning.setMinutes(parseInt(e.target.value));
-                                        update(index, h);
-                                    }}
-                                defaultValue={field.beginning.getMinutes()}
+                                {...props.register(`${myName}.${index}.beginning.minute`)}
                             >
-                                <option value={0}>00</option>
-                                <option value={15}>15</option>
-                                <option value={30}>30</option>
-                                <option value={45}>45</option>
+                                <option value="0">00</option>
+                                <option value="15">15</option>
+                                <option value="30">30</option>
+                                <option value="45">45</option>
                             </Form.Select>
                         -
                             <Form.Select
                                 aria-label="end-hour"
                                 className="timepicker"
-                                {...props.register(`${myName}.${index}.end`)}
-                                onChange={
-                                    e => {
-                                        var h = field;
-                                        h.end.setHours(parseInt(e.target.value));
-                                        update(index, h);
-                                    }}
-                                defaultValue={field.end.getHours()}
+                                {...props.register(`${myName}.${index}.end.hour`)}
                             >
-                                <option value={0}>0</option>
-                                <option value={1}>1</option>
-                                <option value={2}>2</option>
-                                <option value={3}>3</option>
-                                <option value={4}>4</option>
-                                <option value={5}>5</option>
-                                <option value={6}>6</option>
-                                <option value={7}>7</option>
-                                <option value={8}>8</option>
-                                <option value={9}>9</option>
-                                <option value={10}>10</option>
-                                <option value={11}>11</option>
-                                <option value={12}>12</option>
-                                <option value={13}>13</option>
-                                <option value={14}>14</option>
-                                <option value={15}>15</option>
-                                <option value={16}>16</option>
-                                <option value={17}>17</option>
-                                <option value={18}>18</option>
-                                <option value={19}>19</option>
-                                <option value={20}>20</option>
-                                <option value={21}>21</option>
-                                <option value={22}>22</option>
-                                <option value={23}>23</option>
+                                <option value="0">0</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12">12</option>
+                                <option value="13">13</option>
+                                <option value="14">14</option>
+                                <option value="15">15</option>
+                                <option value="16">16</option>
+                                <option value="17">17</option>
+                                <option value="18">18</option>
+                                <option value="19">19</option>
+                                <option value="20">20</option>
+                                <option value="21">21</option>
+                                <option value="22">22</option>
+                                <option value="23">23</option>
                             </Form.Select>
                             :
                             <Form.Select
                                 aria-label="end-minutes"
                                 className="timepicker"
-                                {...props.register(`${myName}.${index}.beginning`)}
-                                onChange={
-                                    e => {
-                                        var h = field;
-                                        h.end.setMinutes(parseInt(e.target.value));
-                                        update(index, h);
-                                    }}
-                                defaultValue={field.end.getMinutes()}
+                                {...props.register(`${myName}.${index}.end.minute`)}
                             >
 
-                                <option value={0}>00</option>
-                                <option value={15}>15</option>
-                                <option value={30}>30</option>
-                                <option value={45}>45</option>
+                                <option value="0">00</option>
+                                <option value="15">15</option>
+                                <option value="30">30</option>
+                                <option value="45">45</option>
                             </Form.Select>
                         <Button type="button" className="timepicker" onClick={() => remove(index)}>
                             &#8722;
@@ -193,9 +150,14 @@ const TimeSlotTile: React.FC<timeSlotProps> = (props) => {
             <Button
                 type="button"
                 onClick={() =>{
-                    var b = new Date(thisDay), e = new Date(thisDay);
-                    b.setHours(8,0);
-                    e.setHours(16,0);
+                    var b = {
+                        hour: "8",
+                        minute: "00",
+                    };
+                    var e = {
+                        hour: "16",
+                        minute: "00",
+                    };
                     append({ beginning: b, end: e})
                 }}
             >
