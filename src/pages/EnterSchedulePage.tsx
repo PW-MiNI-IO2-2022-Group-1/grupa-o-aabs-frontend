@@ -2,6 +2,7 @@ import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Button, Form, Container, Col } from "react-bootstrap";
 import DatePicker from 'react-date-picker';
+import moment from 'moment';
 import TimeSlotField from "../components/TimeSlotField";
 import type { DoctorScheduleForm, TimeSlot} from "../components/types"
 const today = new Date();
@@ -35,6 +36,7 @@ function EnterSchedulePage(){
         register,
         handleSubmit,
         getValues,
+        watch,
         formState: { errors },
         control
     } = useForm<DoctorScheduleForm>(
@@ -86,7 +88,7 @@ function EnterSchedulePage(){
             <h1>Select your timeslots:</h1>
             <Form onSubmit={handleSubmit(submitForm)}>
                 <Form.Group>
-                    <Form.Label>Select week: </Form.Label>
+                    <Form.Label>{`Select week: ${moment(watch('week')).format("DD.MM.YYYY")}-${moment(watch('week')).add(6, 'days').format("DD.MM.YYYY")}`} </Form.Label>
                     <Controller
                         control={control}
                         name='week'
