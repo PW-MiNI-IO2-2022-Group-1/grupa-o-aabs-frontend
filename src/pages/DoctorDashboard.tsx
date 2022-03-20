@@ -1,13 +1,13 @@
 import React from 'react';
 import { Button } from 'react-bootstrap';
 import {
-    Routes,
+    /*Routes,
     Route,
-    // Link,
+    Link, */
     useNavigate,
-    useLocation,
+    /*useLocation,
     Navigate,
-    Outlet,
+    Outlet,*/
 } from "react-router-dom";
 function DoctorDashboard() {
     const navigate = useNavigate()
