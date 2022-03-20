@@ -2,7 +2,7 @@ import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Button, Form, Container, Col } from "react-bootstrap";
 import Calendar from 'react-calendar';
-import 'react-calendar/dist/Calendar.css';
+import '../components/Calendar.css';
 import moment from 'moment';
 import TimeSlotField from "../components/TimeSlotField";
 import type { DoctorScheduleForm, TimeSlot} from "../components/types"
