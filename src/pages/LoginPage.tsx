@@ -17,7 +17,8 @@ function getRole(location: string): string {
 }
 
 function LoginPage() {
-    const role: string = getRole(useLocation().pathname)
+    // const role: string = getRole(useLocation().pathname) # ta metoda uzyskiwania sciezki psuje testy
+    const role: string = getRole(window.location.pathname)
 
     const validationSchema = Yup.object().shape({
         email: Yup.string()
