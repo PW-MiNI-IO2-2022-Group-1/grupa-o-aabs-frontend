@@ -62,3 +62,17 @@ describe("Login page" , () => {
     //expect no error (object with class "invalid-feedback"` containing "password"
   });
 });
+=======
+import LoginPage from "./pages/LoginPage";
+
+test('renders login button and form', () => {
+  render(<LoginPage />);
+  const linkElement = screen.getByText(/Log in/i);
+  expect(screen.getByLabelText(
+      'Email', {selector: 'input'}))
+      .toBeInTheDocument();
+  expect(screen.getByLabelText(
+      'Password', {selector: 'input'}))
+      .toBeInTheDocument();
+  expect(linkElement).toBeInTheDocument();
+});
