@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import LoginPage from "./pages/LoginPage";
-
+import EnterSchedulePage from "./pages/EnterSchedulePage"
 import {
     Routes,
     Route,
@@ -41,6 +41,10 @@ export default function App() {
                         }
                     />
                     <Route
+                        path="/doctor/setSchedule"
+                        element={<header className="App-header"><EnterSchedulePage/></header>}
+                    />
+                    <Route
                         path="/admin"
                         element={
                             <RequireAuth authLocation={"/loginAdmin"}>
@@ -49,20 +53,16 @@ export default function App() {
                             </RequireAuth>
                         }
                     />
-                    {/*<Route*/}
-                    {/*    path="/doctor/setSchedule"*/}
-                    {/*    element={<header className="App-header"><EnterSchedulePage/></header>}*/}
-                    {/*/>*/}
-                </Route>
-            </Routes>
-        </AuthProvider>
-    );
+                  </Route>
+          </Routes>
+      </AuthProvider>
+  );
 }
 
 function Layout() {
     return (
         <>
-            <Outlet/>
+            <Outlet />
         </>
     );
 }
