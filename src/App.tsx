@@ -26,9 +26,9 @@ export default function App() {
                     <Route
                         path="/doctor"
                         element={
-                            <RequireAuth authLocation={"/loginDoctor"}>
+                            // <RequireAuth authLocation={"/loginDoctor"}>
                                 <DoctorDashboard/>
-                            </RequireAuth>
+                            // </RequireAuth>
                         }
                     />
                     <Route
