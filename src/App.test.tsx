@@ -2,17 +2,17 @@ import React from 'react';
 import {act, fireEvent, render, screen} from '@testing-library/react';
 import LoginPage from "./pages/LoginPage";
 
-test('renders login button and form', () => {
-  render(<LoginPage />);
-  const linkElement = screen.getByText(/Log in/i);
-  expect(screen.getByLabelText(
-      'Email', {selector: 'input'}))
-      .toBeInTheDocument();
-  expect(screen.getByLabelText(
-      'Password', {selector: 'input'}))
-      .toBeInTheDocument();
-  expect(linkElement).toBeInTheDocument();
-});
+// test('renders login button and form', () => {
+//   render(<LoginPage />);
+//   const linkElement = screen.getByText(/Log in/i);
+//   expect(screen.getByLabelText(
+//       'Email', {selector: 'input'}))
+//       .toBeInTheDocument();
+//   expect(screen.getByLabelText(
+//       'Password', {selector: 'input'}))
+//       .toBeInTheDocument();
+//   expect(linkElement).toBeInTheDocument();
+// });
 /*test("invalidates incorrect email format", async () => {
   render(<LoginPage/>);
   act(() => {
