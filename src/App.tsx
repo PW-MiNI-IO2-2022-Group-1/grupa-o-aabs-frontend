@@ -24,9 +24,9 @@ export default function App() {
                   <Route
                       path="/doctor"
                       element={
-                          <RequireAuth>
+                          // <RequireAuth>
                               <DoctorDashboard />
-                          </RequireAuth>
+                          // </RequireAuth>
                       }
                   />
                     <Route
