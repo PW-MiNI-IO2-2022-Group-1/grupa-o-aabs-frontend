@@ -1,7 +1,9 @@
 import React from 'react';
 import './App.css';
 import LoginPage from "./pages/LoginPage";
-//import EnterSchedulePage from "./pages/EnterSchedulePage"
+
+import EnterSchedulePage from "./pages/EnterSchedulePage"
+
 import {
     Routes,
     Route,
