@@ -4,16 +4,20 @@ import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import './LoginPage.css'
-import {loginDoctor} from "../logic/api";
 import {useAuth} from "../App";
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 
 type UserLoginForm = {
     email: string;
     password: string;
 };
 
+function getRole(location: string): string {
+    return location.substring(6)
+}
+
 function LoginPage() {
+    const role: string = getRole(useLocation().pathname)
 
     const validationSchema = Yup.object().shape({
         email: Yup.string()
@@ -29,19 +33,19 @@ function LoginPage() {
     } = useForm<UserLoginForm>({
         resolver: yupResolver(validationSchema)
     });
-    const {token, signin } = useAuth()
+    const {token, signin} = useAuth()
     const navigate = useNavigate()
     const onSubmit = (data: UserLoginForm) => {
         signin(data.email, data.password)
         if (token === undefined) {
-            navigate("/doctor")
+            navigate(`/${role.toLowerCase()}`)
         } else {
             console.log("wrong email or password")
         }
     };
     return (
         <div className="LoginPage">
-            <header className="LoginPage-header">
+            <header className="LoginPage-header"> Login as {role}
                 <form onSubmit={handleSubmit(onSubmit)} className="form-container" data-testid="form">
                     <div className="form-group">
                         <label className="form-label text-sm-start " id="email">Email</label>

@@ -20,13 +20,33 @@ export default function App() {
         <AuthProvider>
             <Routes>
                 <Route element={<Layout/>}>
-                    <Route path="/" element={<p>Public Page</p>}/>
-                    <Route path="/login" element={<header className="App-header"><LoginPage/></header>}/>
+                    <Route path="/" element={<p>Landing page</p>}/>
+                    <Route path="/loginDoctor" element={<header className="App-header"><LoginPage/></header>}/>
+                    <Route path="/loginPatient" element={<header className="App-header"><LoginPage/></header>}/>
+                    <Route path="/loginAdmin" element={<header className="App-header"><LoginPage/></header>}/>
                     <Route
                         path="/doctor"
                         element={
-                            <RequireAuth>
+                            <RequireAuth authLocation={"/loginDoctor"}>
                                 <DoctorDashboard/>
+                            </RequireAuth>
+                        }
+                    />
+                    <Route
+                        path="/patient"
+                        element={
+                            <RequireAuth authLocation={"/loginPatient"}>
+                                <DoctorDashboard/>
+                                {/*todo - cos innego niz doctor dsashbord*/}
+                            </RequireAuth>
+                        }
+                    />
+                    <Route
+                        path="/admin"
+                        element={
+                            <RequireAuth authLocation={"/loginAdmin"}>
+                                <DoctorDashboard/>
+                                {/*todo - cos innego niz doctor dsashbord*/}
                             </RequireAuth>
                         }
                     />
@@ -82,7 +102,7 @@ export function useAuth() {
     return React.useContext(AuthContext);
 }
 
-function RequireAuth({children}: { children: JSX.Element }) {
+function RequireAuth({children, authLocation}: { children: JSX.Element, authLocation: string }) {
     let auth = useAuth();
     let location = useLocation();
 
@@ -91,7 +111,7 @@ function RequireAuth({children}: { children: JSX.Element }) {
         // trying to go to when they were redirected. This allows us to send them
         // along to that page after they login, which is a nicer user experience
         // than dropping them off on the home page.
-        return <Navigate to="/login" state={{from: location}} replace/>;
+        return <Navigate to={authLocation} state={{from: location}} replace/>;
     }
 
     return children;
