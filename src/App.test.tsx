@@ -1,6 +1,8 @@
 import React from 'react';
 import {act, fireEvent, render, screen} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import LoginPage from "./pages/LoginPage";
+
 
 test('renders login button and form', () => {
     // render(<LoginPage />);
@@ -13,7 +15,8 @@ test('renders login button and form', () => {
     //     .toBeInTheDocument();
     // expect(linkElement).toBeInTheDocument();
 });
-/*test("invalidates incorrect email format", async () => {
+
+/* test("invalidates incorrect email format", async () => {
   render(<LoginPage/>);
   act(() => {
     fireEvent.input(screen.getByPlaceholderText('email@example.com'), {
@@ -23,42 +26,66 @@ test('renders login button and form', () => {
       }
     });//email with invalid format
     fireEvent.submit(screen.getByTestId("form"));
+
+describe("Login page" , () => {
+  it('renders login button and form', () => {
+    render(<LoginPage/>);
+    const linkElement = screen.getByTestId("login");
+    expect(screen.getByLabelText(
+        'Email', {selector: 'input'}))
+        .toBeInTheDocument();
+    expect(screen.getByLabelText(
+        'Password', {selector: 'input'}))
+        .toBeInTheDocument();
+    expect(linkElement).toBeInTheDocument();
+
   });
 
-  //expect two errors (objects with class "invalid-feedback"`
-});
-test("invalidates empty fields", async () => {
-  render(<LoginPage/>);
-  act(() => {
-    fireEvent.submit(screen.getByTestId("form"));
+  it("invalidates incorrect email format", () => {
+    render(<LoginPage/>);
+    const emailInput = screen.getByTestId("email-input");
+    act(() => {
+      userEvent.type(emailInput, "testmailcom");
+      //email with invalid format
+      screen.getByTestId("login").dispatchEvent(new MouseEvent('click', {bubbles: true}));
+    });
+    //const errorMsg = screen.getByText("Email is invalid");
+    //expect(errorMsg).toBeInTheDocument()  ;
   });
 
-  //expect two errors (objects with class "invalid-feedback"`
-});
-test("validates correct email", async () => {
-  render(<LoginPage/>);
-  act(() => {
-    fireEvent.input(screen.getByPlaceholderText('email@example.com'), {
-      target: {
-        value:
-            "email@example.com"
-      }
-    });//email with valid format
-    fireEvent.submit(screen.getByTestId("form"));
+  it("invalidates empty fields", () => {
+    render(<LoginPage/>);
+    act(()=> {
+      fireEvent.submit(screen.getByTestId("form"));
+    });
+    //expect two errors (objects with class "invalid-feedback"`
   });
+  test("validates correct email", async () => {
+    render(<LoginPage/>);
+    act(()=> {
+      fireEvent.input(screen.getByPlaceholderText('email@example.com'), {
+        target: {
+          value:
+              "email@example.com"
+        }
+      });//email with valid format
+      fireEvent.click(screen.getByTestId("login"));
+    });
 
-  //expect no error (object with class "invalid-feedback"` containing "email"
-});
-test("validates non-empty password", async () => {
-  render(<LoginPage/>);
-  act(() => {
-    fireEvent.input(screen.getByPlaceholderText('Password'), {
-      target: {
-        value:
-            "agna aliqua."
-      }
-    });//email with invalid format
-    fireEvent.submit(screen.getByTestId("form"));
+    //expect no error (object with class "invalid-feedback"` containing "email"
   });
-  //expect no error (object with class "invalid-feedback"` containing "password"
-});*/
+  it("validates non-empty password", async () => {
+    render(<LoginPage/>);
+    act(()=> {
+      fireEvent.input(screen.getByPlaceholderText('Password'), {
+        target: {
+          value:
+              "agna aliqua."
+        }
+      });//email with invalid format
+      fireEvent.submit(screen.getByTestId("form"));
+    });
+    //expect no error (object with class "invalid-feedback"` containing "password"
+  });
+});
+*/

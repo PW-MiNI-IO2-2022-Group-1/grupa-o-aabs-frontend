@@ -1,17 +1,20 @@
 
+
 .form-label{
     width: available;
-    align-self: start;
-    text-align: left;
     font-size: 15px;
 }
-.invalid-feedback{
+.invalidfeedback{
+    text-align: center;
+    align-self: center;
     font-size: 15px;
+    width: 100%;
+    color: red;
     padding-left: 2px;
 }
 .gap{
     display: block;
-    min-height: 38px;
+    min-height: 22px;
 }
 .form-control*{
     width: available;

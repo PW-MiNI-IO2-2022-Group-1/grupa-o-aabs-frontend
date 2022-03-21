@@ -1,5 +1,4 @@
-import React from 'react';
-// import {Button, Form, Container} from 'react-bootstrap'
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
@@ -20,6 +19,13 @@ function LoginPage() {
     // const role: string = getRole(useLocation().pathname) # ta metoda uzyskiwania sciezki psuje testy
     const role: string = getRole(window.location.pathname)
 
+
+    const onChangeHandler= (field: string)=>(e: any)=>setformdata({...formdata,[field]:e.target.data})
+    const [formdata, setformdata] = useState({
+        email:"",
+        password:"",
+    });
+
     const validationSchema = Yup.object().shape({
         email: Yup.string()
             .required('Email is required')
@@ -30,9 +36,15 @@ function LoginPage() {
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        formState: {errors},
+        reset,
     } = useForm<UserLoginForm>({
-        resolver: yupResolver(validationSchema)
+        resolver: yupResolver(validationSchema),
+        defaultValues:
+            {
+                email: "",
+                password: ""
+            }
     });
     const { token, signin } = useAuth()
     const navigate = useNavigate()
@@ -43,6 +55,8 @@ function LoginPage() {
         } else {
             console.log("wrong email or password")
         }
+        console.log(JSON.stringify(data, null, 2));
+        reset();
     };
     return (
         <div className="LoginPage">
@@ -55,11 +69,12 @@ function LoginPage() {
                             type="text"
                             placeholder="email@example.com"
                             {...register('email')}
+                            data-testid="email-input"
                             className={`form-control ${errors.email ? 'is-invalid' : ''}`}
                         />
                         {errors.email ?
-                            <div className="invalid-feedback text-sm-start text-small">{errors.email?.message}</div> :
-                            <div className="gap" />}
+                        <div className="invalidfeedback text-sm-center text-small" id="emailError">{errors.email?.message}</div>:
+                        <div className="gap"/>}
                     </div>
                     <div className="form-group">
                         <label className="form-label text-sm-start" id="password">Password</label>
@@ -68,15 +83,15 @@ function LoginPage() {
                             placeholder="Password"
                             type="password"
                             {...register('password')}
+                            data-testid="password-input"
                             className={`form-control ${errors.password ? 'is-invalid' : ''}`}
                         />
                         {errors.password ?
-                            <div
-                                className="invalid-feedback text-sm-start text-small">{errors.password?.message}</div> :
-                            <div className="gap" />}
+                        <div className="invalidfeedback text-sm-center text-small" id="passwordError">{errors.password?.message}</div>:
+                        <div className="gap"/>}
                     </div>
                     <div className="form-group">
-                        <button type="submit" className="btn btn-primary" name="login">
+                        <button type="submit" className="btn btn-primary" data-testid="login">
                             Log in
                         </button>
                     </div>
