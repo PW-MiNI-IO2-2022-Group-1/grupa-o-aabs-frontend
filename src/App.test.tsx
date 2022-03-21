@@ -1,7 +1,7 @@
 import React from 'react';
 import {act, fireEvent, render, screen} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import App from './LoginPage';
+import LoginPage from "./pages/LoginPage";
 describe("Login page" , () => {
   it('renders login button and form', () => {
     render(<LoginPage/>);
