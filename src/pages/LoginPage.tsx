@@ -1,11 +1,11 @@
 import React from 'react';
 // import {Button, Form, Container} from 'react-bootstrap'
-import {useForm} from 'react-hook-form';
-import {yupResolver} from '@hookform/resolvers/yup';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import './LoginPage.css'
-import {useAuth} from "../App";
-import {useLocation, useNavigate} from "react-router-dom";
+import { useAuth } from "../App";
+import { useLocation, useNavigate } from "react-router-dom";
 
 type UserLoginForm = {
     email: string;
@@ -13,7 +13,7 @@ type UserLoginForm = {
 };
 
 function getRole(location: string): string {
-    return location.substring(6)
+    return location.substring(6).split('/')[0]
 }
 
 function LoginPage() {
@@ -30,11 +30,11 @@ function LoginPage() {
     const {
         register,
         handleSubmit,
-        formState: {errors},
+        formState: { errors },
     } = useForm<UserLoginForm>({
         resolver: yupResolver(validationSchema)
     });
-    const {token, signin} = useAuth()
+    const { token, signin } = useAuth()
     const navigate = useNavigate()
     const onSubmit = (data: UserLoginForm) => {
         signin(data.email, data.password)
@@ -59,7 +59,7 @@ function LoginPage() {
                         />
                         {errors.email ?
                             <div className="invalid-feedback text-sm-start text-small">{errors.email?.message}</div> :
-                            <div className="gap"/>}
+                            <div className="gap" />}
                     </div>
                     <div className="form-group">
                         <label className="form-label text-sm-start" id="password">Password</label>
@@ -73,7 +73,7 @@ function LoginPage() {
                         {errors.password ?
                             <div
                                 className="invalid-feedback text-sm-start text-small">{errors.password?.message}</div> :
-                            <div className="gap"/>}
+                            <div className="gap" />}
                     </div>
                     <div className="form-group">
                         <button type="submit" className="btn btn-primary" name="login">

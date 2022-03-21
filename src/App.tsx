@@ -12,22 +12,22 @@ import {
     Outlet,
 } from "react-router-dom";
 import DoctorDashboard from "./pages/DoctorDashboard";
-import {loginDoctor} from "./logic/api";
+import { loginDoctor } from "./logic/api";
 
 export default function App() {
     return (
         <AuthProvider>
             <Routes>
-                <Route element={<Layout/>}>
-                    <Route path="/" element={<p>Landing page</p>}/>
-                    <Route path="/loginDoctor" element={<header className="App-header"><LoginPage/></header>}/>
-                    <Route path="/loginPatient" element={<header className="App-header"><LoginPage/></header>}/>
-                    <Route path="/loginAdmin" element={<header className="App-header"><LoginPage/></header>}/>
+                <Route element={<Layout />}>
+                    <Route path="/" element={<p>Landing page</p>} />
+                    <Route path="/loginDoctor" element={<header className="App-header"><LoginPage /></header>} />
+                    <Route path="/loginPatient" element={<header className="App-header"><LoginPage /></header>} />
+                    <Route path="/loginAdmin" element={<header className="App-header"><LoginPage /></header>} />
                     <Route
                         path="/doctor"
                         element={
                             // <RequireAuth authLocation={"/loginDoctor"}>
-                                <DoctorDashboard/>
+                            <DoctorDashboard />
                             // </RequireAuth>
                         }
                     />
@@ -35,28 +35,28 @@ export default function App() {
                         path="/patient"
                         element={
                             <RequireAuth authLocation={"/loginPatient"}>
-                                <DoctorDashboard/>
+                                <DoctorDashboard />
                                 {/*todo - cos innego niz doctor dsashbord*/}
                             </RequireAuth>
                         }
                     />
                     <Route
                         path="/doctor/setSchedule"
-                        element={<header className="App-header"><EnterSchedulePage/></header>}
+                        element={<header className="App-header"><EnterSchedulePage /></header>}
                     />
                     <Route
                         path="/admin"
                         element={
                             <RequireAuth authLocation={"/loginAdmin"}>
-                                <DoctorDashboard/>
+                                <DoctorDashboard />
                                 {/*todo - cos innego niz doctor dsashbord*/}
                             </RequireAuth>
                         }
                     />
-                  </Route>
-          </Routes>
-      </AuthProvider>
-  );
+                </Route>
+            </Routes>
+        </AuthProvider>
+    );
 }
 
 function Layout() {
@@ -75,7 +75,7 @@ interface AuthContextType {
 
 const AuthContext = React.createContext<AuthContextType>(null!);
 
-function AuthProvider({children}: { children: React.ReactNode }) {
+function AuthProvider({ children }: { children: React.ReactNode }) {
     const [token, setToken] = React.useState(undefined);
 
     const signin = (email: string, password: string) => {
@@ -92,7 +92,7 @@ function AuthProvider({children}: { children: React.ReactNode }) {
         setToken(undefined)
     };
 
-    const value = {token, signin, signout};
+    const value = { token, signin, signout };
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
@@ -101,7 +101,7 @@ export function useAuth() {
     return React.useContext(AuthContext);
 }
 
-function RequireAuth({children, authLocation}: { children: JSX.Element, authLocation: string }) {
+function RequireAuth({ children, authLocation }: { children: JSX.Element, authLocation: string }) {
     let auth = useAuth();
     let location = useLocation();
 
@@ -110,7 +110,7 @@ function RequireAuth({children, authLocation}: { children: JSX.Element, authLoca
         // trying to go to when they were redirected. This allows us to send them
         // along to that page after they login, which is a nicer user experience
         // than dropping them off on the home page.
-        return <Navigate to={authLocation} state={{from: location}} replace/>;
+        return <Navigate to={authLocation} state={{ from: location }} replace />;
     }
 
     return children;
