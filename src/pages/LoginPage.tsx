@@ -11,15 +11,7 @@ type UserLoginForm = {
     password: string;
 };
 
-function getRole(location: string): string {
-    return location.substring(6).split('/')[0]
-}
-
-function LoginPage() {
-    // const role: string = getRole(useLocation().pathname) # ta metoda uzyskiwania sciezki psuje testy
-    const role: string = getRole(window.location.pathname)
-
-
+function LoginPage({role}: {role: string}) {
     const onChangeHandler= (field: string)=>(e: any)=>setformdata({...formdata,[field]:e.target.data})
     const [formdata, setformdata] = useState({
         email:"",

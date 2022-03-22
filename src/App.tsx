@@ -20,9 +20,9 @@ export default function App() {
             <Routes>
                 <Route element={<Layout />}>
                     <Route path="/" element={<RequireAuth authLocation="/loginPatient"><p>Landing page</p></RequireAuth>} />
-                    <Route path="/loginDoctor" element={<header className="App-header"><LoginPage /></header>} />
-                    <Route path="/loginPatient" element={<header className="App-header"><LoginPage /></header>} />
-                    <Route path="/loginAdmin" element={<header className="App-header"><LoginPage /></header>} />
+                    <Route path="/loginDoctor" element={<header className="App-header"><LoginPage role={"doctor"}/></header>} />
+                    <Route path="/loginPatient" element={<header className="App-header"><LoginPage role={"patient"}/></header>} />
+                    <Route path="/loginAdmin" element={<header className="App-header"><LoginPage role={"admin"}/></header>} />
                     <Route
                         path="/doctor"
                         element={
