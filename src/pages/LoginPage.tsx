@@ -3,17 +3,21 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import './LoginPage.css'
+import { useAuth } from "../App";
+import { useLocation, useNavigate } from "react-router-dom";
+
 type UserLoginForm = {
     email: string;
     password: string;
 };
 
-function LoginPage() {
+function LoginPage({role}: {role: string}) {
     const onChangeHandler= (field: string)=>(e: any)=>setformdata({...formdata,[field]:e.target.data})
     const [formdata, setformdata] = useState({
         email:"",
         password:"",
     });
+
     const validationSchema = Yup.object().shape({
         email: Yup.string()
             .required('Email is required')
@@ -34,14 +38,21 @@ function LoginPage() {
                 password: ""
             }
     });
+    const { token, signin } = useAuth()
+    const navigate = useNavigate()
     const onSubmit = (data: UserLoginForm) => {
+        signin(data.email, data.password)
+        if (token === undefined) {
+            navigate(`/${role.toLowerCase()}`)
+        } else {
+            console.log("wrong email or password")
+        }
         console.log(JSON.stringify(data, null, 2));
         reset();
     };
     return (
         <div className="LoginPage">
-            <header className="LoginPage-header">
-                <text>Log in as a doctor</text>
+            <header className="LoginPage-header"> Login as {role}
                 <form onSubmit={handleSubmit(onSubmit)} className="form-container" data-testid="form">
                     <div className="form-group">
                         <label className="form-label text-sm-start " id="email">Email</label>
@@ -82,4 +93,5 @@ function LoginPage() {
 
     );
 }
+
 export default LoginPage;
