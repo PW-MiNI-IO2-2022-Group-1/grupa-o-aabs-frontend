@@ -6,6 +6,7 @@ import '../components/Calendar.css';
 import moment from 'moment';
 import TimeSlotField from "../components/TimeSlotField";
 import type { DoctorScheduleForm, TimeSlot} from "../components/types"
+import {addDays, addMinutes, getBeginningOfWeek} from "../components/dateUtils";
 const today = new Date();
 const initSlots = [
     {
@@ -52,9 +53,6 @@ function EnterSchedulePage(){
             }
         }
     );
-    function addMinutes(date: Date, minutes: number) {
-        return new Date(date.getTime() + minutes*60000);
-    }
     const convertSlots = (day: Date, slots: TimeSlot[]) => {
         var slotDates: Date[] = [];
         if(slots.length === 0) return slotDates;
@@ -96,10 +94,9 @@ function EnterSchedulePage(){
                         render={({ field }) => (
                             <Calendar
                                 onChange={(date: any) => {
-                                    date.setDate(date.getDate() - ((date.getDay() - 1) % 7));
-                                    field.onChange(date)}
+                                    field.onChange(getBeginningOfWeek(date))}
                             }
-                                value={field.value}
+                                value={[field.value, addDays(field.value, 6)]}
                             />
                         )}
                     />

@@ -18,3 +18,7 @@ export type TimeSlot = {
         minute: string;
     },
 }
+export type Visit = {
+    date: Date;
+    isOccupied: boolean;
+}
