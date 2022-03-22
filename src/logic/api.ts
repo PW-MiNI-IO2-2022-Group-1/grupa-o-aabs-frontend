@@ -21,3 +21,4 @@ function login(who: string) {
 export const loginDoctor = login('doctor')
 export const loginPatient = login('patient')
 export const loginAdmin = login('admin')
+
