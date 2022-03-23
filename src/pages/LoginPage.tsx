@@ -9,7 +9,6 @@ type UserLoginForm = {
 };
 
 function LoginPage() {
-    const onChangeHandler= (field: string)=>(e: any)=>setformdata({...formdata,[field]:e.target.data})
     const [formdata, setformdata] = useState({
         email:"",
         password:"",

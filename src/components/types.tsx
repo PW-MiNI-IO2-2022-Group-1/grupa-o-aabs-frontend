@@ -20,5 +20,40 @@ export type TimeSlot = {
 }
 export type Visit = {
     date: Date;
-    isOccupied: boolean;
+    id: number;
+    vaccination: Vaccination;
+}
+export type Vaccination = {
+    id: number;
+    vaccine: Vaccine
+    status: "Planned" | ""
+    patient: Patient
+}
+export type Vaccine = {
+    id: number;
+    name: string;
+    disease: string;
+    requiredDoses: number;
+}
+export type Patient = {
+    id: number;
+    firstName: string;
+    lastName: string;
+    pesel: string;
+    email: string;
+    address: Address;
+}
+export type Address = {
+    id: number;
+    city: string;
+    zipCode: string;
+    street: string;
+    houseNumber: number;
+    localNumber: string;
+}
+export type Pagination = {
+    currentPage: number;
+    totalPages: number;
+    currentRecord: number;
+    totalRecords: number;
 }
