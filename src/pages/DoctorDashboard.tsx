@@ -27,7 +27,21 @@ function DoctorDashboard() {
     let maxPage = 30;
     function getVisits(start: Date | null, finish: Date | null, onlyReserved: string | null, page: number): Visit[] {
         //var auth = useAuth();
-        const myVisits  = getSlots(start, finish, onlyReserved, "", page)
+        getSlots(start, finish, onlyReserved, "", page).then((response) => {
+            if(response.ok)
+                return response.data;
+        }).catch((reason => {
+            switch (reason)
+            {
+                case 401:
+                    console.log("Unauthorised error (invalid or empty Bearer token");
+                    break;
+                case 422:
+                    console.log("Validation error");
+                    break;
+            }
+
+        }))
         console.log(start);
         console.log(finish);
         return [];

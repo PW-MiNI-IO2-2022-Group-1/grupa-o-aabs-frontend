@@ -13,8 +13,15 @@ const PatientVisitField: React.FC<patientVisitProps> = (props) => {
     return <Row key={`visit_${props.index}`} className={props.visit.vaccination!= null? 'occupied-visit' : 'free-visit'}>
         {`${moment(props.visit.date).format("hh:mm DD.MM.YYYY")} ${props.visit.vaccination!= null ? "Patient visit" : "Free"}`}
         <Button onClick={() => {
-            deleteVisit(props.visit, "");
-            props.remove(props.index);
+            deleteVisit(props.visit, "").then((response) => {
+                if(response.ok)
+                {
+                    props.remove(props.index);
+                }
+            }).catch((reason => {
+                console.log(reason);
+            }));
+
         }}>&#8722;</Button>
     </Row>
 }
