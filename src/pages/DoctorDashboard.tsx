@@ -10,7 +10,7 @@ import {
     Navigate,
     Outlet,*/
 } from "react-router-dom";
-import {Visit} from "../components/types";
+import {Vaccination, Visit} from "../components/types";
 import {addDays, getBeginningOfWeek} from "../components/dateUtils";
 import DatePicker from 'react-date-picker';
 import { getSlots } from '../logic/doctorAPI';
@@ -27,7 +27,7 @@ function DoctorDashboard() {
     let maxPage = 30;
     function getVisits(start: Date | null, finish: Date | null, onlyReserved: string | null, page: number): Visit[] {
         //var auth = useAuth();
-        getSlots(start, finish, onlyReserved, "", page).then((response) => {
+        /*getSlots(start, finish, onlyReserved, "", page).then((response) => {
             if(response.ok)
                 return response.data;
         }).catch((reason => {
@@ -43,13 +43,40 @@ function DoctorDashboard() {
 
         }))
         console.log(start);
-        console.log(finish);
-        return [];
+        console.log(finish);*/
+        return [
+            {
+                date: new Date("2022-03-29T08:00:00Z"),
+                id: 0,
+                vaccination: null,
+            },
+            {
+                date: new Date("2022-03-30T08:00:00Z"),
+                id: 1,
+                vaccination: {
+                    id: 0,
+                    status: "Planned",
+                    patient: null,
+                    vaccine: {
+                        id: 0,
+                        name: "Phiser",
+                        disease: "Covid-19",
+                        requiredDoses: 0,
+                    },
+                }
+            },
+            {
+                date: new Date("2022-03-29T10:00:00Z"),
+                id: 0,
+                vaccination: null,
+            },
+        ];
     }
-    let Visits: Visit[] = [];
+    const [Visits, setVisits] = useState<Visit[]>([]);
+
     useEffect(() => {
-        Visits = getVisits(startDate, endDate, reserved, page);
-    })
+        setVisits(getVisits(startDate, endDate, reserved, page));
+    },[startDate, endDate])
     function remove(index: number) {
         Visits.splice(index, 1);
     }

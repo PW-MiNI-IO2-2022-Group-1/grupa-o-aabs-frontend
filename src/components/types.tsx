@@ -21,13 +21,13 @@ export type TimeSlot = {
 export type Visit = {
     date: Date;
     id: number;
-    vaccination: Vaccination;
+    vaccination: Vaccination | null;
 }
 export type Vaccination = {
     id: number;
     vaccine: Vaccine
     status: "Planned" | ""
-    patient: Patient
+    patient: Patient | null
 }
 export type Vaccine = {
     id: number;
