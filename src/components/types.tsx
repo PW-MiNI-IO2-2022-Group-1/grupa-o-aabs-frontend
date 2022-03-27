@@ -57,7 +57,7 @@ export type Pagination = {
     currentRecord: number;
     totalRecords: number;
 }
-interface AuthContextType {
+export interface AuthContextType {
     token?: string;
     signin: (email: string, password: string) => void;
     signout: () => void;
