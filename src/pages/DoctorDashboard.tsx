@@ -73,7 +73,7 @@ function DoctorDashboard() {
         },
     ];
     function getVisits(start: Date | null, finish: Date | null, onlyReserved: string, page: number): Visit[] {
-        getSlots(start, finish, onlyReserved, auth.user?.id, page).then((response) => {
+        getSlots(start, finish, onlyReserved, auth.token, page).then((response) => {
             if(response.ok)
                 setMaxPage(response.pagination.totalPages);
                 return response.data;
