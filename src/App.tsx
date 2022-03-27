@@ -12,32 +12,52 @@ import {
     Navigate,
     Outlet,
 } from "react-router-dom";
-import {fakeAuthProvider} from "./auth";
 import DoctorDashboard from "./pages/DoctorDashboard";
+import { loginDoctor } from "./logic/api";
 
 export default function App() {
-  return (
-      <AuthProvider>
-          <Routes>
-              <Route element={<Layout />}>
-                  <Route path="/" element={<p>Public Page</p>} />
-                  <Route path="/login" element={<header className="App-header"><LoginPage /></header>} />
-                  <Route
-                      path="/doctor"
-                      element={
-                          // <RequireAuth>
-                              <DoctorDashboard />
-                          // </RequireAuth>
-                      }
-                  />
+    return (
+        <AuthProvider>
+            <Routes>
+                <Route element={<Layout />}>
+                    <Route path="/" element={<RequireAuth authLocation="/loginPatient"><p>Landing page</p></RequireAuth>} />
+                    <Route path="/loginDoctor" element={<header className="App-header"><LoginPage role={"doctor"}/></header>} />
+                    <Route path="/loginPatient" element={<header className="App-header"><LoginPage role={"patient"}/></header>} />
+                    <Route path="/loginAdmin" element={<header className="App-header"><LoginPage role={"admin"}/></header>} />
+                    <Route
+                        path="/doctor"
+                        element={
+                            // <RequireAuth authLocation={"/loginDoctor"}>
+                            <DoctorDashboard />
+                            // </RequireAuth>
+                        }
+                    />
+                    <Route
+                        path="/patient"
+                        element={
+                            <RequireAuth authLocation={"/loginPatient"}>
+                                <DoctorDashboard />
+                                {/*todo - cos innego niz doctor dsashbord*/}
+                            </RequireAuth>
+                        }
+                    />
                     <Route
                         path="/doctor/setSchedule"
-                        element={<header className="App-header"><EnterSchedulePage/></header>}
+                        element={<header className="App-header"><EnterSchedulePage /></header>}
                     />
-                  </Route>
-          </Routes>
-      </AuthProvider>
-  );
+                    <Route
+                        path="/admin"
+                        element={
+                            <RequireAuth authLocation={"/loginAdmin"}>
+                                <DoctorDashboard />
+                                {/*todo - cos innego niz doctor dsashbord*/}
+                            </RequireAuth>
+                        }
+                    />
+                </Route>
+            </Routes>
+        </AuthProvider>
+    );
 }
 
 function Layout() {
@@ -52,23 +72,23 @@ function Layout() {
 const AuthContext = React.createContext<AuthContextType>(null!);
 
 function AuthProvider({ children }: { children: React.ReactNode }) {
-    const [user, setUser] = React.useState<any>(null);
+    const [token, setToken] = React.useState(undefined);
 
-    const signin = (newUser: string, callback: VoidFunction) => {
-        return fakeAuthProvider.signin(() => {
-            setUser(newUser);
-            callback();
-        });
+    const signin = (email: string, password: string) => {
+        loginDoctor(email, password)
+            .then((response) => {
+                setToken(response.token)
+            })
+            .catch((reason) => {
+                console.log(reason)
+            })
     };
 
-    const signout = (callback: VoidFunction) => {
-        return fakeAuthProvider.signout(() => {
-            setUser(null);
-            callback();
-        });
+    const signout = () => {
+        setToken(undefined)
     };
 
-    const value = { user, signin, signout };
+    const value = { token, signin, signout };
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
@@ -77,16 +97,16 @@ export function useAuth() {
     return React.useContext(AuthContext);
 }
 
-function RequireAuth({ children }: { children: JSX.Element }) {
+function RequireAuth({ children, authLocation }: { children: JSX.Element, authLocation: string }) {
     let auth = useAuth();
     let location = useLocation();
 
-    if (!auth.user) {
+    if (!auth.token) {
         // Redirect them to the /login page, but save the current location they were
         // trying to go to when they were redirected. This allows us to send them
         // along to that page after they login, which is a nicer user experience
         // than dropping them off on the home page.
-        return <Navigate to="/login" state={{ from: location }} replace />;
+        return <Navigate to={authLocation} state={{ from: location }} replace />;
     }
 
     return children;

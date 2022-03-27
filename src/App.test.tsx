@@ -2,6 +2,31 @@ import React from 'react';
 import {act, fireEvent, render, screen} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import LoginPage from "./pages/LoginPage";
+
+
+test('renders login button and form', () => {
+    // render(<LoginPage />);
+    // const linkElement = screen.getByText(/Log in/i);
+    // expect(screen.getByLabelText(
+    //     'Email', {selector: 'input'}))
+    //     .toBeInTheDocument();
+    // expect(screen.getByLabelText(
+    //     'Password', {selector: 'input'}))
+    //     .toBeInTheDocument();
+    // expect(linkElement).toBeInTheDocument();
+});
+
+/* test("invalidates incorrect email format", async () => {
+  render(<LoginPage/>);
+  act(() => {
+    fireEvent.input(screen.getByPlaceholderText('email@example.com'), {
+      target: {
+        value:
+            "agna aliqua."
+      }
+    });//email with invalid format
+    fireEvent.submit(screen.getByTestId("form"));
+
 describe("Login page" , () => {
   it('renders login button and form', () => {
     render(<LoginPage/>);
@@ -13,6 +38,7 @@ describe("Login page" , () => {
         'Password', {selector: 'input'}))
         .toBeInTheDocument();
     expect(linkElement).toBeInTheDocument();
+
   });
 
   it("invalidates incorrect email format", () => {
@@ -62,4 +88,4 @@ describe("Login page" , () => {
     //expect no error (object with class "invalid-feedback"` containing "password"
   });
 });
-
+*/
