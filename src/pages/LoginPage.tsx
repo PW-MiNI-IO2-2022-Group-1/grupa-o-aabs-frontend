@@ -3,15 +3,16 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import './LoginPage.css'
-import { useAuth } from "../App";
+import { useAuth } from "../Auth";
 import { useLocation, useNavigate } from "react-router-dom";
+import { Role } from "../models/Users";
 
 type UserLoginForm = {
     email: string;
     password: string;
 };
 
-function LoginPage({role}: {role: string}) {
+function LoginPage({role}: {role: Role}) {
     const onChangeHandler= (field: string)=>(e: any)=>setformdata({...formdata,[field]:e.target.data})
     const [formdata, setformdata] = useState({
         email:"",
@@ -25,6 +26,7 @@ function LoginPage({role}: {role: string}) {
         password: Yup.string()
             .required('Password is required')
     });
+
     const {
         register,
         handleSubmit,
@@ -38,18 +40,20 @@ function LoginPage({role}: {role: string}) {
                 password: ""
             }
     });
-    const { token, signin } = useAuth()
+
+    const { token, signIn } = useAuth()
     const navigate = useNavigate()
+
     const onSubmit = (data: UserLoginForm) => {
-        signin(data.email, data.password)
-        if (token === undefined) {
+        signIn(role, data.email, data.password)
+        if (token === null) {
             navigate(`/${role.toLowerCase()}`)
         } else {
-            console.log("wrong email or password")
+            console.log("Wrong email or password")
         }
-        console.log(JSON.stringify(data, null, 2));
         reset();
     };
+
     return (
         <div className="LoginPage">
             <header className="LoginPage-header"> Login as {role}
