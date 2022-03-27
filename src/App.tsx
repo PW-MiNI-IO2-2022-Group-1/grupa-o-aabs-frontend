@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css';
 import LoginPage from "./pages/LoginPage";
 import EnterSchedulePage from "./pages/EnterSchedulePage"
+import { AuthContextType } from '../src/components/types'
 import {
     Routes,
     Route,
@@ -47,11 +48,6 @@ function Layout() {
     );
 }
 
-interface AuthContextType {
-    user: any;
-    signin: (user: string, callback: VoidFunction) => void;
-    signout: (callback: VoidFunction) => void;
-}
 
 const AuthContext = React.createContext<AuthContextType>(null!);
 
@@ -77,7 +73,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-function useAuth() {
+export function useAuth() {
     return React.useContext(AuthContext);
 }
 

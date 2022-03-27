@@ -26,7 +26,7 @@ export type Visit = {
 export type Vaccination = {
     id: number;
     vaccine: Vaccine
-    status: "Planned" | ""
+    status: "Planned" | "Completed" | "Canceled"
     patient: Patient | null
 }
 export type Vaccine = {
@@ -49,11 +49,16 @@ export type Address = {
     zipCode: string;
     street: string;
     houseNumber: number;
-    localNumber: string;
+    localNumber: string | null;
 }
 export type Pagination = {
     currentPage: number;
     totalPages: number;
     currentRecord: number;
     totalRecords: number;
+}
+export interface AuthContextType {
+    user: any;
+    signin: (user: string, callback: VoidFunction) => void;
+    signout: (callback: VoidFunction) => void;
 }
