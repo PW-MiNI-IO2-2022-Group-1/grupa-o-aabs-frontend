@@ -1,7 +1,7 @@
 import '../components/types';
 import { Visit } from '../components/types';
 const BASE_URL = 'http://Sopsaabsbackend-develop.eba-jjsphgrc.us-east-1.elasticbeanstalk.com';
-export function getSlots(start: Date | null, end: Date | null, onlyReserved: string , authToken: string | null, page: number) {
+export function getSlots(start: Date | null, end: Date | null, onlyReserved: string , authToken: string | undefined, page: number) {
     let sDate = start == null?'':`&date[gte]=${encodeURIComponent(start.toDateString())}`;
     let eDate = end == null?'':`&date[lte]=${encodeURIComponent(end.toDateString())}`;
     let reserved = onlyReserved === '-1'?'':`onlyReserved=${encodeURIComponent(onlyReserved)}&`
@@ -10,7 +10,7 @@ export function getSlots(start: Date | null, end: Date | null, onlyReserved: str
             method: "GET",
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization' : authToken === null? "": authToken,
+                'Authorization' : authToken === undefined? "": authToken,
 
             },
         }).then(response => {
