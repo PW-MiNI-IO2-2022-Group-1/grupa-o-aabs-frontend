@@ -57,8 +57,8 @@ export type Pagination = {
     currentRecord: number;
     totalRecords: number;
 }
-export interface AuthContextType {
-    user: any;
-    signin: (user: string, callback: VoidFunction) => void;
-    signout: (callback: VoidFunction) => void;
+interface AuthContextType {
+    token?: string;
+    signin: (email: string, password: string) => void;
+    signout: () => void;
 }
