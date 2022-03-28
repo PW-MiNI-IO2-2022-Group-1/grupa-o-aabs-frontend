@@ -13,7 +13,7 @@ import {
 import {Vaccination, Visit, AuthContextType} from "../components/types";
 import {addDays, getBeginningOfWeek} from "../components/dateUtils";
 import DatePicker from 'react-date-picker';
-import { getSlots } from '../logic/doctorAPI';
+import {deleteVisit, getSlots} from '../logic/doctorAPI';
 import { useAuth } from '../App';
 
 function DoctorDashboard() {
@@ -25,79 +25,44 @@ function DoctorDashboard() {
     const [reserved, setReserved] = useState<string>('-1');
     const [page, setPage] = useState<number>(1);
     const [maxPage, setMaxPage] = useState<number>(10);
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
     const radios = [
         { name: 'All', value: '-1' },
         { name: 'Free', value: '0' },
         { name: 'Reserved', value: '1' },
     ];
     let auth: AuthContextType = useAuth();
-    const sampleInfo: Visit[] = [
-        {
-            date: new Date("2022-03-29T08:00:00Z"),
-            id: 0,
-            vaccination: null,
-        },
-        {
-            date: new Date("2022-03-30T08:00:00Z"),
-            id: 1,
-            vaccination: {
-                id: 0,
-                status: "Planned",
-                patient: {
-                    id: 0,
-                    firstName: "Adam",
-                    lastName: "Abacki",
-                    pesel: "12345678901",
-                    email: "email@example.com",
-                    address: {
-                        id: 0,
-                        city: "Warszawa",
-                        zipCode: "01-234",
-                        street: "Przykładowa",
-                        houseNumber: 1,
-                        localNumber: null,
-                    }
-                },
-                vaccine: {
-                    id: 0,
-                    name: "Phiser",
-                    disease: "Covid-19",
-                    requiredDoses: 0,
-                },
-            }
-        },
-        {
-            date: new Date("2022-03-29T10:00:00Z"),
-            id: 0,
-            vaccination: null,
-        },
-    ];
-    function getVisits(start: Date | null, finish: Date | null, onlyReserved: string, page: number): Visit[] {
-        getSlots(start, finish, onlyReserved, auth.token, page).then((response) => {
-            if(response.ok)
+    function getVisits(): Visit[] {
+        setLoading(true);
+        getSlots(startDate, endDate, reserved, auth.token, page).then((response) => {
                 setMaxPage(response.pagination.totalPages);
                 return response.data;
         }).catch((reason => {
             switch (reason)
             {
                 case 401:
-                    console.log("Unauthorised error (invalid or empty Bearer token");
+                    setError("Unauthorised error (invalid or empty Bearer token");
                     break;
                 case 422:
-                    console.log("Validation error");
+                    setError("Validation error");
                     break;
                 default:
-                    console.log("Unknown error");
+                    setError("Unknown error");
             }
-        }))
+        })).finally(() => setLoading(false))
         return [];
     }
     const [Visits, setVisits] = useState<Visit[]>([]);
     useEffect(() => {
-        setVisits(getVisits(startDate, endDate, reserved, page));
+        setVisits(getVisits());
     },[startDate, endDate, reserved, page])
     function remove(index: number) {
-        Visits.splice(index, 1);
+        deleteVisit(Visits[index], auth.token).then((_) => {
+            setVisits(getVisits());
+        }).catch((reason => {
+            console.log(reason);
+        }));
     }
 
     return (
@@ -148,8 +113,8 @@ function DoctorDashboard() {
             </Container>
 
             <Container className="d-flex justify-content-center">
-                {Visits.length === 0 ? <Spinner animation="border"/> : Visits.map((field, index) =>
-                    <PatientVisitField key={`visit_${index}`} visit={field} index={index} remove={remove}/>
+                {Visits.length === 0 ? (loading ? <Spinner animation="border"/> : <div>{error}</div>) : Visits.map((field, index) =>
+                     <PatientVisitField key={`visit_${index}`} visit={field} index={index} remove={remove}/>
                 )}
             </Container>
             <Container>
@@ -166,3 +131,46 @@ function DoctorDashboard() {
 }
 
 export default DoctorDashboard;
+
+
+const sampleInfo: Visit[] = [
+    {
+        date: new Date("2022-03-29T08:00:00Z"),
+        id: 0,
+        vaccination: null,
+    },
+    {
+        date: new Date("2022-03-30T08:00:00Z"),
+        id: 1,
+        vaccination: {
+            id: 0,
+            status: "Planned",
+            patient: {
+                id: 0,
+                firstName: "Adam",
+                lastName: "Abacki",
+                pesel: "12345678901",
+                email: "email@example.com",
+                address: {
+                    id: 0,
+                    city: "Warszawa",
+                    zipCode: "01-234",
+                    street: "Przykładowa",
+                    houseNumber: 1,
+                    localNumber: null,
+                }
+            },
+            vaccine: {
+                id: 0,
+                name: "Phiser",
+                disease: "Covid-19",
+                requiredDoses: 0,
+            },
+        }
+    },
+    {
+        date: new Date("2022-03-29T10:00:00Z"),
+        id: 0,
+        vaccination: null,
+    },
+];

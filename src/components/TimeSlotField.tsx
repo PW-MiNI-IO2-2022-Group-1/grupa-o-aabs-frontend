@@ -63,7 +63,7 @@ const TimeSlotTile: React.FC<timeSlotProps> = (props) => {
                                 {...props.register(`${myName}.${index}.beginning.hour` as const)}
                             >
                                 {[...Array(24)].map((_, index) => {
-                                    <option value={index.toString()}>index</option>
+                                    return <option value={index.toString()}>{index}</option>
                                 })}
                             </Form.Select>
                         </Col>
@@ -86,7 +86,7 @@ const TimeSlotTile: React.FC<timeSlotProps> = (props) => {
                                 {...props.register(`${myName}.${index}.end.hour`)}
                             >
                                 {[...Array(24)].map((_, index) => {
-                                    <option value={index}>index</option>
+                                    return <option value={index.toString()}>{index}</option>
                                 })}
                             </Form.Select>
                         </Col>

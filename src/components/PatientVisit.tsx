@@ -3,6 +3,7 @@ import {Visit} from "./types";
 import {Button, Row, Col, Modal} from "react-bootstrap";
 import moment from "moment";
 import { deleteVisit } from "../logic/doctorAPI";
+import {useAuth} from "../App";
 
 interface patientVisitProps{
     visit: Visit;
@@ -13,6 +14,24 @@ const PatientVisitField: React.FC<patientVisitProps> = (props) => {
     const [show, setShow] = useState(false);
     const handleShow = () => setShow(true);
     const handleHide = () => setShow(false);
+    const auth = useAuth();
+    const handleDelete = () => {
+        if(props.visit.vaccination)
+        {
+            console.log("Unable to delete - time slot already reserved");
+        }
+        else
+        {
+            if(props.visit.date.getTime() -  (new Date()).getTime() <= 86400000)
+            {
+                console.log("Unable to delete - slot is too near");
+            }
+            else
+            {
+                props.remove(props.index);
+            }
+        }
+    }
     const vaccInfo = props.visit.vaccination == null ? "No patient assigned" :
         `Vaccine:
          - Name: ${props.visit.vaccination.vaccine.name}
@@ -41,30 +60,7 @@ const PatientVisitField: React.FC<patientVisitProps> = (props) => {
                 })}
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={() => {
-                    if(props.visit.vaccination)
-                    {
-                        console.log("Unable to delete - time slot already reserved");
-                    }
-                    else
-                    {
-                        if(props.visit.date.getTime() -  (new Date()).getTime() <= 86400000)
-                        {
-                            console.log("Unable to delete - slot is too near");
-                        }
-                        else
-                        {
-                            deleteVisit(props.visit, "").then((response) => {
-                                if(response.ok)
-                                {
-                                    props.remove(props.index);
-                                }
-                            }).catch((reason => {
-                                console.log(reason);
-                            }));
-                        }
-                    }
-                }}>Delete</Button>
+                <Button variant="secondary" onClick={handleDelete}>Delete</Button>
                 <Button variant="primary" onClick={handleHide}>Close</Button>
             </Modal.Footer>
         </Modal>
