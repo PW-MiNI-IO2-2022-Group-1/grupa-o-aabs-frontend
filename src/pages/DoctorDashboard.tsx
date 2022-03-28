@@ -1,6 +1,7 @@
 import React, {useState, useEffect } from 'react';
 import {Button, ButtonGroup, Col, Container, Row, Spinner, ToggleButton} from 'react-bootstrap';
 import PatientVisitField from "../components/PatientVisit";
+import './DoctorDashboard.css';
 import {
     /*Routes,
     Route,
@@ -112,10 +113,10 @@ function DoctorDashboard() {
                 </Row>
             </Container>
 
-            <Container className="d-flex justify-content-center">
-                {Visits.length === 0 ? (loading ? <Spinner animation="border"/> : <div>{error}</div>) : Visits.map((field, index) =>
-                     <PatientVisitField key={`visit_${index}`} visit={field} index={index} remove={remove}/>
-                )}
+            <Container>
+                <Col className={`d-flex${Visits.length === 0 ? "" : "-nowrap"} justify-content-center`}>{Visits.length === 0 ? (loading ? <Spinner animation="border"/> : <div>{error}</div>) : Visits.map((field, index) => {
+                    return <PatientVisitField key={`visit_${index}`} visit={field} index={index} remove={remove}/>
+                })}</Col>
             </Container>
             <Container>
                 <Row>
