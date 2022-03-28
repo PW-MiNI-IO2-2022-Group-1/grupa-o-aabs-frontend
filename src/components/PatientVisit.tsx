@@ -2,8 +2,6 @@ import React, {useState} from "react";
 import {Visit} from "./types";
 import {Button, Row, Col, Modal} from "react-bootstrap";
 import moment from "moment";
-import { deleteVisit } from "../logic/doctorAPI";
-import {useAuth} from "../App";
 
 interface patientVisitProps{
     visit: Visit;
