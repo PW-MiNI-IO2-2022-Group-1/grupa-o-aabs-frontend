@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css';
 import LoginPage from "./pages/LoginPage";
 import EnterSchedulePage from "./pages/EnterSchedulePage"
+import { AuthContextType } from '../src/components/types'
 import {
     Routes,
     Route,
@@ -67,11 +68,6 @@ function Layout() {
     );
 }
 
-interface AuthContextType {
-    token?: string;
-    signin: (email: string, password: string) => void;
-    signout: () => void;
-}
 
 const AuthContext = React.createContext<AuthContextType>(null!);
 
