@@ -3,8 +3,6 @@ import {Button, Col, Container, Form, Row } from 'react-bootstrap'
 import {Control, useFieldArray, UseFormGetValues, UseFormRegister } from 'react-hook-form';
 import type { DoctorScheduleForm } from "./types"
 import "./TimeSlotField.css"
-import { string } from 'yup/lib/locale';
-
 interface timeSlotProps {
     register: UseFormRegister<DoctorScheduleForm>;
     errors: any;
@@ -62,7 +60,8 @@ const TimeSlotTile: React.FC<timeSlotProps> = (props) => {
                         <Col>
                             <Form.Select
                                 aria-label="beginning-hour"
-                                {...props.register(`${myName}.${index}.beginning.hour` as const)}>
+                                {...props.register(`${myName}.${index}.beginning.hour` as const)}
+                            >
                                 <option value="0">0</option>
                                 <option value="1">1</option>
                                 <option value="2">2</option>
