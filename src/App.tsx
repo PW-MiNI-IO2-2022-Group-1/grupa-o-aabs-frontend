@@ -10,7 +10,6 @@ import {
     Outlet,
 } from "react-router-dom";
 import DoctorDashboard from "./pages/DoctorDashboard";
-import { login } from "./logic/api";
 import {AuthProvider, useAuth, RequireAuth } from './Auth';
 import {Role} from './models/Users';
 import { EditPatientDetailsPage } from './pages/EditPatientDetailsPage';

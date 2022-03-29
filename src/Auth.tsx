@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
     useLocation,
     Navigate,
@@ -24,7 +24,35 @@ class AuthState {
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-    const [authState, setAuthState] = React.useState<AuthState>(new AuthState());
+    const saveAuth = () => {
+        if(authState.token != null
+          && authState.user != null
+          && authState.role != null) {
+            localStorage.setItem('token', authState.token);
+            localStorage.setItem('role', authState.role);
+            localStorage.setItem('user', JSON.stringify(authState.user));
+        }
+    };
+
+    const loadAuth: () => AuthState = () => {
+        const loadedToken: string | null = localStorage.getItem('token');
+        const loadedRole: Role | null = localStorage.getItem('role') as (Role | null);
+
+        const userJson = localStorage.getItem('user');
+        let loadedUser: User | null = null;
+        if(userJson != null)
+            loadedUser = JSON.parse(userJson) as (User | null);
+
+        const authState = new AuthState();
+        if(loadedToken != null && loadedRole != null && loadedUser != null) {
+            authState.token = loadedToken;
+            authState.role = loadedRole;
+            authState.user = loadedUser;
+        }
+        return authState;
+    };
+
+    const [authState, setAuthState] = React.useState<AuthState>(loadAuth());
 
     const signIn = (role: Role, email: string, password: string) => {
         login(role, email, password).then((json: any) => {
@@ -41,6 +69,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             });
         });
     };
+
+    useEffect(() => {
+       saveAuth(); 
+    }, [authState]);
+
 
     const signOut = () => {
         setAuthState((state) => {
