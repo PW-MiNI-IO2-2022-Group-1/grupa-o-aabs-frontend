@@ -1,16 +1,10 @@
-import { userInfo } from "os";
 import React from "react";
 import {
-    Routes,
-    Route,
     useLocation,
     Navigate,
-    Outlet,
 } from "react-router-dom";
-import { Role, User, Admin, Doctor, Patient } from "./models/Users";
+import { Role, User } from "./models/Users";
 import { login } from "./logic/api";
-import { waitFor } from "@testing-library/dom";
-import { setSourceMapRange } from "typescript";
 
 interface AuthContextType {
     user: User | null; 
@@ -37,13 +31,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             setAuthState((state) => {
                 state.token = json.token;
                 state.role = role;
-                if(role == Role.Admin)
+                if(role === Role.Admin)
                     state.user = json.admin;
-                else if(role == Role.Doctor)
+                else if(role === Role.Doctor)
                     state.user = json.doctor;
-                else if(role == Role.Patient)
+                else if(role === Role.Patient)
                     state.user = json.patient;
-                return state;
+                return {...state};
             });
         });
     };
@@ -53,7 +47,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             state.token = null;
             state.user = null;
             state.role = null;
-            return state;
+            return {...state};
         });
     }
 
@@ -70,9 +64,9 @@ export function useAuth(): AuthContextType {
 export function RequireAuth({ children, authLocation, role}
         : { children: JSX.Element, authLocation: string, role?: Role | null}) {
     let auth: AuthContextType = useAuth();
-    let location = useLocation();
+    const location = useLocation();
 
-    if (!auth.token || auth.role != role) {
+    if (auth.token === null || auth.role !== role) {
         // Redirect them to the /login page, but save the current location they were
         // trying to go to when they were redirected. This allows us to send them
         // along to that page after they login, which is a nicer user experience

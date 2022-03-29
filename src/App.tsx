@@ -13,12 +13,13 @@ import DoctorDashboard from "./pages/DoctorDashboard";
 import { login } from "./logic/api";
 import {AuthProvider, useAuth, RequireAuth } from './Auth';
 import {Role} from './models/Users';
+import { EditPatientDetailsPage } from './pages/EditPatientDetailsPage';
 
 export default function App() {
     return (
         <AuthProvider>
             <Routes>
-                <Route element={<Layout />}>
+                <Route element={<Layout />}/>
                     <Route path="/" element={<RequireAuth authLocation="/loginPatient"><p>Landing page</p></RequireAuth>} />
                     <Route path="/loginDoctor" element={<header className="App-header"><LoginPage role={Role.Doctor}/></header>} />
                     <Route path="/loginPatient" element={<header className="App-header"><LoginPage role={Role.Patient}/></header>} />
@@ -26,17 +27,18 @@ export default function App() {
                     <Route
                         path="/doctor"
                         element={
-                            // <RequireAuth authLocation={"/loginDoctor"}>
-                            <DoctorDashboard />
-                            // </RequireAuth>
+                            <RequireAuth role={Role.Doctor} authLocation={"/loginDoctor"}>
+                                <DoctorDashboard />
+                            </RequireAuth>
                         }
                     />
                     <Route
                         path="/patient"
                         element={
-                            <RequireAuth authLocation={"/loginPatient"}>
-                                <DoctorDashboard />
-                                {/*todo - cos innego niz doctor dsashbord*/}
+                            <RequireAuth role={Role.Patient} authLocation={"/loginPatient"}>
+                                <header className='App-header'>
+                                    <EditPatientDetailsPage/>
+                                </header>
                             </RequireAuth>
                         }
                     />
@@ -47,13 +49,21 @@ export default function App() {
                     <Route
                         path="/admin"
                         element={
-                            <RequireAuth role={Role.Doctor} authLocation={"/loginAdmin"}>
-                                <DoctorDashboard />
-                                {/*todo - cos innego niz doctor dsashbord*/}
+                            <RequireAuth role={Role.Admin} authLocation={"/loginAdmin"}>
+                                <header className='App-header'>
+                                    <DoctorDashboard />
+                                </header>
                             </RequireAuth>
                         }
                     />
-                </Route>
+                    <Route
+                        path="/editPatientDetails"
+                        element={
+                            <header className='App-header'>
+                            <EditPatientDetailsPage></EditPatientDetailsPage>
+                            </header>
+                        }
+                />
             </Routes>
         </AuthProvider>
     );

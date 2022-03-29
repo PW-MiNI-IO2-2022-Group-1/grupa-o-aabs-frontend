@@ -4,6 +4,7 @@ import {Control, useFieldArray, UseFormGetValues, UseFormRegister } from 'react-
 import type { DoctorScheduleForm } from "./types"
 import "./TimeSlotField.css"
 import { string } from 'yup/lib/locale';
+
 interface timeSlotProps {
     register: UseFormRegister<DoctorScheduleForm>;
     errors: any;
