@@ -5,12 +5,12 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {BrowserRouter} from "react-router-dom";
-import RegisterPatient from "./pages/RegisterPatient";
+import RegisterPatientPage from "./pages/RegisterPatientPage";
 
 ReactDOM.render(
   <React.StrictMode>
       <BrowserRouter>
-          <RegisterPatient />
+          <RegisterPatientPage />
       </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')

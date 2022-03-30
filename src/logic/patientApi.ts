@@ -1,4 +1,4 @@
-import {RegistrationData} from "../pages/RegisterPatient";
+import {RegistrationData} from "../components/RegisterPatientForm";
 
 const BASE_URL = 'http://Sopsaabsbackend-develop.eba-jjsphgrc.us-east-1.elasticbeanstalk.com';
 
