@@ -40,9 +40,15 @@ export default function RegisterPatientForm(props: { onSubmit: SubmitHandler<Reg
                     type="email"
                     placeholder="example@domain.com"
                     {...register("email", {
-                        required: true
+                        required: "Email required"
                     })}
+                    isInvalid={!!errors.email}
+                    //isValid={!errors.email}
                 />
+                <Form.Control.Feedback type="invalid">
+                    {errors.email?.message}
+                </Form.Control.Feedback>
+
             </Form.Group>
             <Row>
                 <Form.Group as={Col} md="6" controlId="formPassword">
@@ -53,9 +59,14 @@ export default function RegisterPatientForm(props: { onSubmit: SubmitHandler<Reg
                         type="password"
                         placeholder=""
                         {...register("password", {
-                            required: true
+                            required: 'Password required'
                         })}
+                        isInvalid={!!errors.password}
+                        //isValid={!errors.password}
                     />
+                    <Form.Control.Feedback type="invalid">
+                        {errors.password?.message}
+                    </Form.Control.Feedback>
                 </Form.Group>
 
                 {/*<Form.Group as={Col} md="6">*/}
@@ -83,9 +94,14 @@ export default function RegisterPatientForm(props: { onSubmit: SubmitHandler<Reg
                         type="text"
                         placeholder="First Name"
                         {...register("firstName", {
-                            required: true
+                            required: 'First name required'
                         })}
+                        isInvalid={!!errors.firstName}
+                        //isValid={!errors.firstName}
                     />
+                    <Form.Control.Feedback type="invalid">
+                        {errors.firstName?.message}
+                    </Form.Control.Feedback>
                 </Form.Group>
 
                 <Form.Group as={Col} md="4" controlId="formLastName">
@@ -97,7 +113,13 @@ export default function RegisterPatientForm(props: { onSubmit: SubmitHandler<Reg
                         placeholder="Last Name"
                         {...register("lastName", {
                             required: true
-                        })}/>
+                        })}
+                        isInvalid={!!errors.lastName}
+                        //isValid={!errors.lastName}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                        {errors.lastName?.message}
+                    </Form.Control.Feedback>
                 </Form.Group>
 
                 {/*Tutaj może ewentualnie zmienić, aby były takie placeholdery na cyfry*/}
@@ -107,12 +129,24 @@ export default function RegisterPatientForm(props: { onSubmit: SubmitHandler<Reg
                     </Form.Label>
                     <Form.Control
                         type="text"
-                        placeholder="Pesel"
+                        placeholder="PESEL"
                         {...register("pesel", {
                             //dodać regexp sprawdzający pesel
-                            required: true,
-                            pattern: /[0-9]{11}/
-                        })}/>
+                            required: {
+                                value: true,
+                                message: "PESEL required"
+                            },
+                            pattern: {
+                                value: /^[0-9]{11}$/,
+                                message: 'Wrong PESEL format'
+                            }
+                        })}
+                        isInvalid={!!errors.pesel}
+                        //isValid={!errors.pesel}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                        {errors.pesel?.message}
+                    </Form.Control.Feedback>
                 </Form.Group>
             </Row>
 
@@ -128,9 +162,14 @@ export default function RegisterPatientForm(props: { onSubmit: SubmitHandler<Reg
                         type="text"
                         placeholder="City"
                         {...register("address.city", {
-                            required: true
+                            required: 'City required'
                         })}
+                        isInvalid={!!(errors.address?.city)}
+                        //isValid={!errors.address?.city}
                     />
+                    <Form.Control.Feedback type="invalid">
+                        {errors.address?.city?.message}
+                    </Form.Control.Feedback>
                 </Form.Group>
 
                 {/*Tutaj może ewentualnie zmienić, aby były takie placeholdery na cyfry*/}
@@ -142,9 +181,18 @@ export default function RegisterPatientForm(props: { onSubmit: SubmitHandler<Reg
                         type="text"
                         placeholder="00-000"
                         {...register("address.zipCode", {
-                            required: true,
-                            pattern: /[0-9]{2}-[0-9]{3}/
-                        })}/>
+                            required: 'Zip code required',
+                            pattern: {
+                                value: /[0-9]{2}-[0-9]{3}/,
+                                message: 'Wrong zip code format'
+                            }
+                        })}
+                        isInvalid={!!errors.address?.zipCode}
+                        //isValid={!errors.address?.zipCode}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                        {errors.address?.zipCode?.message}
+                    </Form.Control.Feedback>
                 </Form.Group>
 
 
@@ -158,8 +206,14 @@ export default function RegisterPatientForm(props: { onSubmit: SubmitHandler<Reg
                         type="text"
                         placeholder="Street"
                         {...register("address.street", {
-                            required: true
-                        })}/>
+                            required: 'Street required'
+                        })}
+                        isInvalid={!!errors.address?.street}
+                        //isValid={!errors.address?.street}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                        {errors.address?.street?.message}
+                    </Form.Control.Feedback>
                 </Form.Group>
 
                 <Form.Group as={Col} md="4" controlId="formHouseNumber">
@@ -170,8 +224,14 @@ export default function RegisterPatientForm(props: { onSubmit: SubmitHandler<Reg
                         type="text"
                         placeholder="House number"
                         {...register("address.houseNumber", {
-                            required: true
-                        })}/>
+                            required: 'House number required'
+                        })}
+                        isInvalid={!!errors.address?.houseNumber}
+                        //isValid={!errors.address?.houseNumber}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                        {errors.address?.houseNumber?.message}
+                    </Form.Control.Feedback>
                 </Form.Group>
 
                 <Form.Group as={Col} md="4" controlId="formLocalNumber">
@@ -181,9 +241,13 @@ export default function RegisterPatientForm(props: { onSubmit: SubmitHandler<Reg
                     <Form.Control
                         type="text"
                         placeholder="Local Number"
-                        {...register("address.localNumber", {
-                            required: true
-                        })}/>
+                        {...register("address.localNumber")}
+                        isInvalid={!!errors.address?.localNumber}
+                        //isValid={!errors.address?.localNumber}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                        {errors.address?.localNumber?.message}
+                    </Form.Control.Feedback>
                 </Form.Group>
             </Row>
             <Button

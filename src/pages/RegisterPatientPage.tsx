@@ -3,47 +3,67 @@ import {Button, Modal} from "react-bootstrap";
 import {registerPatient} from "../logic/patientApi";
 import "./RegisterPatient.css"
 import RegisterPatientForm, {RegistrationData} from "../components/RegisterPatientForm";
+import {useNavigate} from "react-router-dom";
 
 export default function RegisterPatientPage() {
 
     const [show, setShow] = useState(false)
     const [modalMsg, setModalMsg] = useState("")
+    const [success, setSuccess] = useState(false)
+    //const navigate = useNavigate()
 
     const onSubmit = (data: RegistrationData) => {
-        console.log(data);
         registerPatient(data)
             .then((response) => {
-                handleShow("New patient added!")
+                handleShow(true, "New patient added!")
                 console.log(response)
             })
             .catch((reason) => {
+                // jak się dostać do body resona? Zwraca mi że jest undefined
                 switch (reason.status) {
                     case 409:
-                        handleShow(reason.body.msg)
+                        handleShow(false, reason.body ?
+                            reason.body.msg : 'Specified email or pesel already exists')
                         break;
                     case 422:
-                        handleShow("Validation error")
+                        handleShow(false, "Validation error")
+                        break;
+                    default:
+                        handleShow(false, "Unknown error")
+                        break;
                 }
             })
     }
 
     const handleClose = () => setShow(false);
-    const handleShow = (msg: string) => {
+    const handleShow = (success: boolean, msg: string) => {
         setModalMsg(msg)
+        setSuccess(success)
         setShow(true);
+    }
+
+    const navigateLogin = () => {
+        //navigate("/loginPatient")
+        console.log("navigate to /loginPatient")
     }
 
     return (
         <>
-            <Modal show={show} onHide={handleClose}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Error</Modal.Title>
+            <Modal show={show} onHide={handleClose} backdrop="static">
+                <Modal.Header>
+                    <Modal.Title>{success ? "Success" : "Error"}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>{modalMsg}</Modal.Body>
                 <Modal.Footer>
-                    <Button variant="primary" onClick={handleClose}>
-                        OK
-                    </Button>
+                    {
+                        success
+                            ? <Button variant="primary" onClick={navigateLogin}>
+                                Login
+                            </Button>
+                            : <Button variant="primary" onClick={handleClose}>
+                                OK
+                            </Button>
+                    }
                 </Modal.Footer>
             </Modal>
             <div className="registerForm">

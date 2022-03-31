@@ -5,8 +5,8 @@ import user from '@testing-library/user-event'
 import RegisterPatientForm from "../components/RegisterPatientForm";
 
 
-describe('RegisterPatientPage', () => {
-    const onSubmit = jest.fn((data) => {return});
+describe('RegisterPatientForm', () => {
+    const onSubmit = jest.fn();
 
     beforeEach(() => {
         onSubmit.mockClear()
@@ -44,10 +44,31 @@ describe('RegisterPatientPage', () => {
             lastName: "abacki",
             password: "abc",
             pesel: "98071962617",
-        },  expect.anything())
+        }, expect.anything())
+    })
 
+    describe('validates properly', () => {
+        test('and not submit if something is wrong', async () => {
+            user.type(getInput('email'), 'abc@wp.pl')
+            user.type(getPasswordInput(), 'abc')
+            user.type(getInput('first name'), 'adam')
+            user.type(getInput('last name'), 'abacki')
+            user.type(getInput('pesel'), '98071962617')
+            user.type(getInput('city'), 'Warsaw')
+            user.type(getInput('zip code'), '12-123')
+            user.type(getInput('street'), 'Ogrodowa')
+            user.type(getInput('house number'), '11A')
+            user.type(getInput('local number'), '3')
+
+            user.click(screen.getByRole('button', {name: /register/i}))
+
+            await waitFor(() => {
+                expect(onSubmit).toHaveBeenCalledTimes(1)
+            })
+        })
     })
 })
+
 
 function getInput(name: string) {
     return screen.getByRole('textbox', {
