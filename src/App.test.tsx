@@ -1,91 +1,72 @@
 import React from 'react';
-import {act, fireEvent, render, screen} from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import LoginPage from "./pages/LoginPage";
+import {fireEvent, render, screen, waitFor} from '@testing-library/react';
+import user  from '@testing-library/user-event';
+import {act } from 'react-dom/test-utils';
+import LoginForm from "./components/LoginForm";
+import ScheduleForm from "./components/ScheduleForm";
 
+const testEmail = "email@example.com"
+const testPswd = "password"
+const testInvEmail = "e@ecom"
+const testInvPswd = ""
+const onSubmit = jest.fn();
 
-test('renders login button and form', () => {
-    // render(<LoginPage />);
-    // const linkElement = screen.getByText(/Log in/i);
-    // expect(screen.getByLabelText(
-    //     'Email', {selector: 'input'}))
-    //     .toBeInTheDocument();
-    // expect(screen.getByLabelText(
-    //     'Password', {selector: 'input'}))
-    //     .toBeInTheDocument();
-    // expect(linkElement).toBeInTheDocument();
+function getEmailInput() {
+  return screen.getByTestId("email-input");
+}
+
+function getPasswordInput() {
+  return screen.getByTestId("password-input");
+}
+
+describe("Login Form" , () => {
+  it('invalidates empty form', async () => {
+    render(<LoginForm onSubmit={onSubmit}/>);
+    user.click(screen.getByRole('button', {name: /Log in/i}));
+    await waitFor(() => {
+      expect(onSubmit).not.toHaveBeenCalled();
+    })
+  });
+
+  it('validates correct email and password', async () => {
+    const onSubmit = jest.fn();
+    render(<LoginForm onSubmit={onSubmit}/>);
+      user.type(getEmailInput(), testEmail);
+      user.type(getPasswordInput(), testPswd);
+      user.click(screen.getByRole('button', {name: /Log in/i}));
+    await waitFor(() => {
+      expect(onSubmit).toHaveBeenCalled();
+    });
+  });
+
+  it('invalidates incorrect email', async () => {
+    const onSubmit = jest.fn();
+    render(<LoginForm onSubmit={onSubmit}/>);
+    user.type(getEmailInput(), testInvEmail);
+    user.click(screen.getByRole('button', {name: /Log in/i}));
+    await waitFor(() => {
+      expect(onSubmit).not.toHaveBeenCalled();
+    });
+  });
+
+  it('invalidates empty password', async () => {
+    const onSubmit = jest.fn();
+    render(<LoginForm onSubmit={onSubmit}/>);
+    user.type(getPasswordInput(), testInvPswd);
+    user.click(screen.getByRole('button', {name: /Log in/i}));
+    await waitFor(() => {
+      expect(onSubmit).not.toHaveBeenCalled();
+    });
+  });
 });
 
-/* test("invalidates incorrect email format", async () => {
-  render(<LoginPage/>);
-  act(() => {
-    fireEvent.input(screen.getByPlaceholderText('email@example.com'), {
-      target: {
-        value:
-            "agna aliqua."
-      }
-    });//email with invalid format
-    fireEvent.submit(screen.getByTestId("form"));
-
-describe("Login page" , () => {
-  it('renders login button and form', () => {
-    render(<LoginPage/>);
-    const linkElement = screen.getByTestId("login");
-    expect(screen.getByLabelText(
-        'Email', {selector: 'input'}))
-        .toBeInTheDocument();
-    expect(screen.getByLabelText(
-        'Password', {selector: 'input'}))
-        .toBeInTheDocument();
-    expect(linkElement).toBeInTheDocument();
-
+describe("Set Schedule Page", () => {
+  it('validates on save', async () => {
+    render(<ScheduleForm onSubmit={onSubmit}/>)
+    user.click(screen.getByRole('button', {name: /Save/i }))
+    await waitFor(() => {
+      //expect(onSubmit).toHaveBeenCalled();
+    })
   });
 
-  it("invalidates incorrect email format", () => {
-    render(<LoginPage/>);
-    const emailInput = screen.getByTestId("email-input");
-    act(() => {
-      userEvent.type(emailInput, "testmailcom");
-      //email with invalid format
-      screen.getByTestId("login").dispatchEvent(new MouseEvent('click', {bubbles: true}));
-    });
-    //const errorMsg = screen.getByText("Email is invalid");
-    //expect(errorMsg).toBeInTheDocument()  ;
-  });
-
-  it("invalidates empty fields", () => {
-    render(<LoginPage/>);
-    act(()=> {
-      fireEvent.submit(screen.getByTestId("form"));
-    });
-    //expect two errors (objects with class "invalid-feedback"`
-  });
-  test("validates correct email", async () => {
-    render(<LoginPage/>);
-    act(()=> {
-      fireEvent.input(screen.getByPlaceholderText('email@example.com'), {
-        target: {
-          value:
-              "email@example.com"
-        }
-      });//email with valid format
-      fireEvent.click(screen.getByTestId("login"));
-    });
-
-    //expect no error (object with class "invalid-feedback"` containing "email"
-  });
-  it("validates non-empty password", async () => {
-    render(<LoginPage/>);
-    act(()=> {
-      fireEvent.input(screen.getByPlaceholderText('Password'), {
-        target: {
-          value:
-              "agna aliqua."
-        }
-      });//email with invalid format
-      fireEvent.submit(screen.getByTestId("form"));
-    });
-    //expect no error (object with class "invalid-feedback"` containing "password"
-  });
 });
-*/

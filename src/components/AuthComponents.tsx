@@ -1,27 +1,10 @@
-import React, { useEffect } from "react";
-import {
-    useLocation,
-    Navigate,
-} from "react-router-dom";
-import { Role, User } from "./models/Users";
-import { login } from "./logic/api";
-
-interface AuthContextType {
-    user: User | null; 
-    token: string | null;
-    role: Role | null;
-
-    signIn: (role: Role, email: string, password: string) => void;
-    signOut: () => void;
-}
+import React, { useEffect } from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
+import { login } from '../logic/login';
+import { AuthContextType, AuthState } from '../types/auth';
+import { User, Role } from '../types/users';
 
 const AuthContext = React.createContext<AuthContextType>(null!);
-
-class AuthState {
-    token: string | null = null;
-    user: User | null = null;
-    role: Role | null = null;
-}
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const saveAuth = () => {
@@ -43,7 +26,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if(userJson != null)
             loadedUser = JSON.parse(userJson) as (User | null);
 
-        const authState = new AuthState();
+        const authState: AuthState = { token: null, user: null, role: null };
         if(loadedToken != null && loadedRole != null && loadedUser != null) {
             authState.token = loadedToken;
             authState.role = loadedRole;

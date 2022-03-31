@@ -1,7 +1,5 @@
-import {Role} from '../models/Users';
-
-const BASE_URL = 'http://localhost:8080';
-//const BASE_URL = 'http://Sopsaabsbackend-develop.eba-jjsphgrc.us-east-1.elasticbeanstalk.com';
+import { Role } from '../types/users';
+import { BASE_URL } from './config';
 
 export async function login(role: Role, email: string, 
                             password: string): Promise<any> {

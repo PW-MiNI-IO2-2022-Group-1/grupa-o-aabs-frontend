@@ -1,8 +1,8 @@
-import { Patient } from '../models/Users';
+import { Patient } from '../types/users';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import { EditField } from '../components/EditField';
-import { useAuth } from '../Auth';
+import { useAuth } from '../components/AuthComponents';
 
 type PatientDetailsForm = {
     firstName: string;
