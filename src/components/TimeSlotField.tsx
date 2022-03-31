@@ -51,12 +51,27 @@ const TimeSlotTile: React.FC<timeSlotProps> = (props) => {
         name: myName,
         control: props.control
     });
+    function validateBeginningTime(index: number) {
+        const name = myName;
+        if(index === 0) return true;
+        return parseInt(props.values(`${name}.${index}.beginning.hour`)) * 60
+            + parseInt(props.values(`${name}.${index}.beginning.minute`)) >
+            parseInt(props.values(`${name}.${index - 1}.end.hour`)) * 60
+            + parseInt(props.values(`${name}.${index - 1}.end.minute`));
+    }
+    function validateEndTime(index: number) {
+        const name = myName;
+        return parseInt(props.values(`${name}.${index}.beginning.hour`)) * 60
+            + parseInt(props.values(`${name}.${index}.beginning.minute`)) <
+            parseInt(props.values(`${name}.${index}.end.hour`)) * 60
+            + parseInt(props.values(`${name}.${index}.end.minute`));
+    }
     return <Container style={{width: "500px", margin: "0px" }}>
         <Form.Group>
             <Form.Label>{myLabel}</Form.Label>
             {fields.map((field, index) => {
                 return (
-                    <Row key={field.id} className="form-row">
+                    <Row key={`TimeField_${myName}_${field.id}`} className="form-row">
                         <Col>
                             <Form.Select
                                 aria-label="beginning-hour"
@@ -71,7 +86,7 @@ const TimeSlotTile: React.FC<timeSlotProps> = (props) => {
                         <Col>
                             <Form.Select
                                 aria-label="beginning-minute"
-                                {...props.register(`${myName}.${index}.beginning.minute`)}
+                                {...props.register(`${myName}.${index}.beginning.minute`as const)}
                             >
                                 <option value="00">00</option>
                                 <option value="15">15</option>

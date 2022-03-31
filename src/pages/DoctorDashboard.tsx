@@ -3,15 +3,15 @@ import {Button, ButtonGroup, Col, Container, Row, Spinner, ToggleButton} from 'r
 import PatientVisitField from "../components/PatientVisit";
 import './DoctorDashboard.css';
 import {
-    /*Routes,
-    Route,
-    Link, */
+    //Routes,
+    //Route,
+    //Link,
     useNavigate,
-    /*useLocation,
-    Navigate,
-    Outlet,*/
+    //useLocation,
+    //Navigate,
+    //Outlet,
 } from "react-router-dom";
-import {Vaccination, Visit, AuthContextType} from "../components/types";
+import {Visit, AuthContextType} from "../components/types";
 import {addDays, getBeginningOfWeek} from "../components/dateUtils";
 import DatePicker from 'react-date-picker';
 import {deleteVisit, getSlots} from '../logic/doctorAPI';
