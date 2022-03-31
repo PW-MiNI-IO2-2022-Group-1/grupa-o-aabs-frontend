@@ -72,14 +72,14 @@ const TimeSlotTile: React.FC<timeSlotProps> = (props) => {
             <Form.Label>{myLabel}</Form.Label>
             {fields.map((field, index) => {
                 return (
-                    <Row key={`TimeField_${myName}_${field.id}`} className='form-row'>
+                    <Row className="form-row" key={`TimeField_${myName}_${field.id}_row`}>
                         <Col>
-                            <Form.Select
-                                aria-label='beginning-hour'
+                            <Form.Select key={`TimeField_${myName}_${field.id}_select`}
+                                aria-label="beginning-hour"
                                 {...props.register(`${myName}.${index}.beginning.hour` as const)}
                             >
                                 {[...Array(24)].map((_, index) => {
-                                    return <option value={index.toString()}>{index}</option>
+                                    return <option key={index} value={index.toString()}>{index}</option>
                                 })}
                             </Form.Select>
                         </Col>
@@ -102,7 +102,7 @@ const TimeSlotTile: React.FC<timeSlotProps> = (props) => {
                                 {...props.register(`${myName}.${index}.end.hour`)}
                             >
                                 {[...Array(24)].map((_, index) => {
-                                    return <option value={index.toString()}>{index}</option>
+                                    return <option key={index} value={index.toString()}>{index}</option>
                                 })}
                             </Form.Select>
                         </Col>
