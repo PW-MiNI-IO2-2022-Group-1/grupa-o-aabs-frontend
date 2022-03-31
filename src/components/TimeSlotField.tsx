@@ -1,5 +1,5 @@
-import React from 'react'
-import { Button, Col, Container, Form, Row } from 'react-bootstrap'
+import React from 'react';
+import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import { Control, useFieldArray, UseFormGetValues, UseFormRegister } from 'react-hook-form';
 import { DoctorScheduleForm } from './ScheduleForm';
 import './TimeSlotField.css'
@@ -52,21 +52,6 @@ const TimeSlotTile: React.FC<timeSlotProps> = (props) => {
         name: myName,
         control: props.control
     });
-    function validateBeginningTime(index: number) {
-        const name = myName;
-        if(index === 0) return true;
-        return parseInt(props.values(`${name}.${index}.beginning.hour`)) * 60
-            + parseInt(props.values(`${name}.${index}.beginning.minute`)) >
-            parseInt(props.values(`${name}.${index - 1}.end.hour`)) * 60
-            + parseInt(props.values(`${name}.${index - 1}.end.minute`));
-    }
-    function validateEndTime(index: number) {
-        const name = myName;
-        return parseInt(props.values(`${name}.${index}.beginning.hour`)) * 60
-            + parseInt(props.values(`${name}.${index}.beginning.minute`)) <
-            parseInt(props.values(`${name}.${index}.end.hour`)) * 60
-            + parseInt(props.values(`${name}.${index}.end.minute`));
-    }
     return <Container style={{width: '500px', margin: '0px' }}>
         <Form.Group>
             <Form.Label>{myLabel}</Form.Label>
@@ -119,7 +104,10 @@ const TimeSlotTile: React.FC<timeSlotProps> = (props) => {
                             </Form.Select>
                         </Col>
                         <Col>
-                            <Button type='button' className='c_btn' onClick={() => remove(index)}>
+                            <Button type='button' className='c_btn' onClick={(e: React.MouseEvent) =>{
+                                e.preventDefault();
+                                remove(index)
+                            }}>
                                 &#8722;
                             </Button>
                         </Col>
@@ -129,16 +117,18 @@ const TimeSlotTile: React.FC<timeSlotProps> = (props) => {
             })}
             <Button
                 type='button'
-                onClick={() =>{
-                    var b = {
-                        hour: '8',
-                        minute: '00',
-                    };
-                    var e = {
-                        hour: '16',
-                        minute: '00',
-                    };
-                    append({ beginning: b, end: e})
+                onClick={(e: React.MouseEvent) =>{
+                    e.preventDefault();
+                    append({
+                        beginning: {
+                            hour: '8',
+                            minute: '00',
+                        },
+                        end: {
+                            hour: '16',
+                            minute: '00',
+                        }
+                    })
                 }}
             >
                 Add time slot

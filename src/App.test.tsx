@@ -64,8 +64,18 @@ describe("Set Schedule Page", () => {
     render(<ScheduleForm onSubmit={onSubmit}/>)
     user.click(screen.getByRole('button', {name: /Save/i }))
     await waitFor(() => {
-      expect(onSubmit).not.toHaveBeenCalled();
+      expect(onSubmit).toHaveBeenCalled();
     })
   });
-
+  it('sends API call', async () => {
+    //TODO
+  });
+});
+describe("DoctorDashboard", () => {
+  it('routes to setSchedule', async () => {
+    //TODO
+  });
+  it('calls API for visits', async () => {
+    //TODO
+  });
 });

@@ -5,6 +5,7 @@ import Calendar from 'react-calendar';
 import { addDays, getBeginningOfWeek } from '../utils/dateUtils';
 import TimeSlotField from './TimeSlotField';
 import './Calendar.css';
+import * as Yup from 'yup';
 
 export type DoctorScheduleForm = {
     week: Date,
@@ -53,9 +54,46 @@ const initSlots = [
     },
 
 ]
-
+function validateBeginningTime(ts: TimeSlot, prevTS: TimeSlot) {
+    return parseInt(ts.beginning.hour) * 60
+        + parseInt(ts.beginning.minute) >
+        parseInt(prevTS.end.hour) * 60
+        + parseInt(prevTS.end.minute);
+}
+function validateEndTime(ts: TimeSlot) {
+    return parseInt(ts.beginning.hour) * 60
+        + parseInt(ts.beginning.minute) >
+        parseInt(ts.end.hour) * 60
+        + parseInt(ts.end.minute);
+}
 function ScheduleForm({onSubmit} : {onSubmit: (data: DoctorScheduleForm) => void})
 {
+    /*const validationSchema = Yup.object().shape({
+        monSlots: Yup.array().of(
+            Yup.object().shape({
+                beginning: Yup.object().shape({
+                        hour: Yup.string(),
+                        minute: Yup.string()
+                    }),
+                end: Yup.object().shape({
+                        hour: Yup.string(),
+                        minute: Yup.string()
+                    }),
+            }),
+        ).defined().test({
+            name: 'first-and-last',
+            message: 'blah',
+            test: val=>
+                val.every(
+                    ({ startTime, endTime }, index) => {
+                        if (index === 0 || index === val.length - 1) {
+                            return !!startTime && !!endTime;
+                        }
+                        return true;
+                    }
+                )
+        })
+    });*/
     today.setDate(today.getDate() - ((today.getDay() - 1) % 7));
     today.setHours(0,0,0,0);
     const {
