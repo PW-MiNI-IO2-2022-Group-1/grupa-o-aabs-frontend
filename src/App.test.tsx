@@ -10,12 +10,15 @@ const testPswd = "password"
 const testInvEmail = "e@ecom"
 const testInvPswd = ""
 const onSubmit = jest.fn();
+
 function getEmailInput() {
   return screen.getByTestId("email-input");
 }
+
 function getPasswordInput() {
   return screen.getByTestId("password-input");
 }
+
 describe("Login Form" , () => {
   it('invalidates empty form', async () => {
     render(<LoginForm onSubmit={onSubmit}/>);
@@ -24,6 +27,7 @@ describe("Login Form" , () => {
       expect(onSubmit).not.toHaveBeenCalled();
     })
   });
+
   it('validates correct email and password', async () => {
     const onSubmit = jest.fn();
     render(<LoginForm onSubmit={onSubmit}/>);
@@ -34,6 +38,7 @@ describe("Login Form" , () => {
       expect(onSubmit).toHaveBeenCalled();
     });
   });
+
   it('invalidates incorrect email', async () => {
     const onSubmit = jest.fn();
     render(<LoginForm onSubmit={onSubmit}/>);
@@ -43,6 +48,7 @@ describe("Login Form" , () => {
       expect(onSubmit).not.toHaveBeenCalled();
     });
   });
+
   it('invalidates empty password', async () => {
     const onSubmit = jest.fn();
     render(<LoginForm onSubmit={onSubmit}/>);
@@ -53,6 +59,7 @@ describe("Login Form" , () => {
     });
   });
 });
+
 describe("Set Schedule Page", () => {
   it('validates on save', async () => {
     render(<ScheduleForm onSubmit={onSubmit}/>)

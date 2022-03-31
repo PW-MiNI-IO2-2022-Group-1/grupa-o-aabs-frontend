@@ -1,10 +1,9 @@
-import React from "react";
-import { Container } from "react-bootstrap";
-import type { DoctorScheduleForm, TimeSlot } from "../components/types"
-import { addMinutes } from "../components/dateUtils";
-import ScheduleForm from "../components/ScheduleForm";
-function EnterSchedulePage(){
+import { Container } from 'react-bootstrap';
+import type { DoctorScheduleForm, TimeSlot } from '../components/ScheduleForm';
+import { addMinutes } from '../utils/dateUtils';
+import ScheduleForm from '../components/ScheduleForm';
 
+function EnterSchedulePage(){
     const submitForm = (formData: DoctorScheduleForm) => {
         var day = new Date(formData.week.getTime());
         var slots = [
@@ -34,7 +33,7 @@ function EnterSchedulePage(){
         return slotDates;
     }
     return (
-        <Container style={{margin: "3px"}}>
+        <Container style={{margin: '3px'}}>
             <h1>Select your timeslots:</h1>
             <ScheduleForm onSubmit={submitForm}/>
         </Container>

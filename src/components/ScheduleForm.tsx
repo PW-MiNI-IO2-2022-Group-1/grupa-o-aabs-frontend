@@ -1,32 +1,54 @@
-import {DoctorScheduleForm, TimeSlot} from "./types";
-import {Button, Col, Form} from "react-bootstrap";
-import moment from "moment";
-import {Controller, useForm} from "react-hook-form";
-import Calendar from "react-calendar";
-import {addDays, addMinutes, getBeginningOfWeek} from "./dateUtils";
-import TimeSlotField from "./TimeSlotField";
-import React from "react";
+import { Button, Col, Form } from 'react-bootstrap';
+import moment from 'moment';
+import { Controller, useForm } from 'react-hook-form';
+import Calendar from 'react-calendar';
+import { addDays, getBeginningOfWeek } from '../utils/dateUtils';
+import TimeSlotField from './TimeSlotField';
 import './Calendar.css';
+
+export type DoctorScheduleForm = {
+    week: Date,
+    monSlots: TimeSlot[],
+    tueSlots: TimeSlot[],
+    wedSlots: TimeSlot[],
+    thuSlots: TimeSlot[],
+    friSlots: TimeSlot[],
+    satSlots: TimeSlot[],
+    sunSlots: TimeSlot[]
+};
+
+export type TimeSlot = {
+    beginning: {
+        hour: string;
+        minute: string;
+    },
+    end: {
+        hour: string;
+        minute: string;
+    },
+}
+
+
 const today = new Date();
 const initSlots = [
     {
         beginning: {
-            hour: "8",
-            minute: "00"
+            hour: '8',
+            minute: '00'
         },
         end: {
-            hour: "12",
-            minute: "00"
+            hour: '12',
+            minute: '00'
         }
     },
     {
         beginning: {
-            hour: "12",
-            minute: "30"
+            hour: '12',
+            minute: '30'
         },
         end: {
-            hour: "17",
-            minute: "00"
+            hour: '17',
+            minute: '00'
         }
     },
 
@@ -57,7 +79,7 @@ function ScheduleForm({onSubmit} : {onSubmit: (data: DoctorScheduleForm) => void
     );
     return <Form onSubmit={handleSubmit(onSubmit)}>
         <Form.Group>
-            <Form.Label>{`Select week: ${moment(watch('week')).format("DD.MM.YYYY")}-${moment(watch('week')).add(6, 'days').format("DD.MM.YYYY")}`} </Form.Label>
+            <Form.Label>{`Select week: ${moment(watch('week')).format('DD.MM.YYYY')}-${moment(watch('week')).add(6, 'days').format('DD.MM.YYYY')}`} </Form.Label>
             <Controller
                 control={control}
                 name='week'
@@ -71,7 +93,7 @@ function ScheduleForm({onSubmit} : {onSubmit: (data: DoctorScheduleForm) => void
                 )}
             />
         </Form.Group>
-        <Col className="slotsCol">
+        <Col className='slotsCol'>
             <TimeSlotField register={register} control={control} errors={errors} index={0} values={getValues}/>
             <TimeSlotField register={register} control={control} errors={errors} index={1} values={getValues}/>
             <TimeSlotField register={register} control={control} errors={errors} index={2} values={getValues}/>
@@ -81,7 +103,7 @@ function ScheduleForm({onSubmit} : {onSubmit: (data: DoctorScheduleForm) => void
             <TimeSlotField register={register} control={control} errors={errors} index={6} values={getValues}/>
         </Col>
         <Form.Group>
-            <Button type="submit">Save</Button>
+            <Button type='submit'>Save</Button>
         </Form.Group>
     </Form>
 }

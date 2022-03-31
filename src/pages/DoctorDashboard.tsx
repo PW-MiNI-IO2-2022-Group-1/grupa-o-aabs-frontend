@@ -1,21 +1,14 @@
-import React, {useState, useEffect } from 'react';
-import {Button, ButtonGroup, Col, Container, Row, Spinner, ToggleButton} from 'react-bootstrap';
-import PatientVisitField from "../components/PatientVisit";
+import { useState, useEffect } from 'react';
+import { Button, ButtonGroup, Col, Container, Row, Spinner, ToggleButton } from 'react-bootstrap';
+import PatientVisitField from '../components/PatientVisit';
 import './DoctorDashboard.css';
-import {
-    //Routes,
-    //Route,
-    //Link,
-    useNavigate,
-    //useLocation,
-    //Navigate,
-    //Outlet,
-} from "react-router-dom";
-import {Visit, AuthContextType} from "../components/types";
-import {addDays, getBeginningOfWeek} from "../components/dateUtils";
+import { useNavigate } from 'react-router-dom';
+import { AuthContextType } from '../types/auth';
+import { Visit } from '../types/vaccination';
+import { addDays, getBeginningOfWeek } from '../utils/dateUtils';
 import DatePicker from 'react-date-picker';
-import {deleteVisit, getSlots} from '../logic/doctorAPI';
-import { useAuth } from '../App';
+import { deleteVisit, getSlots } from '../logic/doctorAPI';
+import { useAuth } from '../components/AuthComponents';
 
 function DoctorDashboard() {
     const navigate = useNavigate()
@@ -26,7 +19,7 @@ function DoctorDashboard() {
     const [reserved, setReserved] = useState<string>('-1');
     const [page, setPage] = useState<number>(1);
     const [maxPage, setMaxPage] = useState<number>(10);
-    const [error, setError] = useState("");
+    const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const radios = [
         { name: 'All', value: '-1' },
@@ -43,13 +36,13 @@ function DoctorDashboard() {
             switch (reason)
             {
                 case 401:
-                    setError("Unauthorised error (invalid or empty Bearer token");
+                    setError('Unauthorised error (invalid or empty Bearer token');
                     break;
                 case 422:
-                    setError("Validation error");
+                    setError('Validation error');
                     break;
                 default:
-                    setError("Unknown error");
+                    setError('Unknown error');
             }
         })).finally(() => setLoading(false))
         return [];
@@ -68,37 +61,37 @@ function DoctorDashboard() {
 
     return (
         <div>
-            <Container style={{width: "500px", margin: 5}}>
+            <Container style={{width: '500px', margin: 5}}>
                 <Row>Doctor Dashboard</Row>
-                    <Row style={{padding: "2px"}}>
+                    <Row style={{padding: '2px'}}>
                         <Col>From:</Col>
                         <Col><DatePicker
                         onChange={ (date: Date) => {
                             onStartDateChange(date)
                         }}
                         value={startDate}
-                        format="dd.MM.y"
+                        format='dd.MM.y'
                         /></Col>
                     </Row>
-                    <Row style={{padding: "2px"}}>
+                    <Row style={{padding: '2px'}}>
                         <Col>To:</Col>
                         <Col><DatePicker
                             onChange={(date: Date) => {
                                 onEndDateChange(date)
                             }}
                             value={endDate}
-                            format="dd.MM.y"
+                            format='dd.MM.y'
                         /></Col>
                     </Row>
-                <Row style={{padding: "2px"}} xs={"auto"}>
+                <Row style={{padding: '2px'}} xs={'auto'}>
                     <ButtonGroup>
                         {radios.map((radio, idx) => (
                             <ToggleButton
                                 key={idx}
                                 id={`radio-${idx}`}
-                                type="radio"
-                                variant="outline-secondary"
-                                name="radio"
+                                type='radio'
+                                variant='outline-secondary'
+                                name='radio'
                                 value={radio.value}
                                 checked={reserved === radio.value}
                                 onChange={(e) => setReserved(e.currentTarget.value)}
@@ -108,21 +101,21 @@ function DoctorDashboard() {
                         ))}
                     </ButtonGroup>
                 </Row>
-                <Row style={{padding: "2px"}}>
-                    <Button style={{width: "150px"}} onClick={() => navigate('/doctor/setSchedule')}>Set schedule</Button>
+                <Row style={{padding: '2px'}}>
+                    <Button style={{width: '150px'}} onClick={() => navigate('/doctor/setSchedule')}>Set schedule</Button>
                 </Row>
             </Container>
 
             <Container>
-                <Col className={`d-flex${Visits.length === 0 ? "" : "-nowrap"} justify-content-center`}>{Visits.length === 0 ? (loading ? <Spinner animation="border"/> : <div>{error}</div>) : Visits.map((field, index) => {
+                <Col className={`d-flex${Visits.length === 0 ? '' : '-nowrap'} justify-content-center`}>{Visits.length === 0 ? (loading ? <Spinner animation='border'/> : <div>{error}</div>) : Visits.map((field, index) => {
                     return <PatientVisitField key={`visit_${index}`} visit={field} index={index} remove={remove}/>
                 })}</Col>
             </Container>
             <Container>
                 <Row>
-                    <Col className="d-flex justify-content-center"><Button disabled={page<=1} onClick={() => setPage(page - 1)}> Previous Page</Button></Col>
-                    <Col className="d-flex justify-content-center">{page}</Col>
-                    <Col className="d-flex justify-content-center"><Button disabled={page>=maxPage} onClick={() => setPage(page + 1)}> Next Page</Button></Col>
+                    <Col className='d-flex justify-content-center'><Button disabled={page<=1} onClick={() => setPage(page - 1)}> Previous Page</Button></Col>
+                    <Col className='d-flex justify-content-center'>{page}</Col>
+                    <Col className='d-flex justify-content-center'><Button disabled={page>=maxPage} onClick={() => setPage(page + 1)}> Next Page</Button></Col>
                 </Row>
 
             </Container>
@@ -136,41 +129,41 @@ export default DoctorDashboard;
 
 const sampleInfo: Visit[] = [
     {
-        date: new Date("2022-03-29T08:00:00Z"),
+        date: new Date('2022-03-29T08:00:00Z'),
         id: 0,
         vaccination: null,
     },
     {
-        date: new Date("2022-03-30T08:00:00Z"),
+        date: new Date('2022-03-30T08:00:00Z'),
         id: 1,
         vaccination: {
             id: 0,
-            status: "Planned",
+            status: 'Planned',
             patient: {
                 id: 0,
-                firstName: "Adam",
-                lastName: "Abacki",
-                pesel: "12345678901",
-                email: "email@example.com",
+                firstName: 'Adam',
+                lastName: 'Abacki',
+                pesel: '12345678901',
+                email: 'email@example.com',
                 address: {
                     id: 0,
-                    city: "Warszawa",
-                    zipCode: "01-234",
-                    street: "Przykładowa",
-                    houseNumber: 1,
+                    city: 'Warszawa',
+                    zipCode: '01-234',
+                    street: 'Przykładowa',
+                    houseNumber: '1',
                     localNumber: null,
                 }
             },
             vaccine: {
                 id: 0,
-                name: "Phiser",
-                disease: "Covid-19",
+                name: 'Phiser',
+                disease: 'Covid-19',
                 requiredDoses: 0,
             },
         }
     },
     {
-        date: new Date("2022-03-29T10:00:00Z"),
+        date: new Date('2022-03-29T10:00:00Z'),
         id: 0,
         vaccination: null,
     },
