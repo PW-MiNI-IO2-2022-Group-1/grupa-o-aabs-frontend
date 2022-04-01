@@ -10,7 +10,7 @@ import RegisterPatientPage from "./pages/RegisterPatientPage";
 ReactDOM.render(
   <React.StrictMode>
       <BrowserRouter>
-          <RegisterPatientPage />
+          <App />
       </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')

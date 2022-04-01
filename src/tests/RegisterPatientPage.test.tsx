@@ -2,11 +2,9 @@ import React from 'react'
 import RegisterPatientPage from "../pages/RegisterPatientPage";
 import {render, screen, waitFor} from "@testing-library/react";
 import user from '@testing-library/user-event'
-import RegisterPatientForm, {RegistrationData} from "../components/RegisterPatientForm";
-import {Button} from "react-bootstrap";
-import {mocked} from 'ts-jest/utils'
+import {RegistrationData} from "../components/RegisterPatientForm";
 import {setupServer} from "msw/node";
-import {DefaultRequestBody, MockedRequest, ResponseComposition, rest} from "msw";
+import {MockedRequest, ResponseComposition, rest} from "msw";
 import {SubmitHandler} from "react-hook-form";
 
 const mockedData = {
