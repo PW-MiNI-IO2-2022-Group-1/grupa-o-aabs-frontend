@@ -19,11 +19,9 @@ export default function RegisterPatientPage() {
                 console.log(response)
             })
             .catch((reason) => {
-                // jak się dostać do body resona? Zwraca mi że jest undefined
                 switch (reason.status) {
                     case 409:
-                        handleShow(false, reason.body ?
-                            reason.body.msg : 'Specified email or pesel already exists')
+                        reason.json().then((body: any) => handleShow(false, body.msg))
                         break;
                     case 422:
                         handleShow(false, "Validation error")

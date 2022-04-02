@@ -73,13 +73,15 @@ describe('RegisterPatientPage', () => {
             )
         })
 
-        test("shows dialog with error", async () => {
+        test("shows dialog with error and error msg", async () => {
             const button = screen.getByRole('button', {
                 name: /click/i
             })
             user.click(button)
             await waitFor(() =>
                 expect(screen.getAllByText(/error/i)[0]).toBeInTheDocument());
+
+            expect(screen.getByText(/something wrong/i)).toBeInTheDocument();
         })
     })
 })
