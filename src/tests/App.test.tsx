@@ -1,9 +1,8 @@
 import React from 'react';
-import {fireEvent, render, screen, waitFor} from '@testing-library/react';
+import {render, screen, waitFor} from '@testing-library/react';
 import user  from '@testing-library/user-event';
-import {act } from 'react-dom/test-utils';
-import LoginForm from "./components/LoginForm";
-import ScheduleForm from "./components/ScheduleForm";
+import LoginForm from "../components/LoginForm";
+import ScheduleForm from "../components/ScheduleForm";
 
 const testEmail = "email@example.com"
 const testPwd = "password"
