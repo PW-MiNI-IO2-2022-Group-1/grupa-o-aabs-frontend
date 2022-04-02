@@ -10,7 +10,7 @@ export default function RegisterPatientPage() {
     const [show, setShow] = useState(false)
     const [modalMsg, setModalMsg] = useState("")
     const [success, setSuccess] = useState(false)
-    //const navigate = useNavigate()
+    const navigate = useNavigate()
 
     const onSubmit = (data: RegistrationData) => {
         registerPatient(data)
@@ -41,8 +41,8 @@ export default function RegisterPatientPage() {
     }
 
     const navigateLogin = () => {
-        //navigate("/loginPatient")
-        console.log("navigate to /loginPatient")
+        navigate("/loginPatient")
+        //console.log("navigate to /loginPatient")
     }
 
     return (

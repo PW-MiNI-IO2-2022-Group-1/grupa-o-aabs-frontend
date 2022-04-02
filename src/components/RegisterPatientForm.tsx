@@ -21,7 +21,7 @@ export interface RegistrationData {
 
 export default function RegisterPatientForm(props: { onSubmit: SubmitHandler<RegistrationData> }) {
 
-    const {register, handleSubmit, watch, formState: {errors}, getValues} = useForm<RegistrationData>();
+    const {register, handleSubmit, formState: {errors}} = useForm<RegistrationData>();
 
     return (
         <Form

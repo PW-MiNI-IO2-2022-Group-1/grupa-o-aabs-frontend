@@ -10,6 +10,7 @@ import DoctorDashboard from './pages/DoctorDashboard';
 import {AuthProvider, RequireAuth } from './components/AuthComponents';
 import {Role} from './types/users';
 import { EditPatientDetailsPage } from './pages/EditPatientDetailsPage';
+import RegisterPatientPage from "./pages/RegisterPatientPage";
 
 export default function App() {
     return (
@@ -56,10 +57,15 @@ export default function App() {
                         path='/editPatientDetails'
                         element={
                             <header className='App-header'>
-                            <EditPatientDetailsPage></EditPatientDetailsPage>
+                            <EditPatientDetailsPage/>
                             </header>
                         }
-                />
+                    />
+                    <Route
+                        path='/registerPatient'
+                        element={<RegisterPatientPage />}
+                    />
+
             </Routes>
         </AuthProvider>
     );
