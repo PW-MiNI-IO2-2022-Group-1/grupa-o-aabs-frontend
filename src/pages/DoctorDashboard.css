@@ -1,0 +1,16 @@
+.FreeStatus {
+    background-color: rgba(150,206,255,0.51);
+}
+.CancelledStatus {
+    background-color: rgba(255,82,39,0.51)
+}
+.PlannedStatus {
+    background-color: rgba(255,172,39,0.51)
+}
+.CompletedStatus {
+    background-color: rgba(107,255,95,0.51)
+}
+.visit {
+    padding: 3px;
+    border-radius: 3px;
+}
