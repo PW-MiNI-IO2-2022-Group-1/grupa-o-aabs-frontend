@@ -8,7 +8,6 @@ function AdminDashboard(): JSX.Element {
     return (<>
         <h1>Hi {auth.user?.email}</h1>
         <h1>Congratulations! You are administrator :D</h1>
-        <button className="btn btn-primary" onClick={auth.signOut}>Log out</button>
         </>);
 
 }
