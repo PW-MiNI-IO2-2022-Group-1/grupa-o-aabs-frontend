@@ -6,6 +6,7 @@ import {RegistrationData} from "../components/RegisterPatientForm";
 import {setupServer} from "msw/node";
 import {MockedRequest, ResponseComposition, rest} from "msw";
 import {SubmitHandler} from "react-hook-form";
+import {MemoryRouter} from "react-router-dom";
 
 const mockedData = {
     address: {
@@ -45,7 +46,7 @@ jest.mock("../components/RegisterPatientForm", () => {
 describe('RegisterPatientPage', () => {
 
     beforeEach(() => {
-        render(<RegisterPatientPage/>)
+        render(<RegisterPatientPage />, {wrapper: MemoryRouter})
     })
 
     describe("after success", () => {
