@@ -6,6 +6,7 @@ import {RegistrationData} from "../components/RegisterPatientForm";
 import {setupServer} from "msw/node";
 import {MockedRequest, ResponseComposition, rest} from "msw";
 import {SubmitHandler} from "react-hook-form";
+import {MemoryRouter} from "react-router-dom";
 
 const mockedData = {
     address: {
@@ -40,47 +41,45 @@ jest.mock("../components/RegisterPatientForm", () => {
         return (<button onClick={() => props.onSubmit(mockedData)}>Click</button>)
     };
 });
-describe('fake test suite', () => {
-    test('fake test', () => {});
-});
-//     beforeEach(() => {
-//         render(<RegisterPatientPage/>)
-//     })
+describe('RegisterPatientPage', () => {
 
-//     describe("after success", () => {
-//         test("shows dialog with login button", async () => {
-//             const button = screen.getByRole('button', {
-//                 name: /click/i
-//             })
-//             user.click(button)
-//             await waitFor(() =>
-//                 expect(screen.getByRole('button', {name: /login/i})).toBeInTheDocument());
-//         })
-//     })
+    beforeEach(() => {
+        render(<RegisterPatientPage />, {wrapper: MemoryRouter})
+    })
 
-//     describe("after error", () => {
-//         beforeEach(()=>{
-//             server.use(
-//                 rest.post('*/patient/registration', async (request: MockedRequest, response: ResponseComposition, ctx) => {
-//                     // returning the sent object when successful
-//                     return response(
-//                         ctx.delay(100),
-//                         ctx.status(409),
-//                         ctx.json({success: false, msg: 'something wrong'})
-//                     )
-//                 })
-//             )
-//         })
+    describe("after success", () => {
+        test("shows dialog with login button", async () => {
+            const button = screen.getByRole('button', {
+                name: /click/i
+            })
+            user.click(button)
+            await waitFor(() =>
+                expect(screen.getByRole('button', {name: /login/i})).toBeInTheDocument());
+        })
+    })
 
-//         test("shows dialog with error and error msg", async () => {
-//             const button = screen.getByRole('button', {
-//                 name: /click/i
-//             })
-//             user.click(button)
-//             await waitFor(() =>
-//                 expect(screen.getAllByText(/error/i)[0]).toBeInTheDocument());
+    describe("after error", () => {
+        beforeEach(()=>{
+            server.use(
+                rest.post('*/patient/registration', async (request: MockedRequest, response: ResponseComposition, ctx) => {
+                    // returning the sent object when successful
+                    return response(
+                        ctx.delay(100),
+                        ctx.status(409),
+                        ctx.json({success: false, msg: 'something wrong'})
+                    )
+                })
+            )
+        })
+        test("shows dialog with error and error msg", async () => {
+            const button = screen.getByRole('button', {
+                name: /click/i
+            })
+            user.click(button)
+            await waitFor(() =>
+                expect(screen.getAllByText(/error/i)[0]).toBeInTheDocument());
 
-//             expect(screen.getByText(/something wrong/i)).toBeInTheDocument();
-//         })
-//     })
-// })
+            expect(screen.getByText(/something wrong/i)).toBeInTheDocument();
+        })
+    })
+})

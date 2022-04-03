@@ -54,11 +54,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                     state.user = json.patient;
                 return {...state};
             });
-        });
+        }).catch((reason => {
+            //reason.json().then((json:any)=>console.log(json))
+            console.log(reason)
+        }));
     };
 
     useEffect(() => {
-       saveAuth(); 
+       saveAuth();
     }, [authState]);
 
 
@@ -72,7 +75,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         clearAuth();
     }
 
-    const value: AuthContextType = { user: authState.user, token: authState.token, 
+    const value: AuthContextType = { user: authState.user, token: authState.token,
                                      role: authState.role, signIn, signOut };
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
