@@ -54,10 +54,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                     state.user = json.patient;
                 return {...state};
             });
-        }).catch((reason => {
-            //reason.json().then((json:any)=>console.log(json))
-            console.log(reason)
-        }));
+        });
     };
 
     useEffect(() => {
