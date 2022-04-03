@@ -10,17 +10,21 @@ import DoctorDashboard from './pages/DoctorDashboard';
 import {AuthProvider, RequireAuth } from './components/AuthComponents';
 import {Role} from './types/users';
 import { EditPatientDetailsPage } from './pages/EditPatientDetailsPage';
+import AdminDashboard from './pages/AdminDashboard';
+import FrontAuthPage from './pages/FrontPage';
+import PageHeader from './components/PageHeader';
 import RegisterPatientPage from "./pages/RegisterPatientPage";
 
 export default function App() {
     return (
         <AuthProvider>
+            <PageHeader>
             <Routes>
                 <Route element={<Layout />}/>
-                    <Route path='/' element={<RequireAuth authLocation='/loginPatient'><p>Landing page</p></RequireAuth>} />
-                    <Route path='/loginDoctor' element={<header className='App-header'><LoginPage role={Role.Doctor}/></header>} />
-                    <Route path='/loginPatient' element={<header className='App-header'><LoginPage role={Role.Patient}/></header>} />
-                    <Route path='/loginAdmin' element={<header className='App-header'><LoginPage role={Role.Admin}/></header>} />
+                    <Route path='/' element={<FrontAuthPage/>} />
+                    <Route path='/loginDoctor' element={<LoginPage role={Role.Doctor}/>}/>
+                    <Route path='/loginPatient' element={<LoginPage role={Role.Patient}/>}/>
+                    <Route path='/loginAdmin' element={<LoginPage role={Role.Admin}/>} />
                     <Route
                         path='/doctor'
                         element={
@@ -33,40 +37,41 @@ export default function App() {
                         path='/patient'
                         element={
                             <RequireAuth role={Role.Patient} authLocation={'/loginPatient'}>
-                                <header className='App-header'>
                                     <EditPatientDetailsPage/>
-                                </header>
                             </RequireAuth>
                         }
                     />
                     <Route
                         path='/doctor/setSchedule'
-                        element={<header className='App-header'><EnterSchedulePage /></header>}
+                        element={
+                            <RequireAuth role={Role.Doctor} authLocation={'/loginPatient'}>
+                                <EnterSchedulePage />
+                            </RequireAuth>
+                        }
                     />
                     <Route
                         path='/admin'
                         element={
                             <RequireAuth role={Role.Admin} authLocation={'/loginAdmin'}>
-                                <header className='App-header'>
-                                    <DoctorDashboard />
-                                </header>
+                                    <AdminDashboard></AdminDashboard>
                             </RequireAuth>
                         }
                     />
                     <Route
                         path='/editPatientDetails'
                         element={
-                            <header className='App-header'>
-                            <EditPatientDetailsPage/>
-                            </header>
+                            <RequireAuth role={Role.Patient} authLocation={'/loginPatient'}>
+                                <EditPatientDetailsPage/>
+                            </RequireAuth>
                         }
                     />
                     <Route
                         path='/registerPatient'
-                        element={<RegisterPatientPage />}
+                        element={<RegisterPatientPage/>}
                     />
 
             </Routes>
+            </PageHeader>
         </AuthProvider>
     );
 }

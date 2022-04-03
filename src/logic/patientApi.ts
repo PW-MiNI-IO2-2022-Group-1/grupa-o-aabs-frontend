@@ -1,6 +1,5 @@
 import {RegistrationData} from "../components/RegisterPatientForm";
-
-const BASE_URL = 'http://Sopsaabsbackend-develop.eba-jjsphgrc.us-east-1.elasticbeanstalk.com';
+import { BASE_URL } from './config';
 
 export function registerPatient(registrationData: RegistrationData) {
     return fetch(`${BASE_URL}/patient/registration`,
