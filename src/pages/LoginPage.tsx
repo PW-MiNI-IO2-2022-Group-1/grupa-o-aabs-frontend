@@ -4,13 +4,22 @@ import './LoginPage.css'
 import { useAuth } from "../components/AuthComponents";
 import {useNavigate} from "react-router-dom";
 import { Role } from '../types/users';
+import { UnauthorizedRequestError } from '../types/unauthorizedRequestError';
 
 function LoginPage({role}: {role: Role}) {
     const authState = useAuth()
     const navigate = useNavigate()
 
-    const onSubmit = (data: UserLoginForm) => {
-        authState.signIn(role, data.email, data.password);
+    const onSubmit = async (data: UserLoginForm) => {
+        try {
+            await authState.signIn(role, data.email, data.password);
+        } 
+        catch(error) {
+            if(error instanceof UnauthorizedRequestError)
+                alert(error.message);
+            else
+                alert("Unknown error");
+        }
     };
 
     useEffect(() => {

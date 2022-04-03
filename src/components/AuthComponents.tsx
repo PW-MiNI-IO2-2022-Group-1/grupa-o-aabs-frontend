@@ -37,8 +37,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const [authState, setAuthState] = React.useState<AuthState>(loadAuth());
 
-    const signIn = (role: Role, email: string, password: string) => {
-        login(role, email, password).then((json: any) => {
+    const signIn = async (role: Role, email: string, password: string): Promise<void> => {
+        await login(role, email, password).then((json: any) => {
             setAuthState((state) => {
                 state.token = json.token;
                 state.role = role;
