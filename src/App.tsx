@@ -10,13 +10,15 @@ import DoctorDashboard from './pages/DoctorDashboard';
 import {AuthProvider, RequireAuth } from './components/AuthComponents';
 import {Role} from './types/users';
 import { EditPatientDetailsPage } from './pages/EditPatientDetailsPage';
+import AdminDashboard from './pages/AdminDashboard';
+import FrontAuthPage from './pages/FrontPage';
 
 export default function App() {
     return (
         <AuthProvider>
             <Routes>
                 <Route element={<Layout />}/>
-                    <Route path='/' element={<RequireAuth authLocation='/loginPatient'><p>Landing page</p></RequireAuth>} />
+                    <Route path='/' element={<header className='App-header'><FrontAuthPage/></header>} />
                     <Route path='/loginDoctor' element={<header className='App-header'><LoginPage role={Role.Doctor}/></header>} />
                     <Route path='/loginPatient' element={<header className='App-header'><LoginPage role={Role.Patient}/></header>} />
                     <Route path='/loginAdmin' element={<header className='App-header'><LoginPage role={Role.Admin}/></header>} />
@@ -47,7 +49,7 @@ export default function App() {
                         element={
                             <RequireAuth role={Role.Admin} authLocation={'/loginAdmin'}>
                                 <header className='App-header'>
-                                    <DoctorDashboard />
+                                    <AdminDashboard></AdminDashboard>
                                 </header>
                             </RequireAuth>
                         }

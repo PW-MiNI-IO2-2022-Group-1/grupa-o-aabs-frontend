@@ -35,6 +35,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return authState;
     };
 
+    const clearAuth: () => void = () => {
+        localStorage.clear();
+    };
+
     const [authState, setAuthState] = React.useState<AuthState>(loadAuth());
 
     const signIn = async (role: Role, email: string, password: string): Promise<void> => {
@@ -65,6 +69,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             state.role = null;
             return {...state};
         });
+        clearAuth();
     }
 
     const value: AuthContextType = { user: authState.user, token: authState.token, 
