@@ -41,8 +41,6 @@ jest.mock("../components/RegisterPatientForm", () => {
         return (<button onClick={() => props.onSubmit(mockedData)}>Click</button>)
     };
 });
-
-
 describe('RegisterPatientPage', () => {
 
     beforeEach(() => {
@@ -73,7 +71,6 @@ describe('RegisterPatientPage', () => {
                 })
             )
         })
-
         test("shows dialog with error and error msg", async () => {
             const button = screen.getByRole('button', {
                 name: /click/i

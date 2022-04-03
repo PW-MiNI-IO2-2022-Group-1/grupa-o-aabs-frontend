@@ -1,5 +1,4 @@
 import {RegistrationData} from "../components/RegisterPatientForm";
-
 import { BASE_URL } from './config';
 
 export function registerPatient(registrationData: RegistrationData) {

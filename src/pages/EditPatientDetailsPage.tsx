@@ -57,9 +57,8 @@ function EditPatientDetailsPage(): JSX.Element {
         }
     });
 
-    return (<div className='LoginPage'>
+    return (<div>
         <header className='LoginPage-header'>Patient details
-            <div className='gap'/>
             <form className='form-container' data-testid='form'>
             {Object.keys(form.values).map((key) => {
                 const error = (form.errors as any)[key];
