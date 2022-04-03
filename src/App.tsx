@@ -13,6 +13,7 @@ import { EditPatientDetailsPage } from './pages/EditPatientDetailsPage';
 import AdminDashboard from './pages/AdminDashboard';
 import FrontAuthPage from './pages/FrontPage';
 import PageHeader from './components/PageHeader';
+import RegisterPatientPage from "./pages/RegisterPatientPage";
 
 export default function App() {
     return (
@@ -43,7 +44,7 @@ export default function App() {
                     <Route
                         path='/doctor/setSchedule'
                         element={
-                            <RequireAuth role={Role.Patient} authLocation={'/loginPatient'}>
+                            <RequireAuth role={Role.Doctor} authLocation={'/loginPatient'}>
                                 <EnterSchedulePage />
                             </RequireAuth>
                         }
@@ -63,7 +64,12 @@ export default function App() {
                                 <EditPatientDetailsPage/>
                             </RequireAuth>
                         }
-                />
+                    />
+                    <Route
+                        path='/registerPatient'
+                        element={<RegisterPatientPage/>}
+                    />
+
             </Routes>
             </PageHeader>
         </AuthProvider>

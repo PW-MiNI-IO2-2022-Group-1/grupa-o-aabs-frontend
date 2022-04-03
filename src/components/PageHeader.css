@@ -1,7 +1,17 @@
+#navbar {
+    position: fixed;
+    float: none;
+    display: table;
+    table-layout: fixed;
+}
+
 .app-content {
-  /*background-color: #282c34;*/
-  min-height: 90vh;
+  padding-top: 10vh;
+  width: 100%;
+  min-height: 95%;
+  max-height: 95%;
   display: flex;
+  flex-wrap: wrap;
   flex-direction: column;
   align-items: center;
   justify-content: center;
