@@ -1,0 +1,20 @@
+.vaccine-item {
+    background-color: #5c7494;
+    border: solid #150E56 3px;
+    border-radius: 10px;
+    min-height: 50px;
+    min-width: 500px;
+    align-items: center;
+    text-align: center;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    padding: 10px;
+}
+
+.vaccine-item:hover {
+    background-color: #0d3452;
+}
+
+.noselect {
+    user-select: none;
+}

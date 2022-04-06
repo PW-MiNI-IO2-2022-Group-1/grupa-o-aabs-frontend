@@ -14,6 +14,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import FrontAuthPage from './pages/FrontPage';
 import PageHeader from './components/PageHeader';
 import RegisterPatientPage from "./pages/RegisterPatientPage";
+import VaccineRegistrationPage from './pages/VaccineRegistrationPage';
 
 export default function App() {
     return (
@@ -68,6 +69,11 @@ export default function App() {
                     <Route
                         path='/registerPatient'
                         element={<RegisterPatientPage/>}
+                    />
+
+                    <Route
+                        path='/vaccineRegistration'
+                        element={<VaccineRegistrationPage/>}
                     />
 
             </Routes>
