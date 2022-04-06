@@ -33,3 +33,17 @@ export function deleteVisit(visit: Visit, authToken: string | null) {
         throw response;
     })
 }
+export function setScheduleDate(slot: Date, authToken: string | null) {
+    return fetch(`${BASE_URL}/doctor/vaccination-slots`,
+        {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': authToken === null ? '': authToken
+        },
+        "body": `{\"date\":\"${slot.toDateString()}\"}`
+    }).then(response => {
+            if(response.ok) return response.json();
+            throw response;
+        });
+}

@@ -32,7 +32,7 @@ function DoctorDashboard() {
         getSlots(startDate, endDate, reserved, auth.token, page).then((response) => {
                 setMaxPage(response.pagination.totalPages);
                 return response.data;
-        }).catch((reason => {
+        }).catch(reason => {
             switch (reason)
             {
                 case 401:
@@ -44,7 +44,7 @@ function DoctorDashboard() {
                 default:
                     setError('Unknown error');
             }
-        })).finally(() => setLoading(false))
+        }).finally(() => setLoading(false))
         return [];
     }
     const [Visits, setVisits] = useState<Visit[]>([]);
