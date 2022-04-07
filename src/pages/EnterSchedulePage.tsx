@@ -22,31 +22,31 @@ function EnterSchedulePage(){
             ...convertSlots(new Date(day.getTime() + 5 * 86400000), formData.satSlots),
             ...convertSlots(new Date(day.getTime() + 6 * 86400000), formData.sunSlots),
         ]
-        var error401Times = 0, error422Times = 0, unknownErrorTimes = 0;
+        var errorTimes = 0;
         slots.forEach((slot, _) => {
-            setScheduleDate(slot, auth.token).then((_) => {
-                navigate('/doctor');
-            }).catch(reason => {
+            setScheduleDate(slot, auth.token).catch(reason => {
                     switch (reason)
                     {
                         case 401:
-                            error401Times++;
+                            auth.signOut()
+                            navigate('/loginDoctor');
                             break;
                         case 422:
-                            error422Times++;
+                            errorTimes++
                             break;
                         default:
-                            unknownErrorTimes++;
+                            errorTimes++
                     }
                 });
         })
-        const totalErrors = error422Times + error401Times + unknownErrorTimes;
-        if(totalErrors > 0)
-            setError(`${totalErrors} errors encountered: ${error401Times > 0 ? `${error401Times} slots were unauthorised (invalid or empty Bearer token)` : ''}
-             ${error422Times > 0 ? `${error422Times} slots had invalid data` : ''}
-            ${unknownErrorTimes > 0 ? `${unknownErrorTimes} slots encountered unknown error` : ''}`)
+        if(errorTimes > 0)
+            setError(`${errorTimes} errors while sending data`)
         else
+        {
             setError('');
+            navigate('/doctor');
+        }
+
     };
     const convertSlots = (day: Date, slots: TimeSlot[]) => {
         var slotDates: Date[] = [];

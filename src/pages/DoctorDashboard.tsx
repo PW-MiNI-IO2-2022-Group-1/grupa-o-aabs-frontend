@@ -36,7 +36,8 @@ function DoctorDashboard() {
             switch (reason)
             {
                 case 401:
-                    setError('Unauthorised error (invalid or empty Bearer token');
+                    auth.signOut()
+                    navigate('/loginDoctor');
                     break;
                 case 422:
                     setError('Validation error');

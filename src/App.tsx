@@ -44,7 +44,7 @@ export default function App() {
                     <Route
                         path='/doctor/setSchedule'
                         element={
-                            <RequireAuth role={Role.Doctor} authLocation={'/loginPatient'}>
+                            <RequireAuth role={Role.Doctor} authLocation={'/loginDoctor'}>
                                 <EnterSchedulePage />
                             </RequireAuth>
                         }
