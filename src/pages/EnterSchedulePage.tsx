@@ -23,13 +23,15 @@ function EnterSchedulePage(){
             ...convertSlots(new Date(day.getTime() + 6 * 86400000), formData.sunSlots),
         ]
         var errorTimes = 0;
+
         slots.forEach((slot, _) => {
             setScheduleDate(slot, auth.token).catch(reason => {
-                    switch (reason)
+                    switch (reason.status)
                     {
                         case 401:
                             auth.signOut()
                             navigate('/loginDoctor');
+                            errorTimes++
                             break;
                         case 422:
                             errorTimes++
@@ -48,6 +50,7 @@ function EnterSchedulePage(){
         }
 
     };
+
     const convertSlots = (day: Date, slots: TimeSlot[]) => {
         var slotDates: Date[] = [];
         if(slots.length === 0) return slotDates;
@@ -63,6 +66,7 @@ function EnterSchedulePage(){
         )
         return slotDates;
     }
+    
     return (
         <Container style={{margin: '3px'}}>
             <h1>Select your timeslots:</h1>
@@ -77,5 +81,7 @@ function EnterSchedulePage(){
             <ScheduleForm onSubmit={submitForm}/>
         </Container>
     );
+
 };
+
 export default EnterSchedulePage;

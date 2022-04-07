@@ -30,6 +30,7 @@ const slots = [
     },
 
 ];
+
 const mockedData = {
     week: new Date("2022-04-10T00:00:00Z"),
     monSlots: slots,
@@ -40,10 +41,11 @@ const mockedData = {
     satSlots: [],
     sunSlots: [],
 }
-let isAuthorised: boolean;
+
+
 const server = setupServer(
     rest.post('*/doctor/vaccination-slots', async (request: MockedRequest, response: ResponseComposition, ctx) => {
-        if(isAuthorised)
+        if(request.headers.get('Authorisation') !== "")
         return response(
             ctx.delay(100),
             ctx.json({}));
@@ -55,38 +57,69 @@ const server = setupServer(
             )
     })
 );
+
 const mockNavigate = jest.fn();
+
 jest.mock('../components/AuthComponents', () => ({
     useAuth: () =>  {
         return {
             token: "sampleToken",
+            signOut: () => {}
         }
     }
+
 }));
+
 jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockNavigate,
 }));
+
 jest.mock("../components/ScheduleForm", () => {
     return function DummyScheduleForm(props: { onSubmit: SubmitHandler<DoctorScheduleForm> }) {
         return (<button onClick={() => props.onSubmit(mockedData)}>Save</button>)
     };
 });
+
 describe("Enter Schedule Page", () => {
+
     beforeAll(() => {
         server.listen();
     });
+
     beforeEach(() => {
         render(<EnterSchedulePage/>, {wrapper: MemoryRouter });
     })
+
     afterAll(() => server.close());
+
     afterEach(() => server.resetHandlers());
 
     it('routes to dashboard form on save', async () => {
-        isAuthorised = true;
         await user.click(screen.getByRole('button', {name: /Save/i }))
+        
         await waitFor(() =>{
                 expect(mockNavigate).toHaveBeenCalledWith('/doctor');
             })
         })
+
+    it('routes to login page on auth error', async () => {
+        server.use(
+            rest.post('*/doctor/vaccination-slots', async (req, res, ctx) => {
+                return res(
+                    ctx.status(401),
+                    ctx.json(
+                        {
+                        message: 'User unauthorised: invalid or empty bearer token'
+                    })
+                )
+            }),
+        )
+
+        await user.click(screen.getByRole('button', {name: /Save/i }))
+
+        await waitFor(() =>{
+            expect(mockNavigate).toHaveBeenCalledWith('/loginDoctor');
+        })
+    })
 });

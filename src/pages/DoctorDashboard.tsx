@@ -26,7 +26,9 @@ function DoctorDashboard() {
         { name: 'Free', value: '0' },
         { name: 'Reserved', value: '1' },
     ];
+
     let auth: AuthContextType = useAuth();
+
     function getVisits(): Visit[] {
         setLoading(true);
         getSlots(startDate, endDate, reserved, auth.token, page).then((response) => {
@@ -48,10 +50,12 @@ function DoctorDashboard() {
         }).finally(() => setLoading(false))
         return [];
     }
+
     const [Visits, setVisits] = useState<Visit[]>([]);
     useEffect(() => {
         setVisits(getVisits());
     },[startDate, endDate, reserved, page])
+
     function remove(index: number) {
         deleteVisit(Visits[index], auth.token).then((_) => {
             setVisits(getVisits());
