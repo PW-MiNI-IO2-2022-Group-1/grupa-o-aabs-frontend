@@ -32,11 +32,12 @@ function DoctorDashboard() {
         getSlots(startDate, endDate, reserved, auth.token, page).then((response) => {
                 setMaxPage(response.pagination.totalPages);
                 return response.data;
-        }).catch((reason => {
+        }).catch(reason => {
             switch (reason)
             {
                 case 401:
-                    setError('Unauthorised error (invalid or empty Bearer token');
+                    auth.signOut()
+                    navigate('/loginDoctor');
                     break;
                 case 422:
                     setError('Validation error');
@@ -44,7 +45,7 @@ function DoctorDashboard() {
                 default:
                     setError('Unknown error');
             }
-        })).finally(() => setLoading(false))
+        }).finally(() => setLoading(false))
         return [];
     }
     const [Visits, setVisits] = useState<Visit[]>([]);
