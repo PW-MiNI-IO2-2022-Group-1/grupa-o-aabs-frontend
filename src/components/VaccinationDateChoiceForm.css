@@ -1,4 +1,4 @@
-.timeslot-container {
+.animated-button {
     background-color: #5c7494;
     border: solid #150E56 3px;
     border-radius: 10px;
@@ -15,7 +15,22 @@
     display: inline-block;
 }
 
-.timeslot-container:hover {
+.animated-button-enter {
+  opacity: 0;
+}
+.animated-button-enter-active {
+  opacity: 1;
+  transition: opacity 200ms;
+}
+.animated-button-exit {
+  opacity: 1;
+}
+.animated-button-exit-active {
+  opacity: 0;
+  transition: opacity 200ms;
+}
+
+.animated-button:hover {
     background-color: #0d3452;
 }
 
@@ -139,3 +154,12 @@
   background-color: #e6e6e6;
 }
 
+.scrollable-box {
+  overflow-y: scroll;
+  scrollbar-width: none;
+  height: 60vh;
+  border: 5px solid black;
+  border-radius: 5px;
+  padding: 15px;
+  width: 500px;
+}

@@ -1,28 +1,21 @@
-import './StageChoice.css';
-
-interface StageChoiceProps {
-    stages: String[];
-    currentStage: number;
-    onChoiceCallback: (stateNumber: number) => void;
+interface StageChoiceProps<T> {
+    currentStage: T;
+    stageNames: Map<T, String>
+    onChoiceCallback: (stage: T) => void;
 }
 
-function StageChoice(props: StageChoiceProps) {
+function StageChoice<T>(props: StageChoiceProps<T>) {
     return (<>
-        <div className='d-flex'>
-            {props.stages.map((stage, index) => {
-                if(index === props.currentStage)
-                    return (<div className='stage-container stage-container-chosen'>
-                        <button style={{padding: 0, border: 'none', background: 'none'}}>
-                            <h2 className='d-inline text-light m-5 noselect'>{stage}</h2>
-                        </button>
-                    </div>);
-                else
-                    return (<div onClick={() => props.onChoiceCallback(index)} className='stage-container'>
-                        <button style={{padding: 0, border: 'none', background: 'none'}}>
-                            <h2 className='d-inline text-light m-5 noselect'>{stage}</h2>
-                        </button>
-                    </div>);
-            })}
+        <div className='d-flex justify-content-between'
+                style={{width: '1000px'}}>
+            {Array.from(props.stageNames).map(([stage, stageName]) =>
+                <button className={stage === props.currentStage
+                                    ? 'btn btn-dark btn-rounded'
+                                    : 'btn btn-light btn-roundend btn-outline-dark'}
+                        onClick={() => props.onChoiceCallback(stage)}>
+                    <h2 className='d-inline m-5 noselect'>{stageName}</h2>
+                </button>
+            )}
         </div>
     </>);
 }
