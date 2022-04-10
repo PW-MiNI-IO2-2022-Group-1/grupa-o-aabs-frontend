@@ -1,0 +1,21 @@
+.subpage-container {
+    width: 100%;
+}
+
+.subpage-container-enter {
+  opacity: 0;
+}
+
+.subpage-container-enter-active {
+  opacity: 1;
+  transition: opacity 200ms;
+}
+
+.subpage-container-exit {
+  opacity: 1;
+}
+
+.subpage-container-exit-active {
+  opacity: 0;
+  transition: opacity 200ms;
+}
