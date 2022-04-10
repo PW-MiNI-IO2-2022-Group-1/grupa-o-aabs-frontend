@@ -72,7 +72,7 @@ export default function App() {
                     />
 
                     <Route
-                        path='/vaccineRegistration'
+                        path='/patient/vaccineRegistration'
                         element={<VaccineRegistrationPage/>}
                     />
 

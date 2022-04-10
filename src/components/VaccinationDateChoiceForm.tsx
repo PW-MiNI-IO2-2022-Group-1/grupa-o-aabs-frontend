@@ -64,23 +64,17 @@ function VaccinationDateChoiceForm(props: VaccinationDateChoiceFormProps) {
                 {[...Array(Math.ceil(timeSlots.length/2))].map((_, index) => {
                     const firstIndex = 2 * index;
                     const secondIndex = firstIndex + 1;
-                    if(secondIndex < timeSlots.length) {
-                        return (<Row>
-                            <Col>
-                                {renderTimeSlot(timeSlots[firstIndex], firstIndex)}
-                            </Col>
+                    return (<Row>
+                        <Col>
+                            {renderTimeSlot(timeSlots[firstIndex], firstIndex)}
+                        </Col>
+                        {secondIndex < timeSlots.length ?
                             <Col>
                                 {renderTimeSlot(timeSlots[secondIndex], secondIndex)}
-                            </Col>
-                        </Row>);
-                    }
-                    else {
-                        return (<Row>
-                            <Col>
-                                {renderTimeSlot(timeSlots[firstIndex], firstIndex)}
-                            </Col>
-                        </Row>)
-                    }
+                            </Col> 
+                            : <></>
+                        }
+                    </Row>);
                 })}
             </div>
         </Col>
