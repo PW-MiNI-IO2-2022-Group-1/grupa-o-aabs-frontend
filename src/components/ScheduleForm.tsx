@@ -5,7 +5,6 @@ import Calendar from 'react-calendar';
 import { addDays, getBeginningOfWeek } from '../utils/dateUtils';
 import TimeSlotField from './TimeSlotField';
 import './Calendar.css';
-import * as Yup from 'yup';
 
 export type DoctorScheduleForm = {
     week: Date,

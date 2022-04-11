@@ -4,9 +4,10 @@ import * as Icon from 'react-bootstrap-icons';
 interface EditFieldProps<T> {
     valueKey: string;
     displayName: string;
-    values: T
-    handleChange: React.ChangeEventHandler<HTMLInputElement>,
-    error: string | undefined
+    type: string;
+    values: T;
+    handleChange: React.ChangeEventHandler<HTMLInputElement>;
+    error: string | undefined;
 };
 
 function EditField<T>(props: EditFieldProps<T>) {
@@ -27,9 +28,10 @@ function EditField<T>(props: EditFieldProps<T>) {
             <input
                 id={key}
                 disabled={!isEnabled}
-                type='text'
+                type={props.type}
                 onChange={props.handleChange}    
                 value={(props.values as any)[key]}
+                style={{width: '250px'}}
                 className={`form-control${props.error === undefined 
                     ? '' 
                     : ' is-invalid'}`}
@@ -38,7 +40,7 @@ function EditField<T>(props: EditFieldProps<T>) {
             <div className='my-1 mx-2 py-0'>
                 <button type="button" 
                     onClick={toggleEnabled}
-                    className="btn btn-primary \
+                    className="btn btn-dark \
                     btn-sm position-absolute pb-1 pt-0 mt-1">
                         <Icon.PencilSquare/>
                 </button>

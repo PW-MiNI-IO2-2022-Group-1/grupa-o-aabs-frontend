@@ -1,6 +1,6 @@
-import { NONAME } from 'dns';
 import { useNavigate } from 'react-router';
 import { useAuth } from './AuthComponents';
+import { logOut } from '../logic/login';
 import './PageHeader.css';
 
 function PageHeader({children} : {children: React.ReactNode}) {
@@ -8,7 +8,7 @@ function PageHeader({children} : {children: React.ReactNode}) {
     const navigate = useNavigate();
 
     const signOut = () => {
-        auth.signOut();
+        logOut(auth);
         navigate('/');
     }
 

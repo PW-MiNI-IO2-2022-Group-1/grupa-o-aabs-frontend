@@ -3,8 +3,7 @@ import Calendar from "react-calendar";
 import 'react-calendar/dist/Calendar.css';
 import { Vaccine } from "../types/vaccination";
 import "./VaccinationDateChoiceForm.css";
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import { Container, Row, Col } from "react-bootstrap";
+import { Row, Col } from "react-bootstrap";
 
 interface VaccinationDateChoiceFormProps {
     vaccine: Vaccine;

@@ -6,6 +6,7 @@ import { Vaccine } from "../types/vaccination";
 import './VaccineRegistrationPage.css';
 import { CSSTransition, SwitchTransition } from 'react-transition-group';
 import moment from 'moment';
+import { useNavigate } from "react-router";
 
 enum VaccineRegistrationStage {
     vaccineChoice,
@@ -13,7 +14,8 @@ enum VaccineRegistrationStage {
     confirmation
 }
 
-function VaccineRegistrationPage() {
+export default function VaccineRegistrationPage() {
+    const navigate = useNavigate();
     const [chosenVaccine, setChosenVaccine] = useState<Vaccine | null>(null);
     const [chosenDate, setChosenDate] = useState<Date | null>(null);
 
@@ -29,6 +31,7 @@ function VaccineRegistrationPage() {
     const onConfirm = () => {
         console.log(chosenVaccine);
         console.log(chosenDate);
+        navigate('/patient');
     }
 
     const getStage = (): VaccineRegistrationStage => {
@@ -114,5 +117,3 @@ function VaccineRegistrationPage() {
         </SwitchTransition>
     </div>);
 }
-
-export default VaccineRegistrationPage;

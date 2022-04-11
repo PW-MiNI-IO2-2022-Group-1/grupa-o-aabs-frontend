@@ -1,79 +1,55 @@
 import React, { useEffect } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { login } from '../logic/login';
 import { AuthContextType, AuthState } from '../types/auth';
 import { User, Role } from '../types/users';
 
 const AuthContext = React.createContext<AuthContextType>(null!);
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-    const saveAuth = () => {
-        if(authState.token != null
-          && authState.user != null
-          && authState.role != null) {
-            localStorage.setItem('token', authState.token);
-            localStorage.setItem('role', authState.role);
-            localStorage.setItem('user', JSON.stringify(authState.user));
-        }
-    };
-
-    const loadAuth: () => AuthState = () => {
-        const loadedToken: string | null = localStorage.getItem('token');
-        const loadedRole: Role | null = localStorage.getItem('role') as (Role | null);
-
-        const userJson = localStorage.getItem('user');
-        let loadedUser: User | null = null;
-        if(userJson != null)
-            loadedUser = JSON.parse(userJson) as (User | null);
-
-        const authState: AuthState = { token: null, user: null, role: null };
-        if(loadedToken != null && loadedRole != null && loadedUser != null) {
-            authState.token = loadedToken;
-            authState.role = loadedRole;
-            authState.user = loadedUser;
-        }
-        return authState;
-    };
-
-    const clearAuth: () => void = () => {
+function saveAuthToLocalStorage(authState: AuthState) {
+    if(authState.token != null
+        && authState.user != null
+        && authState.role != null) {
+        localStorage.setItem('token', authState.token);
+        localStorage.setItem('role', authState.role);
+        localStorage.setItem('user', JSON.stringify(authState.user));
+    } 
+    else {
         localStorage.clear();
-    };
+    }
+};
 
-    const [authState, setAuthState] = React.useState<AuthState>(loadAuth());
+function loadAuthFromLocalStorage(): AuthState {
+    const loadedToken: string | null = localStorage.getItem('token');
+    const loadedRole: Role | null = localStorage.getItem('role') as (Role | null);
 
-    const signIn = async (role: Role, email: string, password: string): Promise<void> => {
-        await login(role, email, password).then((json: any) => {
-            setAuthState((state) => {
-                state.token = json.token;
-                state.role = role;
-                if(role === Role.Admin)
-                    state.user = json.admin;
-                else if(role === Role.Doctor)
-                    state.user = json.doctor;
-                else if(role === Role.Patient)
-                    state.user = json.patient;
-                return {...state};
-            });
-        });
-    };
+    const userJson = localStorage.getItem('user');
+    let loadedUser: User | null = null;
+    if(userJson != null)
+        loadedUser = JSON.parse(userJson) as (User | null);
+
+    const authState: AuthState = { token: null, user: null, role: null };
+    if(loadedToken != null && loadedRole != null && loadedUser != null) {
+        authState.token = loadedToken;
+        authState.role = loadedRole;
+        authState.user = loadedUser;
+    }
+    return authState;
+}
+
+
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+    const [authState, setAuthState] = React.useState<AuthState>(loadAuthFromLocalStorage());
 
     useEffect(() => {
-       saveAuth();
+       saveAuthToLocalStorage(authState);
     }, [authState]);
 
-
-    const signOut = () => {
-        setAuthState((state) => {
-            state.token = null;
-            state.user = null;
-            state.role = null;
-            return {...state};
-        });
-        clearAuth();
-    }
-
-    const value: AuthContextType = { user: authState.user, token: authState.token,
-                                     role: authState.role, signIn, signOut };
+    const value: AuthContextType = { 
+        user: authState.user,
+        token: authState.token,
+        role: authState.role, 
+        modifyState: (func) => setAuthState(func)
+    };
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
