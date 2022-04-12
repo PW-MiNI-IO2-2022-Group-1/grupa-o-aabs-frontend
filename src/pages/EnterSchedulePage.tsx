@@ -1,4 +1,4 @@
-import { Container } from 'react-bootstrap';
+import {Container, Spinner} from 'react-bootstrap';
 import type { DoctorScheduleForm, TimeSlot } from '../components/ScheduleForm';
 import { addMinutes } from '../utils/dateUtils';
 import ScheduleForm from '../components/ScheduleForm';
@@ -10,8 +10,9 @@ import {useNavigate} from "react-router-dom";
 function EnterSchedulePage(){
     const auth = useAuth();
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    const submitForm = (formData: DoctorScheduleForm) => {
+    const submitForm = async (formData: DoctorScheduleForm) => {
         var day = new Date(formData.week.getTime());
         var slots = [
             ...convertSlots(new Date(day.getTime()), formData.monSlots),
@@ -22,25 +23,24 @@ function EnterSchedulePage(){
             ...convertSlots(new Date(day.getTime() + 5 * 86400000), formData.satSlots),
             ...convertSlots(new Date(day.getTime() + 6 * 86400000), formData.sunSlots),
         ]
-        var errorTimes = 0;
-
-        slots.forEach((slot, _) => {
-            setScheduleDate(slot, auth.token).catch(reason => {
-                    switch (reason.status)
-                    {
-                        case 401:
-                            auth.signOut()
-                            navigate('/loginDoctor');
-                            errorTimes++
-                            break;
-                        case 422:
-                            errorTimes++
-                            break;
-                        default:
-                            errorTimes++
-                    }
-                });
-        })
+        let errorTimes = 0;
+        setLoading(true);
+        const actions = slots.map(async (s) => setScheduleDate(s, auth.token).catch(reason => {
+            switch (reason.status) {
+                case 401:
+                    auth.signOut()
+                    navigate('/loginDoctor');
+                    errorTimes++
+                    break;
+                case 422:
+                    errorTimes++
+                    break;
+                default:
+                    errorTimes++
+            }
+        }));
+        await Promise.all(actions);
+        setLoading(false);
         if(errorTimes > 0)
             setError(`${errorTimes} errors while sending data`)
         else
@@ -69,7 +69,7 @@ function EnterSchedulePage(){
     
     return (
         <Container style={{margin: '3px'}}>
-            <h1>Select your timeslots:</h1>
+            <h1>{loading? 'sending data to server...': 'Select your timeslots:'}</h1>
                 {error !== ''? <div data-testid='errors'> {error.split('\n').map((line) => {
                     return (
                         <>
@@ -78,7 +78,7 @@ function EnterSchedulePage(){
                         </>
                     )
                 })} </div> : <></> }
-            <ScheduleForm onSubmit={submitForm}/>
+            {loading? <Spinner animation="border"/>:<ScheduleForm onSubmit={submitForm}/>}
         </Container>
     );
 

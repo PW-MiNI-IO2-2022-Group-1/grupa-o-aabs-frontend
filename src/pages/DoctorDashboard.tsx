@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
+import {useState, useEffect, useCallback} from 'react';
 import { Button, ButtonGroup, Col, Container, Row, Spinner, ToggleButton } from 'react-bootstrap';
 import PatientVisitField from '../components/PatientVisit';
 import './DoctorDashboard.css';
 import { useNavigate } from 'react-router-dom';
 import { AuthContextType } from '../types/auth';
-import { Visit } from '../types/vaccination';
+import {Vaccination, Visit} from '../types/vaccination';
 import { addDays, getBeginningOfWeek } from '../utils/dateUtils';
 import DatePicker from 'react-date-picker';
 import { deleteVisit, getSlots } from '../logic/doctorAPI';
@@ -21,6 +21,7 @@ function DoctorDashboard() {
     const [maxPage, setMaxPage] = useState<number>(10);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [Visits, setVisits] = useState<Visit[]>([]);
     const radios = [
         { name: 'All', value: '-1' },
         { name: 'Free', value: '0' },
@@ -29,13 +30,24 @@ function DoctorDashboard() {
 
     let auth: AuthContextType = useAuth();
 
-    function getVisits(): Visit[] {
+    const getVisits = useCallback(async () =>{
+        setError('')
         setLoading(true);
-        getSlots(startDate, endDate, reserved, auth.token, page).then((response) => {
+        await getSlots(startDate, endDate, reserved, auth.token, page).then((response) => {
                 setMaxPage(response.pagination.totalPages);
-                return response.data;
+                console.log(response.data);
+                const visits = response.data.map((v: {date: string, id: number, vaccination: Vaccination | null}) =>{
+                    return {
+                        date: new Date(v.date),
+                        id: v.id,
+                        vaccination: v.vaccination
+                    }})
+                console.log(visits);
+                setVisits(visits);
+                console.log(Visits);
+                return;
         }).catch(reason => {
-            switch (reason)
+            switch (reason.status)
             {
                 case 401:
                     auth.signOut()
@@ -46,19 +58,18 @@ function DoctorDashboard() {
                     break;
                 default:
                     setError('Unknown error');
+                    console.log(reason.message);
             }
         }).finally(() => setLoading(false))
-        return [];
-    }
-
-    const [Visits, setVisits] = useState<Visit[]>([]);
+        setVisits([]);
+    }, [startDate, endDate, reserved, page])
     useEffect(() => {
-        setVisits(getVisits());
-    },[startDate, endDate, reserved, page])
+        getVisits();
+    },[page, startDate, endDate, reserved])
 
     function remove(index: number) {
         deleteVisit(Visits[index], auth.token).then((_) => {
-            setVisits(getVisits());
+            getVisits().then(() =>{});
         }).catch((reason => {
             console.log(reason);
         }));
@@ -119,7 +130,7 @@ function DoctorDashboard() {
             <Container>
                 <Row>
                     <Col className='d-flex justify-content-center'><Button disabled={page<=1} onClick={() => setPage(page - 1)}> Previous Page</Button></Col>
-                    <Col className='d-flex justify-content-center'>{page}</Col>
+                    <Col className='d-flex justify-content-center'>{loading? '...' : `${page} of ${maxPage}`}</Col>
                     <Col className='d-flex justify-content-center'><Button disabled={page>=maxPage} onClick={() => setPage(page + 1)}> Next Page</Button></Col>
                 </Row>
 

@@ -1,9 +1,10 @@
 import { Visit } from '../types/vaccination';
 import { BASE_URL } from './config';
+import moment from "moment";
 
 export function getSlots(start: Date | null, end: Date | null, onlyReserved: string , authToken: string | null, page: number) {
-    let sDate = start == null?'':`&startDate=${encodeURIComponent(start.toDateString())}`;
-    let eDate = end == null?'':`&endDate=${encodeURIComponent(end.toDateString())}`;
+    let sDate = start == null?'':`&startDate=${encodeURIComponent(moment(start).format("YYYY-MM-DDThh:mm:ss") + "Z")}`;
+    let eDate = end == null?'':`&endDate=${encodeURIComponent(moment(end).format("YYYY-MM-DDThh:mm:ss") + "Z")}`;
     let reserved = onlyReserved === '-1'?'':`onlyReserved=${encodeURIComponent(onlyReserved)}&`
     return fetch(`${BASE_URL}/doctor/vaccination-slots?${reserved}page=${page}${sDate}${eDate}`,
         {
@@ -41,7 +42,7 @@ export function setScheduleDate(slot: Date, authToken: string | null) {
             'Content-Type': 'application/json',
             'Authorization': authToken === null ? '': authToken
         },
-        "body": `{\"date\":\"${slot.toDateString()}\"}`
+        body: JSON.stringify({'date' : moment(slot).format("YYYY-MM-DDThh:mm:ss") + "Z"}),
     }).then(response => {
             if(response.ok) return response.json();
             throw response;

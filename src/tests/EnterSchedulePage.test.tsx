@@ -97,7 +97,7 @@ describe("Enter Schedule Page", () => {
 
     it('routes to dashboard form on save', async () => {
         await user.click(screen.getByRole('button', {name: /Save/i }))
-        
+
         await waitFor(() =>{
                 expect(mockNavigate).toHaveBeenCalledWith('/doctor');
             })
