@@ -1,3 +1,4 @@
+import { stringify } from "querystring";
 import { addSyntheticLeadingComment } from "typescript";
 import { RegistrationData } from "../components/RegisterPatientForm";
 import { AuthContextType } from "../types/auth";

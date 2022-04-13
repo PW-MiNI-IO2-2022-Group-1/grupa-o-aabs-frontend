@@ -28,7 +28,6 @@ function PageHeader({children} : {children: React.ReactNode}) {
         </div>}
     </nav>
         <div className='container-fluid'>
-            <div className='row'></div>
             <div className='app-content'>{children}</div>
         </div>
     </>);

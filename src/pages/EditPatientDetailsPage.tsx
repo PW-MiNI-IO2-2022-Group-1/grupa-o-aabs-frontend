@@ -10,6 +10,7 @@ import { editPatientDetails } from '../logic/patientApi';
 import { useNavigate } from 'react-router';
 import { logOut } from '../logic/login';
 import { EditPatientDetailsData } from '../types/patientAPITypes';
+import { Container, Row, Col} from 'react-bootstrap';
 
 export interface PatientDetailsFormData {
     firstName?: string;
@@ -104,16 +105,14 @@ export default function EditPatientDetailsPage(): JSX.Element {
         const diff = calculateFormDifference(form.initialValues, form.values);
         const apiData: EditPatientDetailsData = convertFormDataToApiData(diff);
         editPatientDetails(auth, apiData).then(() => {
-            showMessage(true, 'Success');
+            showMessage(true, 'Your account details were successfully changed');
         }).catch((reason) => {
-            console.log(reason.status);
             switch(reason.status) {
                 case 401:
                     alert('You are not authorized');
                     logOut(auth);
                     break;
                 default:
-                    console.log(reason);
                     showMessage(false, 'Unexpected error');
             }
         });
@@ -140,7 +139,7 @@ export default function EditPatientDetailsPage(): JSX.Element {
             error={error} type={inputType}/>
     }
 
-    return (<div>
+    return (<>
         <Modal show={show} onHide={closeMessage} backdrop="static">
             <Modal.Header>
                 <Modal.Title>{success ? "Success" : "Error"}</Modal.Title>
@@ -153,14 +152,37 @@ export default function EditPatientDetailsPage(): JSX.Element {
                 </Button>
             </Modal.Footer>
         </Modal>
-        <div>Patient details
-            <form onSubmit={onSubmit} className='form-container' data-testid='form'>
-                {Object.keys(form.values).map((key) => renderEditField(key))}
-                <div style={{textAlign: 'center'}}>
-                    <button type='submit' className='btn btn-light btn-outline-dark \
-                     center-block p-2'>Change details</button>
-                </div>
+        <Container fluid className='text-center'>Patient details
+            <div className='gap'/>
+            <form onSubmit={onSubmit} className='form-container' data-testid='form'
+                style={{width: '800px'}}>
+                <Row>
+                    <Col>{renderEditField('firstName')}</Col>
+                    <Col>{renderEditField('lastName')}</Col>
+                </Row>
+                <Row>
+                    <Col>{renderEditField('password')}</Col>
+                    <Col/>
+                </Row>
+                <Row><div style={{height: '50px'}}/></Row>
+                <Row>
+                    <Col>{renderEditField('city')}</Col>
+                    <Col>{renderEditField('zipCode')}</Col>
+                </Row>
+                <Row>
+                    <Col>{renderEditField('street')}</Col>
+                    <Col>{renderEditField('houseNumber')}</Col>
+                </Row>
+                <Row>
+                    <Col>{renderEditField('localNumber')}</Col>
+                    <Col/>
+                </Row>
+                <Row><div style={{height: '50px'}}/></Row>
+                <Row className='justify-content-center'>
+                    <input type='submit' className='btn btn-light btn-outline-dark'
+                        style={{width: '150px'}} value='Change details'/>
+                </Row>
             </form>
-        </div>
-    </div>); 
+        </Container>
+    </>); 
 }
