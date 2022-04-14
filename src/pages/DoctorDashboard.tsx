@@ -5,14 +5,14 @@ import './DoctorDashboard.css';
 import { useNavigate } from 'react-router-dom';
 import { AuthContextType } from '../types/auth';
 import {Vaccination, Visit} from '../types/vaccination';
-import {addDays, addMinutes, getBeginningOfWeek} from '../utils/dateUtils';
+import {addDays, addMinutes} from '../utils/dateUtils';
 import DatePicker from 'react-date-picker';
 import { deleteVisit, getSlots } from '../logic/doctorAPI';
 import { useAuth } from '../components/AuthComponents';
 
 function DoctorDashboard() {
     const navigate = useNavigate()
-    let today = getBeginningOfWeek(new Date());
+    let today = new Date();
     today.setHours(0,0,0,0);
     const [startDate, onStartDateChange] = useState<Date>(today);
     const [endDate, onEndDateChange] = useState<Date>(addMinutes(addDays(today, 6), 1439));
@@ -71,7 +71,7 @@ function DoctorDashboard() {
     }, [startDate, endDate, reserved, page])
     useEffect(() => {
         getVisits();
-    },[page, startDate, endDate, reserved])
+    },[startDate, endDate, reserved, page])
 
     function remove(index: number) {
         deleteVisit(Visits[index], auth.token).then((_) => {
@@ -93,6 +93,7 @@ function DoctorDashboard() {
                             setPage(1);
                             onStartDateChange(date)
                         }}
+                            minDate={today}
                         value={startDate}
                         format='dd.MM.y'
                         /></Col>
@@ -105,6 +106,7 @@ function DoctorDashboard() {
                                 setPage(1);
                                 onEndDateChange(date)
                             }}
+                            minDate={today}
                             value={endDate}
                             format='dd.MM.y'
                         /></Col>
