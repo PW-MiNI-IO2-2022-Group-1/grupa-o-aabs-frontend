@@ -38,11 +38,6 @@ export function getAvailableVaccines(auth: AuthContextType): Promise<Vaccine[]> 
         }).then((json) => json.vaccines as Vaccine[]);
 }
 
-function convertToDate(dateParts: any[]) {
-    return dateParts[0].toString() +'-'+ dateParts[1].toString() +'-'+ dateParts[2].toString()
-        + ' ' + dateParts[3] + ':' + dateParts[4];
-}
-
 export function getAvailableTimeslots(auth: AuthContextType): Promise<Timeslot[]> {
     return fetch(`${BASE_URL}/patient/vaccination-slots`,
         {
@@ -56,7 +51,7 @@ export function getAvailableTimeslots(auth: AuthContextType): Promise<Timeslot[]
             if(response.status == StatusCodes.UNAUTHORIZED)
                 throw new UnauthorizedRequestError('You are not authorized');
         }).then((json) => (json as any[]).map(x => {
-            let d: Date = new Date(convertToDate(x.date));
+            let d: Date = new Date(x.date);
             return <Timeslot>{id: x.id, date: d};
         }));
 }
