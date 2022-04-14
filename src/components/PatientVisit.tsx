@@ -24,6 +24,7 @@ const PatientVisitField: React.FC<patientVisitProps> = (props) => {
             else
                 props.remove(props.index);
         }
+        setShow(false);
     }
     const vaccInfo = props.visit.vaccination == null ? 'No patient assigned' :
         `Vaccine:

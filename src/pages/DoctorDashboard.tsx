@@ -5,7 +5,7 @@ import './DoctorDashboard.css';
 import { useNavigate } from 'react-router-dom';
 import { AuthContextType } from '../types/auth';
 import {Vaccination, Visit} from '../types/vaccination';
-import { addDays, getBeginningOfWeek } from '../utils/dateUtils';
+import {addDays, addMinutes, getBeginningOfWeek} from '../utils/dateUtils';
 import DatePicker from 'react-date-picker';
 import { deleteVisit, getSlots } from '../logic/doctorAPI';
 import { useAuth } from '../components/AuthComponents';
@@ -15,7 +15,7 @@ function DoctorDashboard() {
     let today = getBeginningOfWeek(new Date());
     today.setHours(0,0,0,0);
     const [startDate, onStartDateChange] = useState<Date>(today);
-    const [endDate, onEndDateChange] = useState<Date>(addDays(today, 6));
+    const [endDate, onEndDateChange] = useState<Date>(addMinutes(addDays(today, 6), 1439));
     const [reserved, setReserved] = useState<string>('-1');
     const [page, setPage] = useState<number>(1);
     const [maxPage, setMaxPage] = useState<number>(10);
@@ -32,6 +32,7 @@ function DoctorDashboard() {
 
     const getVisits = useCallback(async () =>{
         setError('')
+
         setLoading(true);
         await getSlots(startDate, endDate, reserved, auth.token, page).then((response) => {
                 setMaxPage(response.pagination.totalPages);
@@ -60,8 +61,9 @@ function DoctorDashboard() {
                     setError('Unknown error');
                     console.log(reason.message);
             }
+            setVisits([]);
         }).finally(() => setLoading(false))
-        setVisits([]);
+
     }, [startDate, endDate, reserved, page])
     useEffect(() => {
         getVisits();
@@ -69,7 +71,7 @@ function DoctorDashboard() {
 
     function remove(index: number) {
         deleteVisit(Visits[index], auth.token).then((_) => {
-            getVisits().then(() =>{});
+            getVisits();
         }).catch((reason => {
             console.log(reason);
         }));
@@ -82,6 +84,7 @@ function DoctorDashboard() {
                     <Row style={{padding: '2px'}}>
                         <Col>From:</Col>
                         <Col><DatePicker
+                            disabled={loading}
                         onChange={ (date: Date) => {
                             onStartDateChange(date)
                         }}
@@ -92,6 +95,7 @@ function DoctorDashboard() {
                     <Row style={{padding: '2px'}}>
                         <Col>To:</Col>
                         <Col><DatePicker
+                            disabled={loading}
                             onChange={(date: Date) => {
                                 onEndDateChange(date)
                             }}
@@ -109,6 +113,7 @@ function DoctorDashboard() {
                                 variant='outline-secondary'
                                 name='radio'
                                 value={radio.value}
+                                disabled={loading}
                                 checked={reserved === radio.value}
                                 onChange={(e) => setReserved(e.currentTarget.value)}
                             >
@@ -123,15 +128,15 @@ function DoctorDashboard() {
             </Container>
 
             <Container>
-                <Col className={`d-flex${Visits.length === 0 ? '' : '-nowrap'} justify-content-center`}>{Visits.length === 0 ? (loading ? <Spinner animation='border'/> : <div>{error}</div>) : Visits.map((field, index) => {
+                <Col className={`d-flex${Visits.length === 0  && !loading ? '' : '-nowrap'} justify-content-center`}>{loading ?  <Spinner animation='border'/> : (Visits.length===0 ?  <div>{error}</div> : Visits.map((field, index) => {
                     return <PatientVisitField key={`visit_${index}`} visit={field} index={index} remove={remove}/>
-                })}</Col>
+                }))}</Col>
             </Container>
             <Container>
                 <Row>
-                    <Col className='d-flex justify-content-center'><Button disabled={page<=1} onClick={() => setPage(page - 1)}> Previous Page</Button></Col>
+                    <Col className='d-flex justify-content-center'><Button disabled={loading || page<=1} onClick={() => setPage(page - 1)}> Previous Page</Button></Col>
                     <Col className='d-flex justify-content-center'>{loading? '...' : `${page} of ${maxPage}`}</Col>
-                    <Col className='d-flex justify-content-center'><Button disabled={page>=maxPage} onClick={() => setPage(page + 1)}> Next Page</Button></Col>
+                    <Col className='d-flex justify-content-center'><Button disabled={loading || page>=maxPage} onClick={() => setPage(page + 1)}> Next Page</Button></Col>
                 </Row>
 
             </Container>
