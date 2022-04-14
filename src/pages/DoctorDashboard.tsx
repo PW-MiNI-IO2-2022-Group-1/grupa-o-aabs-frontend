@@ -27,7 +27,10 @@ function DoctorDashboard() {
         { name: 'Free', value: '0' },
         { name: 'Reserved', value: '1' },
     ];
-
+    const min = function (a: number, b: number) {
+        if(a < b) return a;
+        return b;
+    }
     let auth: AuthContextType = useAuth();
 
     const getVisits = useCallback(async () =>{
@@ -35,6 +38,7 @@ function DoctorDashboard() {
 
         setLoading(true);
         await getSlots(startDate, endDate, reserved, auth.token, page).then((response) => {
+                setPage(min(response.pagination.totalPages, page))
                 setMaxPage(response.pagination.totalPages);
                 console.log(response.data);
                 const visits = response.data.map((v: {date: string, id: number, vaccination: Vaccination | null}) =>{
@@ -86,6 +90,7 @@ function DoctorDashboard() {
                         <Col><DatePicker
                             disabled={loading}
                         onChange={ (date: Date) => {
+                            setPage(1);
                             onStartDateChange(date)
                         }}
                         value={startDate}
@@ -97,6 +102,7 @@ function DoctorDashboard() {
                         <Col><DatePicker
                             disabled={loading}
                             onChange={(date: Date) => {
+                                setPage(1);
                                 onEndDateChange(date)
                             }}
                             value={endDate}
@@ -115,7 +121,10 @@ function DoctorDashboard() {
                                 value={radio.value}
                                 disabled={loading}
                                 checked={reserved === radio.value}
-                                onChange={(e) => setReserved(e.currentTarget.value)}
+                                onChange={(e) => {
+                                    setPage(1);
+                                    setReserved(e.currentTarget.value)}
+                            }
                             >
                                 {radio.name}
                             </ToggleButton>
