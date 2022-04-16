@@ -61,10 +61,10 @@ export function reserveTimeslot(auth: AuthContextType, timeslot: Timeslot,
     console.log(`vaccine-id: ${vaccine.id}     timeslot-id: ${timeslot.id}`);
     return fetch(`${BASE_URL}/patient/vaccination-slots/${timeslot.id}`,
         {
-            method: "PUT",
+            method: 'PUT',
             headers: {
-                "Content-Type": "application/json",
-                "Authorization": auth.token ?? ""
+                'Content-Type': 'application/json',
+                'Authorization': auth.token ?? ''
             },
             body: `{"vaccineId": ${vaccine.id}}`
         }).then(response => {
