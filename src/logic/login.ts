@@ -1,9 +1,9 @@
-import { Role } from '../types/users';
-import { BASE_URL } from './config';
-import { StatusCodes } from 'http-status-codes';
-import { UnauthorizedRequestError } from '../types/unauthorizedRequestError';
+import {Role} from '../types/users';
+import {BASE_URL} from './config';
+import {StatusCodes} from 'http-status-codes';
+import {UnauthorizedRequestError} from '../types/unauthorizedRequestError';
 
-export async function login(role: Role, email: string, 
+export async function login(role: Role, email: string,
                             password: string): Promise<any> {
     return await fetch(`${BASE_URL}/${role}/login`,
         {
@@ -13,10 +13,10 @@ export async function login(role: Role, email: string,
             },
             body: JSON.stringify({email: email, password: password})
         }).then(response => {
-            if (response.ok) return response.json()
-            if(response.status === StatusCodes.UNAUTHORIZED) {
-                throw new UnauthorizedRequestError('Invalid credentials');
-            }
-            throw response;
-        });
+        if (response.ok) return response.json()
+        if (response.status === StatusCodes.UNAUTHORIZED) {
+            throw new UnauthorizedRequestError('Invalid credentials');
+        }
+        throw response;
+    });
 }

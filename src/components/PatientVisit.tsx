@@ -6,25 +6,32 @@ import moment from 'moment';
 interface patientVisitProps{
     visit: Visit;
     index: number;
-    remove: (index: number) => void;
+    remove: (index: number) => string;
 }
 
 const PatientVisitField: React.FC<patientVisitProps> = (props) => {
     const [show, setShow] = useState(false);
+    const [error, setError] = useState('');
     const handleShow = () => setShow(true);
     const handleHide = () => setShow(false);
     const handleDelete = () => {
+        let errorMsg = ''
         if(props.visit.vaccination) {
-            console.log('Unable to delete - time slot already reserved');
+            errorMsg = 'Unable to delete - time slot already reserved';
         }
         else
         {
             if(props.visit.date.getTime() -  (new Date()).getTime() <= 86400000)
-                console.log('Unable to delete - slot is too near');
+                errorMsg = 'Unable to delete - slot is too near (less than 24 hours away)';
             else
-                props.remove(props.index);
+                errorMsg = props.remove(props.index);
         }
-        setShow(false);
+        if(errorMsg === '')
+            setShow(false);
+        else
+        {
+            setError(errorMsg);
+        }
     }
     const vaccInfo = props.visit.vaccination == null ? 'No patient assigned' :
         `Vaccine:
@@ -52,8 +59,10 @@ const PatientVisitField: React.FC<patientVisitProps> = (props) => {
                           </>
                       )
                 })}
+                <>{error === ''? '' : <><br/>{error}</>}</>
             </Modal.Body>
             <Modal.Footer>
+
                 <Button variant='secondary' onClick={handleDelete}>Delete</Button>
                 <Button variant='primary' onClick={handleHide}>Close</Button>
             </Modal.Footer>
