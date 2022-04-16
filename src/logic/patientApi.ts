@@ -1,10 +1,11 @@
-import {RegistrationData} from "../components/RegisterPatientForm";
+import { RegistrationData } from "../components/RegisterPatientForm";
 import { AuthContextType } from "../types/auth";
+import { EditPatientDetailsData } from "../types/patientAPITypes";
+import { Patient, Role } from "../types/users";
 import { BASE_URL } from './config';
 import { StatusCodes } from 'http-status-codes';
-import { UnauthorizedRequestError } from "../types/unauthorizedRequestError";
+import { UnauthorizedRequestError } from '../types/requestErrors';
 import { Timeslot, Vaccine, validDiseases } from "../types/vaccination";
-import { response } from "msw";
 
 export function registerPatient(registrationData: RegistrationData) {
     return fetch(`${BASE_URL}/patient/registration`,
@@ -18,6 +19,29 @@ export function registerPatient(registrationData: RegistrationData) {
         if (response.ok) return response.json()
         throw response;
     })
+}
+
+export function editPatientDetails(auth: AuthContextType, 
+                                   data: EditPatientDetailsData) {
+    return fetch(`${BASE_URL}/patient/account`,
+        {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': auth.token ?? '',
+            },
+            body: JSON.stringify(data)
+        }).then((response): Promise<Patient> => {
+            if(response.ok)
+                return response.json();
+            throw response;
+        }).then((patient) => {
+            auth.modifyState((state) => {
+                state.role = Role.Patient;
+                state.user = patient;
+                return {...state};
+            });
+    });
 }
 
 export function getAvailableVaccines(auth: AuthContextType): Promise<Vaccine[]> {
@@ -48,11 +72,11 @@ export function getAvailableTimeslots(auth: AuthContextType): Promise<Timeslot[]
             },
         }).then(response => {
             if(response.ok) return response.json();
-            if(response.status == StatusCodes.UNAUTHORIZED)
+            if(response.status === StatusCodes.UNAUTHORIZED)
                 throw new UnauthorizedRequestError('You are not authorized');
         }).then((json) => (json as any[]).map(x => {
             let d: Date = new Date(x.date);
-            return <Timeslot>{id: x.id, date: d};
+            return {id: x.id, date: d} as Timeslot;
         }));
 }
 
@@ -68,9 +92,8 @@ export function reserveTimeslot(auth: AuthContextType, timeslot: Timeslot,
             },
             body: `{"vaccineId": ${vaccine.id}}`
         }).then(response => {
-            console.log(response);
             if(response.ok) return;
-            if(response.status == StatusCodes.UNAUTHORIZED)
+            if(response.status === StatusCodes.UNAUTHORIZED)
                 throw new UnauthorizedRequestError('You are not authorized');
             throw response;
         });

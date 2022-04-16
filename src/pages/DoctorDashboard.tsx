@@ -9,9 +9,12 @@ import { addDays, getBeginningOfWeek } from '../utils/dateUtils';
 import DatePicker from 'react-date-picker';
 import { deleteVisit, getSlots } from '../logic/doctorAPI';
 import { useAuth } from '../components/AuthComponents';
+import { logOut } from '../logic/login';
 
 function DoctorDashboard() {
+    const auth: AuthContextType = useAuth();
     const navigate = useNavigate()
+
     let today = getBeginningOfWeek(new Date());
     today.setHours(0,0,0,0);
     const [startDate, onStartDateChange] = useState<Date>(today);
@@ -27,7 +30,6 @@ function DoctorDashboard() {
         { name: 'Reserved', value: '1' },
     ];
 
-    let auth: AuthContextType = useAuth();
 
     function getVisits(): Visit[] {
         setLoading(true);
@@ -38,7 +40,7 @@ function DoctorDashboard() {
             switch (reason)
             {
                 case 401:
-                    auth.signOut()
+                    logOut(auth);
                     navigate('/loginDoctor');
                     break;
                 case 422:

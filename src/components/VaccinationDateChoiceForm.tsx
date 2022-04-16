@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from "react";
-import Calendar from "react-calendar";
+import React, { useEffect, useState } from 'react';
+import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import { Timeslot, Vaccine } from "../types/vaccination";
-import "./VaccinationDateChoiceForm.css";
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import { Container, Row, Col } from "react-bootstrap";
-import { getAvailableTimeslots } from "../logic/patientApi";
-import { useAuth } from "./AuthComponents";
-import { useSimpleModal } from "./useSimpleModal";
-import { UnauthorizedRequestError } from "../types/unauthorizedRequestError";
+import { Timeslot, Vaccine } from '../types/vaccination';
+import './VaccinationDateChoiceForm.css';
+import { Row, Col } from 'react-bootstrap';
+import { getAvailableTimeslots } from '../logic/patientApi';
+import { useAuth } from './AuthComponents';
+import { useSimpleModal } from './useSimpleModal';
+import { UnauthorizedRequestError } from '../types/requestErrors';
+import { logOut } from '../logic/login';
 
 interface VaccinationDateChoiceFormProps {
     vaccine: Vaccine;
@@ -25,11 +25,11 @@ function VaccinationDateChoiceForm(props: VaccinationDateChoiceFormProps) {
     useEffect(() => {
         getAvailableTimeslots(auth).then(setTimeslots).catch(error => {
             if(error instanceof UnauthorizedRequestError)
-                showModal('Error', 'You are not authorized', () => auth.signOut());
+                showModal('Error', 'You are not authorized', () => logOut(auth));
             else
                 showModal('Error', 'Unexpected error');
         });
-    }, []);
+    }, [auth, showModal]);
 
     const formatTime = (time: Date): string => {
         let hours = time.getHours();
@@ -40,7 +40,7 @@ function VaccinationDateChoiceForm(props: VaccinationDateChoiceFormProps) {
 
     const filterTimeslots = (date: Date): Timeslot[] => {
         const dateString = date.toDateString();
-        return timeslots.filter((timeslot) => timeslot.date.toDateString() == dateString);
+        return timeslots.filter((timeslot) => timeslot.date.toDateString() === dateString);
     }
 
     const renderTimeSlot = (slot: Timeslot, index: number) => {

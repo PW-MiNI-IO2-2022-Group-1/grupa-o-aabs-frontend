@@ -2,8 +2,9 @@ import { Container } from 'react-bootstrap';
 import type { DoctorScheduleForm, TimeSlot } from '../components/ScheduleForm';
 import { addMinutes } from '../utils/dateUtils';
 import ScheduleForm from '../components/ScheduleForm';
-import {setScheduleDate} from "../logic/doctorAPI";
+import { setScheduleDate } from "../logic/doctorAPI";
 import {useAuth} from "../components/AuthComponents";
+import { logOut } from '../logic/login';
 import React, {useState} from "react";
 import {useNavigate} from "react-router-dom";
 
@@ -29,7 +30,7 @@ function EnterSchedulePage(){
                     switch (reason.status)
                     {
                         case 401:
-                            auth.signOut()
+                            logOut(auth);
                             navigate('/loginDoctor');
                             errorTimes++
                             break;

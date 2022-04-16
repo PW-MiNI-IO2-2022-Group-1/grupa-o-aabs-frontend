@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import StageChoice from "../components/StageChoice";
 import VaccinationDateChoiceForm from "../components/VaccinationDateChoiceForm";
 import VaccineChoiceForm from "../components/VaccineChoiceForm";
@@ -6,11 +6,12 @@ import { Timeslot, Vaccine } from "../types/vaccination";
 import './VaccineRegistrationPage.css';
 import { CSSTransition, SwitchTransition } from 'react-transition-group';
 import moment from 'moment';
-import { getAvailableVaccines, reserveTimeslot } from "../logic/patientApi";
-import { useAuth } from "../components/AuthComponents";
 import { useNavigate } from "react-router";
+import { reserveTimeslot } from "../logic/patientApi";
+import { useAuth } from "../components/AuthComponents";
 import { useSimpleModal } from "../components/useSimpleModal";
-import { UnauthorizedRequestError } from "../types/unauthorizedRequestError";
+import { UnauthorizedRequestError } from '../types/requestErrors';
+import { logOut } from "../logic/login";
 
 enum VaccineRegistrationStage {
     vaccineChoice,
@@ -18,7 +19,7 @@ enum VaccineRegistrationStage {
     confirmation
 }
 
-function VaccineRegistrationPage() {
+export default function VaccineRegistrationPage() {
     const auth = useAuth();
     const navigate = useNavigate();
 
@@ -36,7 +37,7 @@ function VaccineRegistrationPage() {
                 () => navigate('/patient'));
         }).catch(error => {
             if(error instanceof UnauthorizedRequestError)
-                showModal('Error', 'You are not authorized', () => auth.signOut());
+                showModal('Error', 'You are not authorized', () => logOut(auth));
             else
                 showModal('Error', 'Unexpected error');
         });
@@ -128,5 +129,3 @@ function VaccineRegistrationPage() {
         </SwitchTransition>
     </div>);
 }
-
-export default VaccineRegistrationPage;

@@ -5,9 +5,9 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { Row, Col } from 'react-bootstrap';
 import { useAuth } from './AuthComponents';
 import { getAvailableVaccines } from '../logic/patientApi';
-import { UnauthorizedRequestError } from '../types/unauthorizedRequestError';
+import { UnauthorizedRequestError } from '../types/requestErrors';
 import { useSimpleModal } from './useSimpleModal';
-import { useNavigate } from 'react-router';
+import { logOut } from '../logic/login';
 
 interface VaccineChoiceFormProps {
     onChoiceCallback: (vaccine: Vaccine) => void;
@@ -15,7 +15,6 @@ interface VaccineChoiceFormProps {
 
 function VaccineChoiceForm(props: VaccineChoiceFormProps) {
     const auth = useAuth();
-    const navigate = useNavigate();
 
     const [vaccineFilter, setVaccineFilter] = useState<String>('All');
     const [vaccines, setVaccines] = useState<Vaccine[]>([]);
@@ -27,11 +26,11 @@ function VaccineChoiceForm(props: VaccineChoiceFormProps) {
     useEffect(() => {
         getAvailableVaccines(auth).then(setVaccines).catch(error => {
             if(error instanceof UnauthorizedRequestError)
-                showModal('Error', 'You are not authorized', () => auth.signOut());
+                showModal('Error', 'You are not authorized', () => logOut(auth));
             else
                 showModal('Error', 'Unexpected error');
         });
-    }, []);
+    }, [auth, showModal]);
 
     const filterVaccines = (value: Vaccine, index: number, 
             array: Vaccine[]): boolean => {
