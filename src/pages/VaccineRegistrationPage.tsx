@@ -2,11 +2,16 @@ import { useState } from "react";
 import StageChoice from "../components/StageChoice";
 import VaccinationDateChoiceForm from "../components/VaccinationDateChoiceForm";
 import VaccineChoiceForm from "../components/VaccineChoiceForm";
-import { Vaccine } from "../types/vaccination";
+import { Timeslot, Vaccine } from "../types/vaccination";
 import './VaccineRegistrationPage.css';
 import { CSSTransition, SwitchTransition } from 'react-transition-group';
 import moment from 'moment';
 import { useNavigate } from "react-router";
+import { reserveTimeslot } from "../logic/patientApi";
+import { useAuth } from "../components/AuthComponents";
+import { useSimpleModal } from "../components/useSimpleModal";
+import { UnauthorizedRequestError } from '../types/requestErrors';
+import { logOut } from "../logic/login";
 
 enum VaccineRegistrationStage {
     vaccineChoice,
@@ -15,47 +20,51 @@ enum VaccineRegistrationStage {
 }
 
 export default function VaccineRegistrationPage() {
+    const auth = useAuth();
     const navigate = useNavigate();
-    const [chosenVaccine, setChosenVaccine] = useState<Vaccine | null>(null);
-    const [chosenDate, setChosenDate] = useState<Date | null>(null);
 
-    const vaccines: Array<Vaccine> = [
-        { id: 1, name: 'Moderna', disease: 'Covid-19', requiredDoses: 2},
-        { id: 2, name: 'Johnson & Johnson', disease: 'Covid-19', requiredDoses: 2},
-        { id: 3, name: 'Pfizer', disease: 'Covid-19', requiredDoses: 4},
-        { id: 4, name: 'AstraZeneca', disease: 'Covid-19', requiredDoses: 3},
-        { id: 5, name: 'Flucelvax Quadrivalent', disease: 'Flu', requiredDoses: 1},
-        { id: 6, name: 'Flu killer', disease: 'Flu', requiredDoses: 1},
-    ];
+    const [chosenVaccine, setChosenVaccine] = useState<Vaccine | null>(null);
+    const [chosenTimeslot, setChosenTimeslot] = useState<Timeslot | null>(null);
+    const [showModal, renderModal] = useSimpleModal();
+
 
     const onConfirm = () => {
-        console.log(chosenVaccine);
-        console.log(chosenDate);
-        navigate('/patient');
+        if(chosenTimeslot == null || chosenVaccine == null)
+            return;
+
+        reserveTimeslot(auth, chosenTimeslot, chosenVaccine).then(() => {
+            showModal('Success', 'You have successfully register for the vaccine', 
+                () => navigate('/patient'));
+        }).catch(error => {
+            if(error instanceof UnauthorizedRequestError)
+                showModal('Error', 'You are not authorized', () => logOut(auth));
+            else
+                showModal('Error', 'Unexpected error');
+        });
     }
+
 
     const getStage = (): VaccineRegistrationStage => {
         if(chosenVaccine == null)
             return VaccineRegistrationStage.vaccineChoice;
-        if(chosenDate == null)
+        if(chosenTimeslot == null)
             return VaccineRegistrationStage.dateChoice;
         return VaccineRegistrationStage.confirmation;
     }
 
     const setStage = (stage: VaccineRegistrationStage): void => {
         if(stage === VaccineRegistrationStage.dateChoice) {
-            setChosenDate(null);
+            setChosenTimeslot(null);
         }
         if(stage === VaccineRegistrationStage.vaccineChoice) {
-            setChosenDate(null);
+            setChosenTimeslot(null);
             setChosenVaccine(null);
         }
     }
 
     const renderVaccineChoiceSubpage = (): JSX.Element => {
         return (<div className='subpage-container' key='vaccineSubpage'>
-            <VaccineChoiceForm onChoiceCallback={setChosenVaccine}
-                vaccines={vaccines}/> 
+            <VaccineChoiceForm onChoiceCallback={setChosenVaccine}/> 
         </div>);
     }
 
@@ -65,26 +74,29 @@ export default function VaccineRegistrationPage() {
 
         return (<div className='subpage-container' key='dateSubpage'>
             <VaccinationDateChoiceForm vaccine={chosenVaccine}
-                onDateChoiceCallback={setChosenDate}/>
+                onTimeslotChoiceCallback={setChosenTimeslot}/>
         </div>);
     }
 
     const renderConfirmationSubpage = (): JSX.Element => {
-        if(chosenVaccine == null || chosenDate == null)
+        if(chosenVaccine == null || chosenTimeslot == null)
             return (<></>);
 
-        return (<div className='subpage-container' key='confirmationSubpage'>
-            <div style={{textAlign: 'center'}}>
-                <h1>Vaccine: {chosenVaccine.name} ({chosenVaccine.disease})</h1>
-                <h1>Appointment date: {(moment(chosenDate)).format('DD-MM-YYYY')}</h1>
-                <h1>Appointment time: {(moment(chosenDate)).format('HH:mm')}</h1>
-                <div className='gap'/>
-                <div className='d-flex justify-content-center'>
-                <button className='btn btn-light btn-outline-dark btn-rounded' 
-                    onClick={onConfirm}><h3>Confirm</h3></button>
+        return (<>
+            {renderModal()}
+            <div className='subpage-container' key='confirmationSubpage'>
+                <div style={{textAlign: 'center'}}>
+                    <h1>Vaccine: {chosenVaccine.name} ({chosenVaccine.disease})</h1>
+                    <h1>Appointment date: {(moment(chosenTimeslot.date)).format('DD-MM-YYYY')}</h1>
+                    <h1>Appointment time: {(moment(chosenTimeslot.date)).format('HH:mm')}</h1>
+                    <div className='gap'/>
+                    <div className='d-flex justify-content-center'>
+                    <button className='btn btn-light btn-outline-dark btn-rounded' 
+                        onClick={onConfirm}><h3>Confirm</h3></button>
+                    </div>
                 </div>
             </div>
-        </div>);
+        </>);
     }
 
     const stageNames = new Map<VaccineRegistrationStage, String>([
