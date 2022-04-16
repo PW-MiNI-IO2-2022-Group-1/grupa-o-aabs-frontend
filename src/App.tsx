@@ -73,7 +73,9 @@ export default function App() {
 
                     <Route
                         path='/patient/vaccineRegistration'
-                        element={<VaccineRegistrationPage/>}
+                        element={<RequireAuth role={Role.Patient} authLocation={'/loginPatient'}>
+                            <VaccineRegistrationPage/>
+                        </RequireAuth>}
                     />
 
             </Routes>
