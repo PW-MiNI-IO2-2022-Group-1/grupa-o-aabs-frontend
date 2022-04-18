@@ -6,6 +6,7 @@ import {setScheduleDate} from "../logic/doctorAPI";
 import {useAuth} from "../components/AuthComponents";
 import React, {useState} from "react";
 import {useNavigate} from "react-router-dom";
+import {logOut} from "../logic/login";
 
 function SetSchedulePage() {
     const auth = useAuth();
@@ -28,7 +29,7 @@ function SetSchedulePage() {
         const actions = slots.map(async (s) => setScheduleDate(s, auth.token).catch(reason => {
             switch (reason.status) {
                 case 401:
-                    auth.signOut()
+                    logOut(auth)
                     navigate('/loginDoctor');
                     errorTimes++
                     break;
