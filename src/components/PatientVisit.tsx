@@ -16,7 +16,7 @@ const PatientVisitField: React.FC<patientVisitProps> = (props) => {
     const handleHide = () => setShow(false);
     const handleDelete = () => {
         let errorMsg = ''
-        if (props.visit.vaccination) {
+        if (props.visit.vaccination != null) {
             errorMsg = 'Unable to delete - time slot already reserved';
         } else {
             if (props.visit.date.getTime() - (new Date()).getTime() <= 86400000)
@@ -30,14 +30,15 @@ const PatientVisitField: React.FC<patientVisitProps> = (props) => {
             setError(errorMsg);
     }
     const vaccInfo = props.visit.vaccination == null ? 'No patient assigned' :
-        `${props.visit.vaccination.vaccine === undefined? 
-            'Vaccine not chosen': `Vaccine:
-         - Name: ${props.visit.vaccination.vaccine.name}
-         - Disease: ${props.visit.vaccination.vaccine.disease}
-         - Required doses: ${props.visit.vaccination.vaccine.requiredDoses}`}
-         Patient: ${props.visit.vaccination.patient?.firstName} ${props.visit.vaccination.patient?.lastName}
-         PESEL: ${props.visit.vaccination.patient?.pesel}
-         Status: ${props.visit.vaccination.status}`;
+        `${props.visit.vaccination.vaccine === undefined || props.visit.vaccination.vaccine === null ?
+            'Vaccine not chosen' :
+            `Vaccine:
+            - Name: ${props.visit.vaccination.vaccine.name}
+            - Disease: ${props.visit.vaccination.vaccine.disease}
+            - Required doses: ${props.visit.vaccination.vaccine.requiredDoses}`}
+            Patient: ${props.visit.vaccination.patient?.firstName} ${props.visit.vaccination.patient?.lastName}
+            PESEL: ${props.visit.vaccination.patient?.pesel}
+            Status: ${props.visit.vaccination.status}`;
     return <Row style={{padding: '2px'}}>
         <Col
             className={(props.visit.vaccination != null ? `${props.visit.vaccination.status}Status` : 'FreeStatus') + ' visit'}><Row>{`${moment(props.visit.date).format('hh:mm DD.MM.YYYY')}`}</Row>
