@@ -66,7 +66,6 @@ jest.mock('../components/AuthComponents', () => ({
         return {
             token: "sampleToken",
             modifyState: (modifyFunc: React.SetStateAction<AuthState>) => { },
-            signOut: () => {}
         }
     }
 
