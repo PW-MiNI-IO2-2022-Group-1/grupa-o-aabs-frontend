@@ -45,7 +45,7 @@ export function setScheduleDate(slot: Date, authToken: string | null) {
                 'Content-Type': 'application/json',
                 'Authorization': authToken === null ? '' : authToken
             },
-            body: JSON.stringify({'date': moment(slot).format("YYYY-MM-DDThh:mm:ssZ")}),
+            body: JSON.stringify({'date': moment(slot).format("YYYY-MM-DDTHH:mm:ssZ")}),
         }).then(response => {
         if (response.ok) return response.json();
         throw response;

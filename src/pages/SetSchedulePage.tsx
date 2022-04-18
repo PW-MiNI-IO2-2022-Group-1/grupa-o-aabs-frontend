@@ -25,6 +25,7 @@ function SetSchedulePage() {
             ...convertSlots(addDays(day, 6), formData.sunSlots),
         ];
         let errorTimes = 0;
+        setError('');
         setLoading(true);
         const actions = slots.map(async (s) => setScheduleDate(s, auth.token).catch(reason => {
             switch (reason.status) {
@@ -58,7 +59,7 @@ function SetSchedulePage() {
             function convertToDates(element: TimeSlot) {
                 day.setHours(parseInt(element.beginning.hour), parseInt(element.beginning.minute));
                 var diff = (parseInt(element.end.hour) * 60 + parseInt(element.end.minute) - parseInt(element.beginning.hour) * 60 - parseInt(element.beginning.minute));
-                var times = Math.round(diff / 15);
+                var times = Math.floor(diff / 15) + 1;
                 for (let i = 0; i < times; i++) {
                     slotDates.push(addMinutes(day, i * 15));
                 }
