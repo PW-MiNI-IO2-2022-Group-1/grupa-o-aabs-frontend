@@ -1,6 +1,6 @@
 import './App.css';
 import LoginPage from './pages/LoginPage';
-import EnterSchedulePage from './pages/EnterSchedulePage'
+import SetSchedulePage from './pages/SetSchedulePage'
 import {
     Routes,
     Route,
@@ -47,7 +47,7 @@ export default function App() {
                         path='/doctor/setSchedule'
                         element={
                             <RequireAuth role={Role.Doctor} authLocation={'/loginDoctor'}>
-                                <EnterSchedulePage />
+                                <SetSchedulePage />
                             </RequireAuth>
                         }
                     />
@@ -68,7 +68,7 @@ export default function App() {
                         }
                     />
                     <Route
-                        path='/registerPatient'
+                        path='patient/registerPatient'
                         element={<RegisterPatientPage/>}
                     />
 

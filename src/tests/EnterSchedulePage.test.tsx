@@ -5,7 +5,7 @@ import React from "react";
 import {setupServer} from "msw/node";
 import {MockedRequest, ResponseComposition, rest} from "msw";
 import {SubmitHandler} from "react-hook-form";
-import EnterSchedulePage from "../pages/EnterSchedulePage";
+import SetSchedulePage from "../pages/SetSchedulePage";
 import {MemoryRouter, Router} from "react-router-dom";
 import { AuthState } from "../types/auth";
 const slots = [
@@ -89,7 +89,7 @@ describe("Enter Schedule Page", () => {
     });
 
     beforeEach(() => {
-        render(<EnterSchedulePage/>, {wrapper: MemoryRouter });
+        render(<SetSchedulePage/>, {wrapper: MemoryRouter });
     })
 
     afterAll(() => server.close());
@@ -98,7 +98,7 @@ describe("Enter Schedule Page", () => {
 
     it('routes to dashboard form on save', async () => {
         await user.click(screen.getByRole('button', {name: /Save/i }))
-        
+
         await waitFor(() =>{
                 expect(mockNavigate).toHaveBeenCalledWith('/doctor');
             })
