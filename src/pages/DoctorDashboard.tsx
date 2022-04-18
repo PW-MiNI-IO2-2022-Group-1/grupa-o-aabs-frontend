@@ -29,11 +29,10 @@ function DoctorDashboard() {
     ];
     let auth: AuthContextType = useAuth();
 
-    const getVisits = useCallback(async () => {
+    const getVisits = () => {
         setError('')
         setLoading(true);
-
-        await getSlots(startDate, endDate, reserved, auth.token, page).then((response) => {
+        getSlots(startDate, endDate, reserved, auth.token, Math.max(page,1)).then((response) => {
             setPage(Math.min(response.pagination.totalPages, page))
             setMaxPage(response.pagination.totalPages);
             console.log(response.data);
@@ -62,13 +61,13 @@ function DoctorDashboard() {
             setVisits([]);
         }).finally(() => setLoading(false))
 
-    }, [startDate, endDate, reserved, page])
+    };
     useEffect(() => {
         getVisits();
     }, [startDate, endDate, reserved, page])
 
     function remove(index: number) {
-        deleteVisit(Visits[index], auth.token).then((_) => {
+        deleteVisit(Visits[index], auth.token).then( () => {
             getVisits();
             return '';
         }).catch((reason => {
@@ -138,19 +137,29 @@ function DoctorDashboard() {
 
             <Container>
                 <Col
-                    className={`d-flex${Visits.length === 0 && !loading ? '' : '-nowrap'} justify-content-center`}>{loading ?
-                    <Spinner animation='border'/> : (Visits.length === 0 ?
-                        <div>{error}</div> : Visits.map((field, index) => {
-                            return <PatientVisitField key={`visit_${index}`} visit={field} index={index}
-                                                      remove={remove}/>
-                        }))}</Col>
+                    className={`d-flex${Visits.length === 0 || loading? '' : '-nowrap'} justify-content-center`}>
+                    {
+                        loading?
+                            <Spinner animation='border'/> :
+                            (Visits.length === 0?
+                                    <div>{error}</div> :
+                                    Visits.map((field, index) => {
+                                        return <PatientVisitField
+                                            key={`visit_${index}`}
+                                            visit={field}
+                                            index={index}
+                                            remove={remove}
+                                        />
+                                    })
+                            )}
+                </Col>
             </Container>
             <Container>
                 <Row>
                     <Col className='d-flex justify-content-center'><Button disabled={loading || page <= 1}
                                                                            onClick={() => setPage(page - 1)}> Previous
                         Page</Button></Col>
-                    <Col className='d-flex justify-content-center'>{loading ? '...' : `${page} of ${maxPage}`}</Col>
+                    <Col className='d-flex justify-content-center'>{loading? '...' : `${page} of ${maxPage}`}</Col>
                     <Col className='d-flex justify-content-center'><Button disabled={loading || page >= maxPage}
                                                                            onClick={() => setPage(page + 1)}> Next
                         Page</Button></Col>

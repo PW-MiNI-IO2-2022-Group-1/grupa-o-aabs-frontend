@@ -1,28 +1,28 @@
 import {Container, Spinner} from 'react-bootstrap';
 import type {DoctorScheduleForm, TimeSlot} from '../components/ScheduleForm';
-import {addMinutes} from '../utils/dateUtils';
+import {addDays, addMinutes} from '../utils/dateUtils';
 import ScheduleForm from '../components/ScheduleForm';
 import {setScheduleDate} from "../logic/doctorAPI";
 import {useAuth} from "../components/AuthComponents";
 import React, {useState} from "react";
 import {useNavigate} from "react-router-dom";
 
-function EnterSchedulePage() {
+function SetSchedulePage() {
     const auth = useAuth();
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const submitForm = async (formData: DoctorScheduleForm) => {
-        var day = new Date(formData.week.getTime());
-        var slots = [
+        const day = new Date(formData.week.getTime());
+        const slots = [
             ...convertSlots(new Date(day.getTime()), formData.monSlots),
-            ...convertSlots(new Date(day.getTime() + 86400000), formData.tueSlots),
-            ...convertSlots(new Date(day.getTime() + 2 * 86400000), formData.wedSlots),
-            ...convertSlots(new Date(day.getTime() + 3 * 86400000), formData.thuSlots),
-            ...convertSlots(new Date(day.getTime() + 4 * 86400000), formData.friSlots),
-            ...convertSlots(new Date(day.getTime() + 5 * 86400000), formData.satSlots),
-            ...convertSlots(new Date(day.getTime() + 6 * 86400000), formData.sunSlots),
-        ]
+            ...convertSlots(addDays(day, 1), formData.tueSlots),
+            ...convertSlots(addDays(day, 2), formData.wedSlots),
+            ...convertSlots(addDays(day, 3), formData.thuSlots),
+            ...convertSlots(addDays(day, 4), formData.friSlots),
+            ...convertSlots(addDays(day, 5), formData.satSlots),
+            ...convertSlots(addDays(day, 6), formData.sunSlots),
+        ];
         let errorTimes = 0;
         setLoading(true);
         const actions = slots.map(async (s) => setScheduleDate(s, auth.token).catch(reason => {
@@ -83,4 +83,4 @@ function EnterSchedulePage() {
 
 };
 
-export default EnterSchedulePage;
+export default SetSchedulePage;

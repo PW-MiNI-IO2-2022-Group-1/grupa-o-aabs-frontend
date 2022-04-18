@@ -13,10 +13,10 @@ export async function login(role: Role, email: string,
             },
             body: JSON.stringify({email: email, password: password})
         }).then(response => {
-        if (response.ok) return response.json()
-        if (response.status === StatusCodes.UNAUTHORIZED) {
-            throw new UnauthorizedRequestError('Invalid credentials');
-        }
-        throw response;
-    });
+            if (response.ok) return response.json()
+            if (response.status === StatusCodes.UNAUTHORIZED) {
+                throw new UnauthorizedRequestError('Invalid credentials');
+            }
+            throw response;
+        });
 }
