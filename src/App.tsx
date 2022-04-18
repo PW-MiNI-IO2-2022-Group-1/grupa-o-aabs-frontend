@@ -59,7 +59,7 @@ export default function App() {
                         }
                     />
                     <Route
-                        path='/editPatientDetails'
+                        path='patient/editPatientDetails'
                         element={
                             <RequireAuth role={Role.Patient} authLocation={'/loginPatient'}>
                                 <EditPatientDetailsPage/>
@@ -67,7 +67,7 @@ export default function App() {
                         }
                     />
                     <Route
-                        path='/registerPatient'
+                        path='patient/registerPatient'
                         element={<RegisterPatientPage/>}
                     />
 

@@ -13,7 +13,10 @@ const PatientVisitField: React.FC<patientVisitProps> = (props) => {
     const [show, setShow] = useState(false);
     const [error, setError] = useState('');
     const handleShow = () => setShow(true);
-    const handleHide = () => setShow(false);
+    const handleHide = () => {
+        setError('');
+        setShow(false);
+    }
     const handleDelete = () => {
         let errorMsg = ''
         if (props.visit.vaccination != null) {
@@ -41,7 +44,7 @@ const PatientVisitField: React.FC<patientVisitProps> = (props) => {
             Status: ${props.visit.vaccination.status}`;
     return <Row style={{padding: '2px'}}>
         <Col
-            className={(props.visit.vaccination != null ? `${props.visit.vaccination.status}Status` : 'FreeStatus') + ' visit'}><Row>{`${moment(props.visit.date).format('hh:mm DD.MM.YYYY')}`}</Row>
+            className={(props.visit.vaccination != null ? `${props.visit.vaccination.status}Status` : 'FreeStatus') + ' visit'}><Row>{`${moment(props.visit.date).format('HH:mm DD.MM.YYYY')}`}</Row>
             <Row>{`${props.visit.vaccination != null ? 'Patient visit' : 'Free'}`}</Row></Col>
         <Col xs='auto' className='d-flex justify-content-center'><Button onClick={handleShow}>More info</Button></Col>
         <Modal show={show}>
@@ -49,7 +52,7 @@ const PatientVisitField: React.FC<patientVisitProps> = (props) => {
                 <Modal.Title>Visit info</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                {`Date: ${moment(props.visit.date).format('DD.MM.YYYY hh:mm')}`}
+                {`Date: ${moment(props.visit.date).format('DD.MM.YYYY HH:mm')}`}
                 <br/>
                 {vaccInfo.split('\n').map((line) => {
                     return (

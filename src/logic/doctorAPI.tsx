@@ -5,8 +5,8 @@ import moment from "moment";
 export function getSlots(start: Date | null, end: Date | null, onlyReserved: string, authToken: string | null, page: number) {
     if (start != null) start.setHours(0, 0, 0, 0);
     if (end != null) end.setHours(23, 59, 59, 999);
-    let sDate = start == null ? '' : `&startDate=${encodeURIComponent(moment(start).format("YYYY-MM-DDThh:mm:ssZ"))}`;
-    let eDate = end == null ? '' : `&endDate=${encodeURIComponent(moment(end).format("YYYY-MM-DDThh:mm:ssZ"))}`;
+    let sDate = start == null ? '' : `&startDate=${encodeURIComponent(moment(start).format("YYYY-MM-DDTHH:mm:ssZ"))}`;
+    let eDate = end == null ? '' : `&endDate=${encodeURIComponent(moment(end).format("YYYY-MM-DDTHH:mm:ssZ"))}`;
     let reserved = onlyReserved === '-1' ? '' : `onlyReserved=${encodeURIComponent(onlyReserved)}&`
     return fetch(`${BASE_URL}/doctor/vaccination-slots?${reserved}page=${page}${sDate}${eDate}`,
         {
