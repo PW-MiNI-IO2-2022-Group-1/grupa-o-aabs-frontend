@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Vaccine } from '../../types/vaccination'
-import '../VaccineChoiceForm.css';
+import { Vaccine } from '../types/vaccination'
+import './VaccineChoiceForm.css';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { Row, Col } from 'react-bootstrap';
-import { useAuth } from '../AuthComponents';
-import { getAvailableVaccines } from '../../logic/patientApi';
-import { UnauthorizedRequestError } from '../../types/requestErrors';
-import { useSimpleModal } from '../useSimpleModal';
-import { logOut } from '../../logic/login';
+import { useAuth } from './AuthComponents';
+import { getAvailableVaccines } from '../logic/patientApi';
+import { UnauthorizedRequestError } from '../types/requestErrors';
+import { useSimpleModal } from './useSimpleModal';
+import { logOut } from '../logic/login';
 
 interface VaccineChoiceFormProps {
     onChoiceCallback: (vaccine: Vaccine) => void;

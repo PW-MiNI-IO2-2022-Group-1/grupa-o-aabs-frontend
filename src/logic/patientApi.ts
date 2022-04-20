@@ -1,4 +1,4 @@
-import { RegistrationData } from "../components/forms/RegisterPatientForm";
+import { RegistrationData } from "../components/RegisterPatientForm";
 import { AuthContextType } from "../types/auth";
 import { EditPatientDetailsData } from "../types/patientAPITypes";
 import { Patient, Role } from "../types/users";
