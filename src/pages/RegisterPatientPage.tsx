@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Button, Modal} from "react-bootstrap";
 import {registerPatient} from "../logic/patientApi";
 import "./RegisterPatient.css"
-import RegisterPatientForm, {RegistrationData} from "../components/forms/RegisterPatientForm";
+import RegisterPatientForm, {RegistrationData} from "../components/RegisterPatientForm";
 import {useNavigate} from "react-router-dom";
 
 export default function RegisterPatientPage() {

@@ -2,9 +2,9 @@ import { Button, Col, Form } from 'react-bootstrap';
 import moment from 'moment';
 import { Controller, useForm } from 'react-hook-form';
 import Calendar from 'react-calendar';
-import { addDays, getBeginningOfWeek } from '../../utils/dateUtils';
-import TimeSlotField from '../TimeSlotField';
-import '../Calendar.css';
+import { addDays, getBeginningOfWeek } from '../utils/dateUtils';
+import TimeSlotField from './TimeSlotField';
+import './Calendar.css';
 
 export type DoctorScheduleForm = {
     week: Date,
