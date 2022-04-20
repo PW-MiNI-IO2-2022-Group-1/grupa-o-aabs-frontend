@@ -1,7 +1,7 @@
 import {Container, Spinner} from 'react-bootstrap';
-import type {DoctorScheduleForm, TimeSlot} from '../components/ScheduleForm';
+import type {DoctorScheduleForm, TimeSlot} from '../components/forms/ScheduleForm';
 import {addDays, addMinutes} from '../utils/dateUtils';
-import ScheduleForm from '../components/ScheduleForm';
+import ScheduleForm from '../components/forms/ScheduleForm';
 import {setScheduleDate} from "../logic/doctorAPI";
 import {useAuth} from "../components/AuthComponents";
 import React, {useState} from "react";

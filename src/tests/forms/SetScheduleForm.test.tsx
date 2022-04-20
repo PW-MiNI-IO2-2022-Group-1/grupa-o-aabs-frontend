@@ -1,5 +1,5 @@
 import {render, screen, waitFor} from "@testing-library/react";
-import ScheduleForm from "../../components/ScheduleForm";
+import ScheduleForm from "../../components/forms/ScheduleForm";
 import user from "@testing-library/user-event";
 import React from "react";
 const onSubmit = jest.fn();

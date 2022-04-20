@@ -36,7 +36,7 @@ beforeAll(() => server.listen());
 afterAll(() => server.close());
 afterEach(() => server.resetHandlers());
 
-jest.mock("../components/RegisterPatientForm", () => {
+jest.mock("../../components/forms/RegisterPatientForm", () => {
     return function DummyRegisterPatientForm(props: { onSubmit: SubmitHandler<RegistrationData> }) {
         return (<button onClick={() => props.onSubmit(mockedData)}>Click</button>)
     };
