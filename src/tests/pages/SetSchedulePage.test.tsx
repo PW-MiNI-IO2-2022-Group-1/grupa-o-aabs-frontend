@@ -1,13 +1,13 @@
 import {render, screen, waitFor} from "@testing-library/react";
-import ScheduleForm, {DoctorScheduleForm} from "../components/ScheduleForm";
+import ScheduleForm, {DoctorScheduleForm} from "../../components/ScheduleForm";
 import user from "@testing-library/user-event";
 import React from "react";
 import {setupServer} from "msw/node";
 import {MockedRequest, ResponseComposition, rest} from "msw";
 import {SubmitHandler} from "react-hook-form";
-import SetSchedulePage from "../pages/SetSchedulePage";
+import SetSchedulePage from "../../pages/SetSchedulePage";
 import {MemoryRouter, Router} from "react-router-dom";
-import { AuthState } from "../types/auth";
+import { AuthState } from "../../types/auth";
 const slots = [
     {
         beginning: {

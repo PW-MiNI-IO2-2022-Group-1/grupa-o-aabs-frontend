@@ -1,7 +1,7 @@
 import * as Yup from 'yup';
 import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup/dist/yup';
-import './LoginForm.css'
+import '../LoginForm.css'
 
 export type UserLoginForm = {
     email: string;

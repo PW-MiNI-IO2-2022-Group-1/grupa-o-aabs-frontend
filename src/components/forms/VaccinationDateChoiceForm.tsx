@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import { Timeslot, Vaccine } from '../types/vaccination';
-import './VaccinationDateChoiceForm.css';
+import { Timeslot, Vaccine } from '../../types/vaccination';
+import '../VaccinationDateChoiceForm.css';
 import { Row, Col } from 'react-bootstrap';
-import { getAvailableTimeslots } from '../logic/patientApi';
-import { useAuth } from './AuthComponents';
-import { useSimpleModal } from './useSimpleModal';
-import { UnauthorizedRequestError } from '../types/requestErrors';
-import { logOut } from '../logic/login';
+import { getAvailableTimeslots } from '../../logic/patientApi';
+import { useAuth } from '../AuthComponents';
+import { useSimpleModal } from '../useSimpleModal';
+import { UnauthorizedRequestError } from '../../types/requestErrors';
+import { logOut } from '../../logic/login';
 
 interface VaccinationDateChoiceFormProps {
     vaccine: Vaccine;

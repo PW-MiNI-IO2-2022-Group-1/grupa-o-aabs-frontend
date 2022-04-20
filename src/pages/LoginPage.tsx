@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import LoginForm, {UserLoginForm} from "../components/LoginForm";
+import LoginForm, {UserLoginForm} from "../components/forms/LoginForm";
 import './LoginPage.css'
 import { useAuth } from "../components/AuthComponents";
 import {useNavigate} from "react-router-dom";

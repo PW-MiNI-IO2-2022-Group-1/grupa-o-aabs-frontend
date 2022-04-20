@@ -1,8 +1,8 @@
 import React from 'react'
-import RegisterPatientPage from "../pages/RegisterPatientPage";
+import RegisterPatientPage from "../../pages/RegisterPatientPage";
 import {render, screen, waitFor} from "@testing-library/react";
 import user from '@testing-library/user-event'
-import {RegistrationData} from "../components/RegisterPatientForm";
+import {RegistrationData} from "../../components/forms/RegisterPatientForm";
 import {setupServer} from "msw/node";
 import {MockedRequest, ResponseComposition, rest} from "msw";
 import {SubmitHandler} from "react-hook-form";
