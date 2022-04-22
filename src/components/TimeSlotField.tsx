@@ -55,6 +55,7 @@ const TimeSlotTile: React.FC<timeSlotProps> = (props) => {
     return <Container style={{width: '500px', margin: '0px' }}>
         <Form.Group>
             <Form.Label>{myLabel}</Form.Label>
+            <br/>
             {fields.map((field, index) => {
                 return (
                     <Row className="form-row" key={`TimeField_${myName}_${field.id}_row`}>

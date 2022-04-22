@@ -1,0 +1,48 @@
+.vaccine-item {
+    background-color: #5c7494;
+    border: solid #150E56 3px;
+    border-radius: 10px;
+    min-height: 50px;
+    min-width: 500px;
+    align-items: center;
+    text-align: center;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    padding: 10px;
+}
+
+.vaccine-item:hover {
+    background-color: #0d3452;
+}
+
+.noselect {
+    user-select: none;
+}
+
+.item-button-enter {
+  opacity: 0;
+}
+
+.item-button-enter-active {
+  opacity: 1;
+  transition: opacity 200ms;
+}
+
+.item-button-exit {
+  opacity: 1;
+}
+
+.item-button-exit-active {
+  opacity: 0;
+  transition: opacity 200ms;
+}
+
+.scrollable-box {
+  overflow-y: scroll;
+  scrollbar-width: none;
+  height: 60vh;
+  border: 5px solid black;
+  border-radius: 5px;
+  padding: 15px;
+  min-width: 500px;
+}

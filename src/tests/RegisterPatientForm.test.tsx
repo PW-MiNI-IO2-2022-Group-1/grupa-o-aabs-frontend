@@ -1,5 +1,4 @@
 import React from 'react'
-import RegisterPatientPage from "../pages/RegisterPatientPage";
 import {render, screen, waitFor} from "@testing-library/react";
 import user from '@testing-library/user-event'
 import RegisterPatientForm from "../components/RegisterPatientForm";

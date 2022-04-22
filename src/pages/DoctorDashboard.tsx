@@ -1,88 +1,112 @@
-import { useState, useEffect } from 'react';
-import { Button, ButtonGroup, Col, Container, Row, Spinner, ToggleButton } from 'react-bootstrap';
+import {useState, useEffect} from 'react';
+import {Button, ButtonGroup, Col, Container, Row, Spinner, ToggleButton} from 'react-bootstrap';
 import PatientVisitField from '../components/PatientVisit';
 import './DoctorDashboard.css';
-import { useNavigate } from 'react-router-dom';
-import { AuthContextType } from '../types/auth';
-import { Visit } from '../types/vaccination';
-import { addDays, getBeginningOfWeek } from '../utils/dateUtils';
+import {useNavigate} from 'react-router-dom';
+import {AuthContextType} from '../types/auth';
+import {Vaccination, Visit} from '../types/vaccination';
+import {addDays, addMinutes} from '../utils/dateUtils';
 import DatePicker from 'react-date-picker';
 import { deleteVisit, getSlots } from '../logic/doctorAPI';
 import { useAuth } from '../components/AuthComponents';
+import { logOut } from '../logic/login';
 
 function DoctorDashboard() {
+    const auth: AuthContextType = useAuth();
     const navigate = useNavigate()
-    let today = getBeginningOfWeek(new Date());
-    today.setHours(0,0,0,0);
+    let today = new Date();
+    today.setHours(0, 0, 0, 0);
     const [startDate, onStartDateChange] = useState<Date>(today);
-    const [endDate, onEndDateChange] = useState<Date>(addDays(today, 6));
+    const [endDate, onEndDateChange] = useState<Date>(addMinutes(addDays(today, 6), 1439));
     const [reserved, setReserved] = useState<string>('-1');
     const [page, setPage] = useState<number>(1);
     const [maxPage, setMaxPage] = useState<number>(10);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [Visits, setVisits] = useState<Visit[]>([]);
     const radios = [
-        { name: 'All', value: '-1' },
-        { name: 'Free', value: '0' },
-        { name: 'Reserved', value: '1' },
+        {name: 'All', value: '-1'},
+        {name: 'Free', value: '0'},
+        {name: 'Reserved', value: '1'},
     ];
-    let auth: AuthContextType = useAuth();
-    function getVisits(): Visit[] {
+
+    const getVisits = () => {
+        setError('')
         setLoading(true);
-        getSlots(startDate, endDate, reserved, auth.token, page).then((response) => {
-                setMaxPage(response.pagination.totalPages);
-                return response.data;
-        }).catch((reason => {
-            switch (reason)
-            {
+        getSlots(startDate, endDate, reserved, auth.token, Math.max(page,1)).then((response) => {
+            setPage(Math.min(response.pagination.totalPages, page))
+            setMaxPage(response.pagination.totalPages);
+            console.log(response.data);
+            const visits = response.data.map((v: { date: string, id: number, vaccination: Vaccination | null }) => {
+                return {
+                    date: new Date(v.date),
+                    id: v.id,
+                    vaccination: v.vaccination
+                }
+            })
+            setVisits(visits);
+            return;
+        }).catch(reason => {
+            switch (reason.status) {
                 case 401:
-                    setError('Unauthorised error (invalid or empty Bearer token');
+                    logOut(auth);
+                    navigate('/loginDoctor');
                     break;
                 case 422:
                     setError('Validation error');
                     break;
                 default:
                     setError('Unknown error');
+                    console.log(reason.message);
             }
-        })).finally(() => setLoading(false))
-        return [];
-    }
-    const [Visits, setVisits] = useState<Visit[]>([]);
+            setVisits([]);
+        }).finally(() => setLoading(false))
+
+    };
     useEffect(() => {
-        setVisits(getVisits());
-    },[startDate, endDate, reserved, page])
+        getVisits();
+    }, [startDate, endDate, reserved, page])
+
     function remove(index: number) {
-        deleteVisit(Visits[index], auth.token).then((_) => {
-            setVisits(getVisits());
+        deleteVisit(Visits[index], auth.token).then( () => {
+            getVisits();
+            return '';
         }).catch((reason => {
-            console.log(reason);
+            return reason.message;
         }));
+        return '';
     }
 
     return (
         <div>
             <Container style={{width: '500px', margin: 5}}>
                 <Row>Doctor Dashboard</Row>
-                    <Row style={{padding: '2px'}}>
-                        <Col>From:</Col>
-                        <Col><DatePicker
-                        onChange={ (date: Date) => {
+                <Row style={{padding: '2px'}}>
+                    <Col>From:</Col>
+                    <Col><DatePicker
+                        disabled={loading}
+                        onChange={(date: Date) => {
+                            setPage(1);
                             onStartDateChange(date)
                         }}
+                        minDate={today}
                         value={startDate}
                         format='dd.MM.y'
-                        /></Col>
-                    </Row>
-                    <Row style={{padding: '2px'}}>
-                        <Col>To:</Col>
-                        <Col><DatePicker
-                            onChange={(date: Date) => {
-                                onEndDateChange(date)
-                            }}
-                            value={endDate}
-                            format='dd.MM.y'
-                        /></Col>
-                    </Row>
+                    /></Col>
+                </Row>
+                <Row style={{padding: '2px'}}>
+                    <Col>To:</Col>
+                    <Col><DatePicker
+                        disabled={loading}
+                        onChange={(date: Date) => {
+                            setPage(1);
+                            onEndDateChange(date)
+                        }}
+                        minDate={today}
+                        value={endDate}
+                        format='dd.MM.y'
+                    /></Col>
+                </Row>
                 <Row style={{padding: '2px'}} xs={'auto'}>
                     <ButtonGroup>
                         {radios.map((radio, idx) => (
@@ -93,8 +117,13 @@ function DoctorDashboard() {
                                 variant='outline-secondary'
                                 name='radio'
                                 value={radio.value}
+                                disabled={loading}
                                 checked={reserved === radio.value}
-                                onChange={(e) => setReserved(e.currentTarget.value)}
+                                onChange={(e) => {
+                                    setPage(1);
+                                    setReserved(e.currentTarget.value)
+                                }
+                                }
                             >
                                 {radio.name}
                             </ToggleButton>
@@ -102,20 +131,39 @@ function DoctorDashboard() {
                     </ButtonGroup>
                 </Row>
                 <Row style={{padding: '2px'}}>
-                    <Button style={{width: '150px'}} onClick={() => navigate('/doctor/setSchedule')}>Set schedule</Button>
+                    <Button style={{width: '150px'}} onClick={() => navigate('/doctor/setSchedule')}>Set
+                        schedule</Button>
                 </Row>
             </Container>
 
             <Container>
-                <Col className={`d-flex${Visits.length === 0 ? '' : '-nowrap'} justify-content-center`}>{Visits.length === 0 ? (loading ? <Spinner animation='border'/> : <div>{error}</div>) : Visits.map((field, index) => {
-                    return <PatientVisitField key={`visit_${index}`} visit={field} index={index} remove={remove}/>
-                })}</Col>
+                <Col
+                    className={`d-flex${Visits.length === 0 || loading? '' : '-nowrap'} justify-content-center`}>
+                    {
+                        loading?
+                            <Spinner animation='border'/> :
+                            (Visits.length === 0?
+                                    <div>{error}</div> :
+                                    Visits.map((field, index) => {
+                                        return <PatientVisitField
+                                            key={`visit_${index}`}
+                                            visit={field}
+                                            index={index}
+                                            remove={remove}
+                                        />
+                                    })
+                            )}
+                </Col>
             </Container>
             <Container>
                 <Row>
-                    <Col className='d-flex justify-content-center'><Button disabled={page<=1} onClick={() => setPage(page - 1)}> Previous Page</Button></Col>
-                    <Col className='d-flex justify-content-center'>{page}</Col>
-                    <Col className='d-flex justify-content-center'><Button disabled={page>=maxPage} onClick={() => setPage(page + 1)}> Next Page</Button></Col>
+                    <Col className='d-flex justify-content-center'><Button disabled={loading || page <= 1}
+                                                                           onClick={() => setPage(page - 1)}> Previous
+                        Page</Button></Col>
+                    <Col className='d-flex justify-content-center'>{loading? '...' : `${page} of ${maxPage}`}</Col>
+                    <Col className='d-flex justify-content-center'><Button disabled={loading || page >= maxPage}
+                                                                           onClick={() => setPage(page + 1)}> Next
+                        Page</Button></Col>
                 </Row>
 
             </Container>

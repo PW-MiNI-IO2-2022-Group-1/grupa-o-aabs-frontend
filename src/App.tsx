@@ -1,6 +1,6 @@
 import './App.css';
 import LoginPage from './pages/LoginPage';
-import EnterSchedulePage from './pages/EnterSchedulePage'
+import SetSchedulePage from './pages/SetSchedulePage'
 import {
     Routes,
     Route,
@@ -9,11 +9,13 @@ import {
 import DoctorDashboard from './pages/DoctorDashboard';
 import {AuthProvider, RequireAuth } from './components/AuthComponents';
 import {Role} from './types/users';
-import { EditPatientDetailsPage } from './pages/EditPatientDetailsPage';
+import EditPatientDetailsPage from './pages/EditPatientDetailsPage';
 import AdminDashboard from './pages/AdminDashboard';
 import FrontAuthPage from './pages/FrontPage';
 import PageHeader from './components/PageHeader';
 import RegisterPatientPage from "./pages/RegisterPatientPage";
+import VaccineRegistrationPage from './pages/VaccineRegistrationPage';
+import { PatientFrontPage } from './pages/PatientFrontPage';
 
 export default function App() {
     return (
@@ -37,15 +39,15 @@ export default function App() {
                         path='/patient'
                         element={
                             <RequireAuth role={Role.Patient} authLocation={'/loginPatient'}>
-                                    <EditPatientDetailsPage/>
+                                    <PatientFrontPage/>
                             </RequireAuth>
                         }
                     />
                     <Route
                         path='/doctor/setSchedule'
                         element={
-                            <RequireAuth role={Role.Doctor} authLocation={'/loginPatient'}>
-                                <EnterSchedulePage />
+                            <RequireAuth role={Role.Doctor} authLocation={'/loginDoctor'}>
+                                <SetSchedulePage />
                             </RequireAuth>
                         }
                     />
@@ -58,7 +60,7 @@ export default function App() {
                         }
                     />
                     <Route
-                        path='/editPatientDetails'
+                        path='/patient/editDetails'
                         element={
                             <RequireAuth role={Role.Patient} authLocation={'/loginPatient'}>
                                 <EditPatientDetailsPage/>
@@ -66,8 +68,15 @@ export default function App() {
                         }
                     />
                     <Route
-                        path='/registerPatient'
+                        path='patient/registerPatient'
                         element={<RegisterPatientPage/>}
+                    />
+
+                    <Route
+                        path='/patient/vaccineRegistration'
+                        element={<RequireAuth role={Role.Patient} authLocation={'/loginPatient'}>
+                            <VaccineRegistrationPage/>
+                        </RequireAuth>}
                     />
 
             </Routes>

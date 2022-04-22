@@ -18,8 +18,12 @@ function getPasswordInput() {
 }
 
 describe("Login Form" , () => {
-  it('invalidates empty form', async () => {
+
+  beforeEach(() => {
     render(<LoginForm onSubmit={onSubmit}/>);
+  })
+  
+  it('invalidates empty form', async () => {
     user.click(screen.getByRole('button', {name: /Log in/i}));
     await waitFor(() => {
       expect(onSubmit).not.toHaveBeenCalled();
@@ -27,8 +31,6 @@ describe("Login Form" , () => {
   });
 
   it('validates correct email and password', async () => {
-    const onSubmit = jest.fn();
-    render(<LoginForm onSubmit={onSubmit}/>);
       user.type(getEmailInput(), testEmail);
       user.type(getPasswordInput(), testPwd);
       user.click(screen.getByRole('button', {name: /Log in/i}));
@@ -38,8 +40,6 @@ describe("Login Form" , () => {
   });
 
   it('invalidates incorrect email', async () => {
-    const onSubmit = jest.fn();
-    render(<LoginForm onSubmit={onSubmit}/>);
     user.type(getEmailInput(), testInvEmail);
     user.click(screen.getByRole('button', {name: /Log in/i}));
     await waitFor(() => {
@@ -48,8 +48,6 @@ describe("Login Form" , () => {
   });
 
   it('invalidates empty password', async () => {
-    const onSubmit = jest.fn();
-    render(<LoginForm onSubmit={onSubmit}/>);
     user.type(getEmailInput(), testEmail);
     user.click(screen.getByRole('button', {name: /Log in/i}));
     await waitFor(() => {
@@ -58,18 +56,16 @@ describe("Login Form" , () => {
   });
 });
 
-describe("Set Schedule Page", () => {
-  it('validates on save', async () => {
+describe("Set Schedule Form", () => {
+  it('validates form on save', async () => {
     render(<ScheduleForm onSubmit={onSubmit}/>)
     user.click(screen.getByRole('button', {name: /Save/i }))
     await waitFor(() => {
       expect(onSubmit).toHaveBeenCalled();
     })
   });
-  it('sends API call', async () => {
-    //TODO
-  });
 });
+
 describe("DoctorDashboard", () => {
   it('routes to setSchedule', async () => {
     //TODO
