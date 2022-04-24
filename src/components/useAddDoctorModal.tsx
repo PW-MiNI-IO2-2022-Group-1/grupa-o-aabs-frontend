@@ -36,13 +36,7 @@ export function useAddDoctorModal(): [(callback: (doctor: NewDoctorData) => void
     });
 
     const form = useFormik<AddDoctorForm>({
-        initialValues: {
-            firstName: undefined,
-            lastName: undefined,
-            email: undefined,
-            password: undefined,
-            passwordRepeated: undefined
-        },
+        initialValues: { },
         validationSchema: validationSchema,
         onSubmit: (values: AddDoctorForm) => { }
     });
@@ -72,7 +66,7 @@ export function useAddDoctorModal(): [(callback: (doctor: NewDoctorData) => void
         });
     }
 
-    const onClose = () => {
+    const onSubmit = () => {
         if(form.isValid && isFormFilled()) {
             closeModal();
             if(state.callback !== undefined) {
@@ -129,7 +123,7 @@ export function useAddDoctorModal(): [(callback: (doctor: NewDoctorData) => void
                 <Button variant='primary' onClick={closeModal}>
                     Cancel
                 </Button>
-                <Button variant='primary' onClick={onClose}>
+                <Button variant='primary' onClick={onSubmit}>
                     Add
                 </Button>
             </Modal.Footer>

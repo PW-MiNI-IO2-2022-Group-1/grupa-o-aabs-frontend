@@ -29,8 +29,10 @@ function SetSchedulePage() {
         setError('');
         setLoading(true);
         const actions = slots.map(async (s) => setScheduleDate(s, auth).catch(reason => {
-            if(reason instanceof UnauthorizedRequestError)
+            if(reason instanceof UnauthorizedRequestError) {
                 logOut(auth);
+                navigate('/loginDoctor');
+            }
             errorTimes++;
         }));
         await Promise.all(actions);

@@ -35,11 +35,7 @@ export function useEditDoctorModal(): [(doctor: Doctor,
     });
 
     const form = useFormik<EditDoctorForm>({
-        initialValues: {
-            firstName: undefined,
-            lastName: undefined,
-            email: undefined
-        },
+        initialValues: { },
         validationSchema: validationSchema,
         onSubmit: (values: EditDoctorForm) => { }
     });
@@ -66,7 +62,7 @@ export function useEditDoctorModal(): [(doctor: Doctor,
         });
     }
 
-    const onClose = () => {
+    const onSubmit = () => {
         if(form.isValid) {
             closeModal();
             if(state.callback !== undefined && state.doctor !== undefined) {
@@ -112,7 +108,7 @@ export function useEditDoctorModal(): [(doctor: Doctor,
                 <Button variant='primary' onClick={closeModal}>
                     Cancel
                 </Button>
-                <Button variant='primary' onClick={onClose}>
+                <Button variant='primary' onClick={onSubmit}>
                     Edit
                 </Button>
             </Modal.Footer>

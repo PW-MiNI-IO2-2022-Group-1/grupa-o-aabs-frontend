@@ -5,10 +5,12 @@ import * as Icons from 'react-bootstrap-icons';
 import { Doctor } from '../types/users';
 import { useEffect, useState } from 'react';
 import { useEditDoctorModal } from '../components/useEditDoctorModal';
-import { AddDoctorForm, useAddDoctorModal } from '../components/useAddDoctorModal';
+import { useAddDoctorModal } from '../components/useAddDoctorModal';
 import { useSimpleModal } from '../components/useSimpleModal';
 import { NewDoctorData } from '../types/adminAPITypes';
 import * as API from '../logic/adminAPI';
+import { UnauthorizedRequestError } from '../types/requestErrors';
+import { logOut } from '../logic/login';
 
 function AdminDashboard(): JSX.Element {
     const auth = useAuth();
@@ -21,47 +23,45 @@ function AdminDashboard(): JSX.Element {
     const [showEditModal, renderEditModal] = useEditDoctorModal();
     const [showAddModal, renderAddModal] = useAddDoctorModal();
 
+    const handleApiError = (reason: any) => {
+        if(reason instanceof UnauthorizedRequestError)
+            showErrorModal('Error', 'You are not authorized', () => logOut(auth))
+        else
+            showErrorModal('Error', 'Unexpected error');
+    }
+
     const loadDoctors = () => {
         API.getDoctors(auth, page).then(pair => {
             setDoctors(pair[0]);
             setPageNumber(pair[1].totalPages);
-        }).catch(reason => {
-            console.log(reason);
-            showErrorModal('Error', 'Unexpected error');
-        });
+        }).catch(handleApiError);
     }
 
     const deleteDoctor = (doctor: Doctor) => {
-        API.deleteDoctor(auth, doctor).catch(reason => {
-            console.log(reason);
-            showErrorModal('Error', 'Unexpected error');
-        }).then(() => loadDoctors());
+        API.deleteDoctor(auth, doctor).catch(handleApiError)
+           .then(() => loadDoctors());
     }
 
     const editDoctor = (doctor: Doctor) => {
-        API.editDoctor(auth, doctor).catch((reason) => {
-            console.log(reason);
-            showErrorModal('Error', 'Unexpected error');
-        }).then(() => loadDoctors());
+        API.editDoctor(auth, doctor).catch(handleApiError)
+           .then(() => loadDoctors());
     }
 
     const createDoctor = (doctorData: NewDoctorData) => {
-        API.createDoctor(auth, doctorData).catch((reason) => {
-            console.log(reason);
-            showErrorModal('Error', 'Unexpected error');
-        }).then(() => loadDoctors());
+        API.createDoctor(auth, doctorData).catch(handleApiError)
+           .then(() => loadDoctors());
     }
 
     useEffect(() => {
         loadDoctors();
     }, [page]);
 
-    const renderRow = (doctor: Doctor) => {
+    const renderDoctorRow = (doctor: Doctor) => {
         return (<tr key={`row-${doctor.id}`}>
-            <td>{doctor.firstName}</td>
-            <td>{doctor.lastName}</td>
-            <td>{doctor.email}</td>
-            <td>
+            <td style={{width: '350px'}}>{doctor.firstName}</td>
+            <td style={{width: '350px'}}>{doctor.lastName}</td>
+            <td style={{width: '350px'}}>{doctor.email}</td>
+            <td style={{width: '100px'}}>
                 <Icons.PencilSquare className='text-primary'
                  style={{cursor: 'pointer'}}
                  onClick={() => showEditModal(doctor, editDoctor)}/>
@@ -135,7 +135,7 @@ function AdminDashboard(): JSX.Element {
                     </tr>
                 </thead>
                 <tbody>
-                    {doctors.map(renderRow)}
+                    {doctors.map(renderDoctorRow)}
                     {renderAddNewDoctorRow()}
                 </tbody>
             </Table>
