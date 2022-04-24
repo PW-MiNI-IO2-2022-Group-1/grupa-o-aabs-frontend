@@ -7,6 +7,7 @@ import {useAuth} from "../components/AuthComponents";
 import React, {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {logOut} from "../logic/login";
+import { UnauthorizedRequestError } from '../types/requestErrors';
 
 function SetSchedulePage() {
     const auth = useAuth();
@@ -27,19 +28,10 @@ function SetSchedulePage() {
         let errorTimes = 0;
         setError('');
         setLoading(true);
-        const actions = slots.map(async (s) => setScheduleDate(s, auth.token).catch(reason => {
-            switch (reason.status) {
-                case 401:
-                    logOut(auth)
-                    navigate('/loginDoctor');
-                    errorTimes++
-                    break;
-                case 422:
-                    errorTimes++
-                    break;
-                default:
-                    errorTimes++
-            }
+        const actions = slots.map(async (s) => setScheduleDate(s, auth).catch(reason => {
+            if(reason instanceof UnauthorizedRequestError)
+                logOut(auth);
+            errorTimes++;
         }));
         await Promise.all(actions);
         setLoading(false);
