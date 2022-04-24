@@ -1,8 +1,8 @@
 import React from 'react'
-import RegisterPatientPage from "../pages/RegisterPatientPage";
+import RegisterPatientPage from "../../pages/RegisterPatientPage";
 import {render, screen, waitFor} from "@testing-library/react";
 import user from '@testing-library/user-event'
-import {RegistrationData} from "../components/RegisterPatientForm";
+import {RegistrationData} from "../../components/forms/RegisterPatientForm";
 import {setupServer} from "msw/node";
 import {MockedRequest, ResponseComposition, rest} from "msw";
 import {SubmitHandler} from "react-hook-form";
@@ -36,7 +36,7 @@ beforeAll(() => server.listen());
 afterAll(() => server.close());
 afterEach(() => server.resetHandlers());
 
-jest.mock("../components/RegisterPatientForm", () => {
+jest.mock("../../components/forms/RegisterPatientForm", () => {
     return function DummyRegisterPatientForm(props: { onSubmit: SubmitHandler<RegistrationData> }) {
         return (<button onClick={() => props.onSubmit(mockedData)}>Click</button>)
     };
