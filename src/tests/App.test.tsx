@@ -4,7 +4,6 @@ import user  from '@testing-library/user-event';
 import LoginForm from "../components/LoginForm";
 import ScheduleForm from "../components/ScheduleForm";
 
-
 const testEmail = "email@example.com"
 const testPwd = "password"
 const testInvEmail = "e@ecom"
@@ -19,9 +18,11 @@ function getPasswordInput() {
 }
 
 describe("Login Form" , () => {
+
   beforeEach(() => {
     render(<LoginForm onSubmit={onSubmit}/>);
   })
+  
   it('invalidates empty form', async () => {
     user.click(screen.getByRole('button', {name: /Log in/i}));
     await waitFor(() => {
@@ -54,6 +55,7 @@ describe("Login Form" , () => {
     });
   });
 });
+
 describe("Set Schedule Form", () => {
   it('validates form on save', async () => {
     render(<ScheduleForm onSubmit={onSubmit}/>)
@@ -63,6 +65,7 @@ describe("Set Schedule Form", () => {
     })
   });
 });
+
 describe("DoctorDashboard", () => {
   it('routes to setSchedule', async () => {
     //TODO

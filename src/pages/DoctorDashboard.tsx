@@ -7,10 +7,12 @@ import {AuthContextType} from '../types/auth';
 import {Vaccination, Visit} from '../types/vaccination';
 import {addDays, addMinutes} from '../utils/dateUtils';
 import DatePicker from 'react-date-picker';
-import {deleteVisit, getSlots} from '../logic/doctorAPI';
-import {useAuth} from '../components/AuthComponents';
+import { deleteVisit, getSlots } from '../logic/doctorAPI';
+import { useAuth } from '../components/AuthComponents';
+import { logOut } from '../logic/login';
 
 function DoctorDashboard() {
+    const auth: AuthContextType = useAuth();
     const navigate = useNavigate()
     let today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -27,7 +29,6 @@ function DoctorDashboard() {
         {name: 'Free', value: '0'},
         {name: 'Reserved', value: '1'},
     ];
-    let auth: AuthContextType = useAuth();
 
     const getVisits = () => {
         setError('')
@@ -48,7 +49,7 @@ function DoctorDashboard() {
         }).catch(reason => {
             switch (reason.status) {
                 case 401:
-                    auth.signOut()
+                    logOut(auth);
                     navigate('/loginDoctor');
                     break;
                 case 422:

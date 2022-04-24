@@ -7,6 +7,7 @@ import {MockedRequest, ResponseComposition, rest} from "msw";
 import {SubmitHandler} from "react-hook-form";
 import SetSchedulePage from "../pages/SetSchedulePage";
 import {MemoryRouter, Router} from "react-router-dom";
+import { AuthState } from "../types/auth";
 const slots = [
     {
         beginning: {
@@ -64,7 +65,7 @@ jest.mock('../components/AuthComponents', () => ({
     useAuth: () =>  {
         return {
             token: "sampleToken",
-            signOut: () => {}
+            modifyState: (modifyFunc: React.SetStateAction<AuthState>) => { },
         }
     }
 

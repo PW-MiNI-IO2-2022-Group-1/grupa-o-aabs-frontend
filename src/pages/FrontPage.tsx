@@ -34,7 +34,7 @@ function FrontAuthPage(): JSX.Element {
         <div className='row mt-5'>
             <div className='col text-center'>
                 <div className='mb-4'>
-                    <Icon.PencilSquare onClick={() => navigate('registerPatient')}
+                    <Icon.PencilSquare onClick={() => navigate('patient/registerPatient')}
                         className='iconbutton' fontSize='5em'/>
                 </div>
                 <h1>Sign up as a patient</h1>

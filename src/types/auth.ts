@@ -5,8 +5,7 @@ export type AuthContextType = {
     token: string | null;
     role: Role | null;
 
-    signIn: (role: Role, email: string, password: string) => void;
-    signOut: () => void;
+    modifyState: (modifyFunc: React.SetStateAction<AuthState>) => void;
 }
 
 export type AuthState = {
