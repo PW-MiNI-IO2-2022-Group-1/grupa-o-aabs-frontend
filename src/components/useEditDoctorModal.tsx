@@ -4,6 +4,7 @@ import { Button, Container, Modal, Row} from "react-bootstrap";
 import { Doctor } from "../types/users";
 import * as Yup from 'yup'
 import { EditField } from "./EditField";
+import DoctorDashboard from "../pages/DoctorDashboard";
 
 interface EditDoctorModalState {
     isVisible: boolean;
@@ -68,8 +69,15 @@ export function useEditDoctorModal(): [(doctor: Doctor,
     const onClose = () => {
         if(form.isValid) {
             closeModal();
-            if(state.callback !== undefined && state.doctor !== undefined)
-                state.callback(state.doctor);
+            if(state.callback !== undefined && state.doctor !== undefined) {
+                const newDoctor: Doctor = {
+                    id: state.doctor.id,
+                    firstName: form.values.firstName ?? state.doctor.firstName,
+                    lastName: form.values.lastName ?? state.doctor.lastName,
+                    email: form.values.email ?? state.doctor.email,
+                };
+                state.callback(newDoctor);
+            }
         }
     }
 
@@ -77,7 +85,7 @@ export function useEditDoctorModal(): [(doctor: Doctor,
         return <Modal show={state.isVisible} onHide={closeModal}
                backdrop='static'>
             <Modal.Header>
-                <Modal.Title>Edit patient</Modal.Title>     
+                <Modal.Title>Edit doctor</Modal.Title>     
             </Modal.Header>
             <Modal.Body>
                 <Container>

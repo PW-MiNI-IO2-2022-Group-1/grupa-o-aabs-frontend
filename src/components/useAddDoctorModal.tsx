@@ -1,14 +1,13 @@
 import { useFormik } from "formik";
+import { fromPairs } from "lodash";
 import { useState } from "react";
 import { Button, Container, Modal, Row} from "react-bootstrap";
-import { Doctor } from "../types/users";
 import * as Yup from 'yup'
-import { EditField } from "./EditField";
-import { fromPairs } from "lodash";
+import { NewDoctorData } from "../types/adminAPITypes";
 
 interface AddDoctorModalState {
     isVisible: boolean;
-    callback: ((doctor: AddDoctorForm) => void) | undefined;
+    callback: ((doctor: NewDoctorData) => void) | undefined;
 }
 
 export interface AddDoctorForm {
@@ -19,7 +18,7 @@ export interface AddDoctorForm {
     passwordRepeated?: string;
 }
 
-export function useAddDoctorModal(): [(callback: (doctor: AddDoctorForm) => void) => void,
+export function useAddDoctorModal(): [(callback: (doctor: NewDoctorData) => void) => void,
                                        () => JSX.Element] {
     const [state, setState] = useState<AddDoctorModalState>({
         isVisible: false,
@@ -65,7 +64,7 @@ export function useAddDoctorModal(): [(callback: (doctor: AddDoctorForm) => void
         return true;
     }
 
-    const showModal = (editCallback: (doctor: AddDoctorForm) => void) => {
+    const showModal = (editCallback: (doctor: NewDoctorData) => void) => {
         setState((state) => {
             state.isVisible = true;
             state.callback = editCallback;
@@ -76,8 +75,15 @@ export function useAddDoctorModal(): [(callback: (doctor: AddDoctorForm) => void
     const onClose = () => {
         if(form.isValid && isFormFilled()) {
             closeModal();
-            if(state.callback !== undefined)
-                state.callback(form.values);
+            if(state.callback !== undefined) {
+                const doctorData: NewDoctorData = {
+                    firstName: form.values.firstName!,
+                    lastName: form.values.lastName!,
+                    email: form.values.email!,
+                    password: form.values.password!
+                }
+                state.callback(doctorData);
+            }
         }
     }
 

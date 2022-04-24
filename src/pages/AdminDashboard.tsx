@@ -6,32 +6,55 @@ import { Doctor } from '../types/users';
 import { useEffect, useState } from 'react';
 import { useEditDoctorModal } from '../components/useEditDoctorModal';
 import { AddDoctorForm, useAddDoctorModal } from '../components/useAddDoctorModal';
+import { useSimpleModal } from '../components/useSimpleModal';
+import { NewDoctorData } from '../types/adminAPITypes';
+import * as API from '../logic/adminAPI';
 
 function AdminDashboard(): JSX.Element {
     const auth = useAuth();
     const [doctors, setDoctors] = useState<Doctor[]>([]);
+
+    const [page, setPage] = useState<number>(1);
+    const [pageNumber, setPageNumber] = useState<number>(1);
+
+    const [showErrorModal, renderErrorModal] = useSimpleModal();
     const [showEditModal, renderEditModal] = useEditDoctorModal();
     const [showAddModal, renderAddModal] = useAddDoctorModal();
 
-    useEffect(() => {
-        if(doctors.length == 0) {
-            setDoctors((doctors) => {
-                for(let i = 0; i < 20; i++) {
-                    doctors.push({
-                        'firstName': `Name${i}`,
-                        'lastName': `Lastname${i}`,
-                        'email': `email${i}@email.com`,
-                        'id': i
-                    });
-                }
-                return [...doctors];
-            });
-        }
-    }, []);
-
-    const removeDoctor = (doctor: Doctor) => {
-        setDoctors((doctors) => doctors.filter((x) => x !== doctor));
+    const loadDoctors = () => {
+        API.getDoctors(auth, page).then(pair => {
+            setDoctors(pair[0]);
+            setPageNumber(pair[1].totalPages);
+        }).catch(reason => {
+            console.log(reason);
+            showErrorModal('Error', 'Unexpected error');
+        });
     }
+
+    const deleteDoctor = (doctor: Doctor) => {
+        API.deleteDoctor(auth, doctor).catch(reason => {
+            console.log(reason);
+            showErrorModal('Error', 'Unexpected error');
+        }).then(() => loadDoctors());
+    }
+
+    const editDoctor = (doctor: Doctor) => {
+        API.editDoctor(auth, doctor).catch((reason) => {
+            console.log(reason);
+            showErrorModal('Error', 'Unexpected error');
+        }).then(() => loadDoctors());
+    }
+
+    const createDoctor = (doctorData: NewDoctorData) => {
+        API.createDoctor(auth, doctorData).catch((reason) => {
+            console.log(reason);
+            showErrorModal('Error', 'Unexpected error');
+        }).then(() => loadDoctors());
+    }
+
+    useEffect(() => {
+        loadDoctors();
+    }, [page]);
 
     const renderRow = (doctor: Doctor) => {
         return (<tr key={`row-${doctor.id}`}>
@@ -41,10 +64,10 @@ function AdminDashboard(): JSX.Element {
             <td>
                 <Icons.PencilSquare className='text-primary'
                  style={{cursor: 'pointer'}}
-                 onClick={() => showEditModal(doctor, (doctor: Doctor) => {})}/>
+                 onClick={() => showEditModal(doctor, editDoctor)}/>
                 <Icons.Trash3Fill className='text-danger'
                  style={{cursor: 'pointer'}}
-                 onClick={() => removeDoctor(doctor)}/>
+                 onClick={() => deleteDoctor(doctor)}/>
             </td>
         </tr>);
     }
@@ -57,14 +80,45 @@ function AdminDashboard(): JSX.Element {
             <td>
                 <Icons.PersonPlusFill className='text-primary'
                   style={{cursor: 'pointer'}}
-                  onClick={() => showAddModal((data: AddDoctorForm) => {})}/>
+                  onClick={() => showAddModal(createDoctor)}/>
             </td>
         </tr>)
+    }
+
+    const modifyPage = (delta: number) => {
+        if(page + delta >= 1 && page + delta <= pageNumber)
+            setPage(page => page + delta);
+        return false;
+    }
+
+    const renderPaginationMenu = () => {
+        const visiblePages: number[] = [];
+        const minPage = Math.max(1, page - 3);
+        const maxPage = Math.min(pageNumber, page + 3);
+        for(let i = minPage; i <= maxPage; i++)
+            visiblePages.push(i);
+        return (<nav className='d-flex justify-content-center'>
+            <ul className='pagination'>
+                <li className='page-item'><a className='page-link' onClick={() => modifyPage(-1)}>&laquo;</a></li>
+                {visiblePages.map(x => {
+                    return (<li className={'page-item' + (page == x ? ' active' : '')}>
+                        <a className='page-link'
+                            onClick={() => {
+                                setPage(x);
+                                return false;
+                            }}
+                        >{x}</a>
+                    </li>);
+                })}
+                <li className='page-item'><a className='page-link' onClick={() => modifyPage(1)}>&raquo;</a></li>
+            </ul>
+        </nav>);
     }
 
     return (<>
         {renderEditModal()}
         {renderAddModal()}
+        {renderErrorModal()}
         <Container>
             <Table bordered className='text-center'>
                 <thead className='table-dark'>
@@ -85,13 +139,7 @@ function AdminDashboard(): JSX.Element {
                     {renderAddNewDoctorRow()}
                 </tbody>
             </Table>
-            <nav className='d-flex justify-content-center'>
-                <ul className='pagination'>
-                    <li className='page-item'><a className='page-link'>&laquo;</a></li>
-                    <li className='page-item'><a className='page-link'>1</a></li>
-                    <li className='page-item'><a className='page-link'>&raquo;</a></li>
-                </ul>
-            </nav>
+            {renderPaginationMenu()}
         </Container>
     </>);
 
