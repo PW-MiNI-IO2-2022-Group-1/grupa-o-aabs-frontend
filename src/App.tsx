@@ -54,9 +54,7 @@ export default function App() {
                     <Route
                         path='/admin'
                         element={
-                            <RequireAuth role={Role.Admin} authLocation={'/loginAdmin'}>
-                                    <AdminDashboard></AdminDashboard>
-                            </RequireAuth>
+                            <AdminDashboard/>
                         }
                     />
                     <Route
