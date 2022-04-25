@@ -99,9 +99,11 @@ function AdminDashboard(): JSX.Element {
             visiblePages.push(i);
         return (<nav className='d-flex justify-content-center'>
             <ul className='pagination'>
-                <li className='page-item'><a className='page-link' onClick={() => modifyPage(-1)}>&laquo;</a></li>
+                <li className='page-item' style={{cursor: 'pointer'}}>
+                    <a className='page-link' onClick={() => modifyPage(-1)}>&laquo;</a>
+                </li>
                 {visiblePages.map(x => {
-                    return (<li className={'page-item' + (page == x ? ' active' : '')}>
+                    return (<li style={{cursor: 'pointer'}} className={'page-item' + (page == x ? ' active' : '')}>
                         <a className='page-link'
                             onClick={() => {
                                 setPage(x);
@@ -110,7 +112,9 @@ function AdminDashboard(): JSX.Element {
                         >{x}</a>
                     </li>);
                 })}
-                <li className='page-item'><a className='page-link' onClick={() => modifyPage(1)}>&raquo;</a></li>
+                <li style={{cursor: 'pointer'}} className='page-item'>
+                    <a className='page-link' onClick={() => modifyPage(1)}>&raquo;</a>
+                </li>
             </ul>
         </nav>);
     }
