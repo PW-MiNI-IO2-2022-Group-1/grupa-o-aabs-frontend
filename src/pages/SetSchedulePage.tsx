@@ -73,10 +73,10 @@ function SetSchedulePage() {
             <h1>{loading ? 'sending data to server...' : 'Select your timeslots:'}</h1>
             {error !== '' ? <div data-testid='errors'> {error.split('\n').map((line) => {
                 return (
-                    <>
+                    <div key={line}>
                         {line}
                         <br/>
-                    </>
+                    </div>
                 )
             })} </div> : <></>}
             {loading ? <Spinner animation="border"/> : <ScheduleForm onSubmit={submitForm}/>}
