@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router';
 import { logOut } from '../logic/login';
 import { EditPatientDetailsData } from '../types/patientAPITypes';
 import { Container, Row, Col} from 'react-bootstrap';
+import EditPatientDetailsForm from "../components/forms/EditPatientDetailsForm";
 
 export interface PatientDetailsFormData {
     firstName?: string;
@@ -53,33 +54,15 @@ export default function EditPatientDetailsPage(): JSX.Element {
     const auth = useAuth();
     const navigate = useNavigate();
     const patient: Patient = auth.user as Patient;
-
-    const [show, setShow] = useState(false);
-    const [modalMsg, setModalMsg] = useState("");
-    const [success, setSuccess] = useState(false);
-
-    const displayNames = new Map<String, String>([
-        ['firstName', 'First name'],
-        ['lastName', 'Last name'],
-        ['password', 'Password'],
-        ['city', 'City'],
-        ['zipCode', 'Zip code'],
-        ['street', 'Street'],
-        ['houseNumber', 'House number'],
-        ['localNumber', 'Local number'],
-    ]);
-    const inputTypes = new Map<String, String>();
-    inputTypes.set('password', 'password');
-
     const validationSchema = Yup.object().shape({
         firstName: Yup.string().min(2, 'First name is required')
-        .matches(RegExp(/[A-Z].+/g), "First name has to start with uppercase letter"),
+            .matches(RegExp(/[A-Z].+/g), "First name has to start with uppercase letter"),
         lastName: Yup.string().min(2, 'Last name is required')
-        .matches(RegExp(/[A-Z].+/g), "Last name has to start with uppercase letter"),
+            .matches(RegExp(/[A-Z].+/g), "Last name has to start with uppercase letter"),
         city: Yup.string().required('City is required')
-        .matches(RegExp(/[A-Z].+/g), "City has to start with uppercase letter"),
+            .matches(RegExp(/[A-Z].+/g), "City has to start with uppercase letter"),
         zipCode: Yup.string().required('Zip code is required')
-        .matches(RegExp(/\d\d-\d\d\d/g), "Zip code is invalid"),
+            .matches(RegExp(/\d\d-\d\d\d/g), "Zip code is invalid"),
         street: Yup.string().required('Street is required'),
         houseNumber: Yup.string().required('House number is required'),
         localNumber: Yup.string()
@@ -99,6 +82,11 @@ export default function EditPatientDetailsPage(): JSX.Element {
         validationSchema: validationSchema,
         onSubmit: (values) => { }
     });
+
+    const [show, setShow] = useState(false);
+    const [modalMsg, setModalMsg] = useState("");
+    const [success, setSuccess] = useState(false);
+
 
     const onSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -130,15 +118,6 @@ export default function EditPatientDetailsPage(): JSX.Element {
         setShow(true);
     }
 
-    const renderEditField = (key: string): JSX.Element => {
-        const error = (form.errors as any)[key];
-        const displayName = getOrDefault(displayNames, key, '').valueOf();
-        const inputType = getOrDefault(inputTypes, key, 'text').valueOf();
-        return <EditField key={key} valueKey={key} displayName={displayName}
-            values={form.values} handleChange={form.handleChange}
-            error={error} type={inputType}/>
-    }
-
     return (<>
         <Modal show={show} onHide={closeMessage} backdrop="static">
             <Modal.Header>
@@ -154,35 +133,7 @@ export default function EditPatientDetailsPage(): JSX.Element {
         </Modal>
         <Container fluid className='text-center'>Patient details
             <div className='gap'/>
-            <form onSubmit={onSubmit} className='form-container' data-testid='form'
-                style={{width: '800px'}}>
-                <Row>
-                    <Col>{renderEditField('firstName')}</Col>
-                    <Col>{renderEditField('lastName')}</Col>
-                </Row>
-                <Row>
-                    <Col>{renderEditField('password')}</Col>
-                    <Col/>
-                </Row>
-                <Row><div style={{height: '50px'}}/></Row>
-                <Row>
-                    <Col>{renderEditField('city')}</Col>
-                    <Col>{renderEditField('zipCode')}</Col>
-                </Row>
-                <Row>
-                    <Col>{renderEditField('street')}</Col>
-                    <Col>{renderEditField('houseNumber')}</Col>
-                </Row>
-                <Row>
-                    <Col>{renderEditField('localNumber')}</Col>
-                    <Col/>
-                </Row>
-                <Row><div style={{height: '50px'}}/></Row>
-                <Row className='justify-content-center'>
-                    <input type='submit' className='btn btn-light btn-outline-dark'
-                        style={{width: '150px'}} value='Change details'/>
-                </Row>
-            </form>
+            <EditPatientDetailsForm onSubmit={onSubmit} form={form}/>
         </Container>
     </>); 
 }
