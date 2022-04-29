@@ -1,7 +1,7 @@
 import { useState } from "react";
 import StageChoice from "../components/StageChoice";
-import VaccinationDateChoiceForm from "../components/VaccinationDateChoiceForm";
-import VaccineChoiceForm from "../components/VaccineChoiceForm";
+import VaccinationDateChoiceForm from "../components/forms/VaccinationDateChoiceForm";
+import VaccineChoiceForm from "../components/forms/VaccineChoiceForm";
 import { Timeslot, Vaccine } from "../types/vaccination";
 import './VaccineRegistrationPage.css';
 import { CSSTransition, SwitchTransition } from 'react-transition-group';
