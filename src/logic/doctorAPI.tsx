@@ -8,6 +8,7 @@ export function getSlots(start: Date | null, end: Date | null, onlyReserved: str
     let sDate = start == null ? '' : `&startDate=${encodeURIComponent(start.toISOString())}`;
     let eDate = end == null ? '' : `&endDate=${encodeURIComponent(end.toISOString())}`;
     let reserved = onlyReserved === '-1' ? '' : `onlyReserved=${encodeURIComponent(onlyReserved)}&`
+
     return fetch(`${BASE_URL}/doctor/vaccination-slots?${reserved}page=${page}${sDate}${eDate}`,
         {
             method: "GET",

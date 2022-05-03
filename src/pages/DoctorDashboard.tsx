@@ -33,7 +33,7 @@ function DoctorDashboard() {
     const getVisits = () => {
         setError('')
         setLoading(true);
-        getSlots(startDate, endDate, reserved, auth.token, Math.max(page,1)).then((response) => {
+        getSlots(startDate, endDate, reserved, auth, Math.max(page,1)).then((response) => {
             setPage(Math.min(response.pagination.totalPages, page))
             setMaxPage(response.pagination.totalPages);
             console.log(response.data);
@@ -68,7 +68,7 @@ function DoctorDashboard() {
     }, [startDate, endDate, reserved, page])
 
     function remove(index: number) {
-        deleteVisit(Visits[index], auth.token).then( () => {
+        deleteVisit(Visits[index], auth).then( () => {
             getVisits();
             return '';
         }).catch((reason => {

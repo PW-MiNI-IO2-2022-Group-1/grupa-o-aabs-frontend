@@ -1,27 +1,14 @@
 import { Role } from '../types/users';
 import { BASE_URL } from './config';
-import { StatusCodes } from 'http-status-codes';
-import { UnauthorizedRequestError, UnexpectedRequestError } from '../types/requestErrors';
 import { AuthContextType } from '../types/auth';
+import { apiPost, checkStatusAndGetBody } from './API';
 
 export async function logIn(auth: AuthContextType, role: Role, email: string, 
                             password: string): Promise<any> {
-    return await fetch(`${BASE_URL}/${role}/login`,
-        {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({email: email, password: password})
-        }).then(response => {
-            if (response.ok) {
-                return response.json()
-            }
-            else if(response.status === StatusCodes.UNAUTHORIZED)
-                throw new UnauthorizedRequestError('Invalid credentials');
-            else
-                throw new UnexpectedRequestError('Unexpected error');
-        }).then((json) => {
+    return await apiPost(`${BASE_URL}/${role}/login`, undefined,
+            JSON.stringify({email: email, password: password}))
+        .then(checkStatusAndGetBody)
+        .then((json) => {
             auth.modifyState((state) => {
                 state.token = json.token;
                 state.role = role;
