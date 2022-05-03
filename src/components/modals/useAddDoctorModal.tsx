@@ -3,7 +3,7 @@ import { fromPairs } from "lodash";
 import { useState } from "react";
 import { Button, Container, Modal, Row} from "react-bootstrap";
 import * as Yup from 'yup'
-import { NewDoctorData } from "../types/adminAPITypes";
+import { NewDoctorData } from "../../types/adminAPITypes";
 
 interface AddDoctorModalState {
     isVisible: boolean;

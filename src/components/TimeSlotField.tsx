@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import { Control, useFieldArray, UseFormGetValues, UseFormRegister } from 'react-hook-form';
-import { DoctorScheduleForm } from './ScheduleForm';
+import { DoctorScheduleForm } from './forms/ScheduleForm';
 import './TimeSlotField.css'
 
 interface timeSlotProps {

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import StageChoice from "../components/StageChoice";
-import VaccinationDateChoiceForm from "../components/VaccinationDateChoiceForm";
-import VaccineChoiceForm from "../components/VaccineChoiceForm";
+import VaccinationDateChoiceForm from "../components/forms/VaccinationDateChoiceForm";
+import VaccineChoiceForm from "../components/forms/VaccineChoiceForm";
 import { Timeslot, Vaccine } from "../types/vaccination";
 import './VaccineRegistrationPage.css';
 import { CSSTransition, SwitchTransition } from 'react-transition-group';
@@ -9,7 +9,7 @@ import moment from 'moment';
 import { useNavigate } from "react-router";
 import { reserveTimeslot } from "../logic/patientApi";
 import { useAuth } from "../components/AuthComponents";
-import { useSimpleModal } from "../components/useSimpleModal";
+import { useSimpleModal } from "../components/modals/useSimpleModal";
 import { UnauthorizedRequestError } from '../types/requestErrors';
 import { logOut } from "../logic/login";
 
