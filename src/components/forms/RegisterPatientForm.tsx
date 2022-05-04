@@ -43,7 +43,6 @@ export default function RegisterPatientForm(props: { onSubmit: SubmitHandler<Reg
                         required: "Email required"
                     })}
                     isInvalid={!!errors.email}
-                    //isValid={!errors.email}
                 />
                 <Form.Control.Feedback type="invalid">
                     {errors.email?.message}
@@ -62,25 +61,11 @@ export default function RegisterPatientForm(props: { onSubmit: SubmitHandler<Reg
                             required: 'Password required'
                         })}
                         isInvalid={!!errors.password}
-                        //isValid={!errors.password}
                     />
                     <Form.Control.Feedback type="invalid">
                         {errors.password?.message}
                     </Form.Control.Feedback>
                 </Form.Group>
-
-                {/*<Form.Group as={Col} md="6">*/}
-                {/*    <Form.Label>*/}
-                {/*        Repeat password*/}
-                {/*    </Form.Label>*/}
-                {/*    <Form.Control*/}
-                {/*        type="password"*/}
-                {/*        placeholder=""*/}
-                {/*        {...register("", {*/}
-                {/*            validate: value => value === getValues("password")*/}
-                {/*        })}*/}
-                {/*    />*/}
-                {/*</Form.Group>*/}
             </Row>
             <h2 className="mt-4">
                 Personal data
@@ -97,7 +82,6 @@ export default function RegisterPatientForm(props: { onSubmit: SubmitHandler<Reg
                             required: 'First name required'
                         })}
                         isInvalid={!!errors.firstName}
-                        //isValid={!errors.firstName}
                     />
                     <Form.Control.Feedback type="invalid">
                         {errors.firstName?.message}
@@ -115,7 +99,6 @@ export default function RegisterPatientForm(props: { onSubmit: SubmitHandler<Reg
                             required: true
                         })}
                         isInvalid={!!errors.lastName}
-                        //isValid={!errors.lastName}
                     />
                     <Form.Control.Feedback type="invalid">
                         {errors.lastName?.message}
@@ -131,7 +114,6 @@ export default function RegisterPatientForm(props: { onSubmit: SubmitHandler<Reg
                         type="text"
                         placeholder="PESEL"
                         {...register("pesel", {
-                            //dodać regexp sprawdzający pesel
                             required: {
                                 value: true,
                                 message: "PESEL required"
@@ -142,7 +124,6 @@ export default function RegisterPatientForm(props: { onSubmit: SubmitHandler<Reg
                             }
                         })}
                         isInvalid={!!errors.pesel}
-                        //isValid={!errors.pesel}
                     />
                     <Form.Control.Feedback type="invalid">
                         {errors.pesel?.message}
@@ -165,7 +146,6 @@ export default function RegisterPatientForm(props: { onSubmit: SubmitHandler<Reg
                             required: 'City required'
                         })}
                         isInvalid={!!(errors.address?.city)}
-                        //isValid={!errors.address?.city}
                     />
                     <Form.Control.Feedback type="invalid">
                         {errors.address?.city?.message}
@@ -183,12 +163,11 @@ export default function RegisterPatientForm(props: { onSubmit: SubmitHandler<Reg
                         {...register("address.zipCode", {
                             required: 'Zip code required',
                             pattern: {
-                                value: /[0-9]{2}-[0-9]{3}/,
+                                value: /^[0-9]{2}-[0-9]{3}$/,
                                 message: 'Wrong zip code format'
                             }
                         })}
                         isInvalid={!!errors.address?.zipCode}
-                        //isValid={!errors.address?.zipCode}
                     />
                     <Form.Control.Feedback type="invalid">
                         {errors.address?.zipCode?.message}
@@ -209,7 +188,6 @@ export default function RegisterPatientForm(props: { onSubmit: SubmitHandler<Reg
                             required: 'Street required'
                         })}
                         isInvalid={!!errors.address?.street}
-                        //isValid={!errors.address?.street}
                     />
                     <Form.Control.Feedback type="invalid">
                         {errors.address?.street?.message}
@@ -227,7 +205,6 @@ export default function RegisterPatientForm(props: { onSubmit: SubmitHandler<Reg
                             required: 'House number required'
                         })}
                         isInvalid={!!errors.address?.houseNumber}
-                        //isValid={!errors.address?.houseNumber}
                     />
                     <Form.Control.Feedback type="invalid">
                         {errors.address?.houseNumber?.message}
@@ -243,7 +220,6 @@ export default function RegisterPatientForm(props: { onSubmit: SubmitHandler<Reg
                         placeholder="Local Number"
                         {...register("address.localNumber")}
                         isInvalid={!!errors.address?.localNumber}
-                        //isValid={!errors.address?.localNumber}
                     />
                     <Form.Control.Feedback type="invalid">
                         {errors.address?.localNumber?.message}
