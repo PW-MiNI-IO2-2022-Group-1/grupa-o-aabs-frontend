@@ -68,7 +68,7 @@ export default function App() {
                         }
                     />
                     <Route
-                        path='patient/registerPatient'
+                        path='patient/register'
                         element={<RegisterPatientPage/>}
                     />
 

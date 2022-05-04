@@ -39,7 +39,7 @@ function LoginPage({role}: {role: Role}) {
     }
 
     return (<>
-        <Modal show={show} onHide={handleClose} backdrop='static'>
+        <Modal show={show} onHide={handleClose} backdrop='static' id='modal'>
             <Modal.Header>
                 <Modal.Title>Error</Modal.Title>
             </Modal.Header>
