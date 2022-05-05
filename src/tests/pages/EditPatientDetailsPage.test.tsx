@@ -36,38 +36,6 @@ const mockedUser = {
 
 }
 
-const convertToEvent = (data: PatientDetailsFormData) => {
-    return {
-        preventDefault: () => {},
-        target: {
-            firstName: {
-                value: data.firstName,
-            },
-            lastName: {
-                value: data.lastName,
-            },
-            password: {
-                value: data.password,
-            },
-            zipCode: {
-                value: data.zipCode,
-            },
-            city: {
-                value: data.city
-            },
-            houseNumber: {
-                value: data.houseNumber,
-            },
-            localNumber: {
-                value: data.localNumber,
-            },
-            street: {
-                value: data.street,
-            },
-        }
-    }
-};
-
 const server = setupServer(
     rest.put('*/patient/account', async (request: MockedRequest, response: ResponseComposition, ctx) => {
         if(request.headers.get('Authorisation') !== "")
