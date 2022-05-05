@@ -2,8 +2,6 @@ import {render, screen, waitFor} from "@testing-library/react";
 import user from "@testing-library/user-event";
 import React from "react";
 import EditPatientDetailsForm from "../../components/forms/EditPatientDetailsForm";
-import EditField from "../../components/EditField";
-import {wait} from "@testing-library/user-event/dist/utils";
 
 
 const mockedInvalidData = {
@@ -42,9 +40,10 @@ const mockedInitialValues = {
 }
 
 const onSubmit = jest.fn();
-describe("Edit Patient Details Form" , () => {
+describe("Edit Patient Details Form", () => {
 
     beforeEach(() => {
+        // eslint-disable-next-line testing-library/no-render-in-setup
         render(<EditPatientDetailsForm onSubmit={onSubmit} initialValues={mockedInitialValues}/>);
     })
 
@@ -55,8 +54,9 @@ describe("Edit Patient Details Form" , () => {
         })
     });
 
-    for(let key in mockedInvalidData) {
+    for (let key in mockedValidData) {
         it('validates properly edited ' + key, async () => {
+            typeValidData(key);
             user.click(getSubmitButton());
             await waitFor(() => {
                 expect(onSubmit).toHaveBeenCalled();
@@ -64,7 +64,7 @@ describe("Edit Patient Details Form" , () => {
         });
     }
 
-    for(let key in mockedInvalidData){
+    for (let key in mockedInvalidData) {
         it('invalidates incorrect ' + key, async () => {
             typeInvalidData(key);
             user.click(getSubmitButton());
@@ -74,7 +74,7 @@ describe("Edit Patient Details Form" , () => {
         });
     }
 
-    for(let key in mockedRequiredData){
+    for (let key in mockedRequiredData) {
         it('invalidates empty required field ' + key, async () => {
             typeNothingToRequiredData(key);
             user.click(getSubmitButton());
@@ -88,7 +88,7 @@ describe("Edit Patient Details Form" , () => {
 
 async function typeData(key: string, data: string) {
     user.clear(getInputByKey(key));
-    if(data !== '')  user.type(getInputByKey(key), (mockedValidData as any)[key]);
+    if (data !== '') user.type(getInputByKey(key), (mockedValidData as any)[key]);
     await waitFor(() => {
         expect(getInputByKey(key)).toHaveValue(data)
     })
@@ -105,9 +105,11 @@ function typeValidData(key: string) {
 function typeNothingToRequiredData(key: string) {
     typeData(key, '');
 }
+
 function getInputByKey(key: string) {
     return screen.getByTestId(key)
 }
+
 function getSubmitButton() {
     return screen.getByRole('button', {
         name: /change details/i
@@ -115,25 +117,25 @@ function getSubmitButton() {
 }
 
 jest.mock('../../components/EditField', () => {
-    return function EditField<T>( props: {
+    return function EditField<T>(props: {
         valueKey: string;
         displayName: string;
         type: string;
-        values:  T;
+        values: T;
         handleChange: React.ChangeEventHandler<HTMLInputElement>;
         error: string | undefined;
     }) {
         return (<input
-                    id={props.valueKey}
-                    type={props.type}
-                    data-testid={props.valueKey}
-                    onChange={props.handleChange}
-                    value={(props.values as any)[props.valueKey]}
-                    style={{width: '250px'}}
-                    className={`form-control${props.error === undefined
-                        ? ''
-                        : ' is-invalid'}`}
-                />);
+            id={props.valueKey}
+            type={props.type}
+            data-testid={props.valueKey}
+            onChange={props.handleChange}
+            value={(props.values as any)[props.valueKey]}
+            style={{width: '250px'}}
+            className={`form-control${props.error === undefined
+                ? ''
+                : ' is-invalid'}`}
+        />);
     }
 })
 

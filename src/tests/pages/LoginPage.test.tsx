@@ -1,17 +1,14 @@
-import {render, screen, waitFor} from "@testing-library/react";
-import {$enum} from "ts-enum-util";
-import user from "@testing-library/user-event";
 import React from "react";
+import {$enum} from "ts-enum-util";
 import {setupServer} from "msw/node";
-import {MockedRequest, ResponseComposition, rest} from "msw";
-import {MemoryRouter} from "react-router-dom";
-import {AuthState} from "../../types/auth";
-import EditPatientDetailsPage, {PatientDetailsFormData} from "../../pages/EditPatientDetailsPage";
 import {Role} from "../../types/users";
 import LoginPage from "../../pages/LoginPage";
-import mock = jest.mock;
-import {wait} from "@testing-library/user-event/dist/utils";
+import {MemoryRouter} from "react-router-dom";
+import user from "@testing-library/user-event";
 import {AuthProvider} from "../../components/AuthComponents";
+import {MockedRequest, ResponseComposition, rest} from "msw";
+import {render, screen, waitFor} from "@testing-library/react";
+import {PatientDetailsFormData} from "../../pages/EditPatientDetailsPage";
 
 const mockUser = {
     firstName: 'Adam',
@@ -36,11 +33,11 @@ const mockInvalidLogin = {
 }
 
 const server = setupServer(
-    ...$enum(Role).map((role: Role) =>  {
-        return (rest.post(`*/${role}/login`, async (request: MockedRequest, response: ResponseComposition, ctx) => {
-            // @ts-ignore
-            const {email, password} = request.body;
-                if(email === mockValidLogin.email && password === mockValidLogin.password)
+    ...$enum(Role).map((role: Role) => {
+            return (rest.post(`*/${role}/login`, async (request: MockedRequest, response: ResponseComposition, ctx) => {
+                // @ts-ignore
+                const {email, password} = request.body;
+                if (email === mockValidLogin.email && password === mockValidLogin.password)
                     return response(
                         ctx.delay(100),
                         ctx.json({}),
@@ -58,7 +55,7 @@ const server = setupServer(
 
 const mockNavigate = jest.fn();
 
-const AllTheProviders = ({ children }: any) => {
+const AllTheProviders = ({children}: any) => {
     return (
         <AuthProvider>
             <MemoryRouter>
@@ -75,7 +72,7 @@ jest.mock('react-router-dom', () => ({
 }));
 
 jest.mock("../../components/forms/LoginForm", () => {
-    return function DummyEditPatientDetailsForm(props: { onSubmit: (e: any) => void, initialValues: PatientDetailsFormData}) {
+    return function DummyEditPatientDetailsForm(props: { onSubmit: (e: any) => void, initialValues: PatientDetailsFormData }) {
         return (<button onClick={
                 () => props.onSubmit(mockInvalidLogin)
             }>
@@ -84,15 +81,16 @@ jest.mock("../../components/forms/LoginForm", () => {
         )
     };
 });
-for(let role in Role){
-    describe(role + "Login Page", () => {
+for (let role in Role) {
+    describe(role + " Login Page", () => {
 
         beforeAll(() => {
             server.listen();
         });
 
         beforeEach(() => {
-            render(<LoginPage role={role}/>, {wrapper: AllTheProviders });
+            // eslint-disable-next-line testing-library/no-render-in-setup
+            render(<LoginPage role={(Role as any)[role]}/>, {wrapper: AllTheProviders});
         })
 
         afterAll(() => server.close());
@@ -111,15 +109,14 @@ for(let role in Role){
                 })
             )
             user.click(screen.getByRole('button', {name: /Save/i}))
-            wait(400);
-            await waitFor(() =>{
+            await waitFor(() => {
                 expect(mockNavigate).toHaveBeenCalledWith(`/${role.toLowerCase()}`);
             })
         })
 
         it('displays error modal on invalid credentials', async () => {
-            await user.click(screen.getByRole('button', {name: /Save/i }))
-            await waitFor(() =>{
+            await user.click(screen.getByRole('button', {name: /Save/i}))
+            await waitFor(() => {
                 expect(screen.getByText(/invalid credentials/i)).toBeInTheDocument();
             })
         })
@@ -139,7 +136,7 @@ for(let role in Role){
             )
             user.click(screen.getByRole('button', {name: /Save/i}))
 
-            await waitFor(() =>{
+            await waitFor(() => {
                 expect(screen.getByText(/unknown error/i)).toBeInTheDocument();
             })
         })

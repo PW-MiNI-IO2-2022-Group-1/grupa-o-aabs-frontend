@@ -7,7 +7,7 @@ import {MockedRequest, ResponseComposition, rest} from "msw";
 import {SubmitHandler} from "react-hook-form";
 import SetSchedulePage from "../../pages/SetSchedulePage";
 import {MemoryRouter, Router} from "react-router-dom";
-import { AuthState } from "../../types/auth";
+import {AuthState} from "../../types/auth";
 import {FormikProps} from "formik";
 import EditPatientDetailsPage, {PatientDetailsFormData} from "../../pages/EditPatientDetailsPage";
 import {act} from "react-dom/test-utils";
@@ -38,7 +38,7 @@ const mockedUser = {
 
 const server = setupServer(
     rest.put('*/patient/account', async (request: MockedRequest, response: ResponseComposition, ctx) => {
-        if(request.headers.get('Authorisation') !== "")
+        if (request.headers.get('Authorisation') !== "")
             return response(
                 ctx.delay(100),
                 ctx.json({}));
@@ -52,13 +52,14 @@ const server = setupServer(
 );
 
 const mockNavigate = jest.fn();
-const mockAlert = jest.spyOn(window,'alert').mockImplementation();
+const mockAlert = jest.spyOn(window, 'alert').mockImplementation();
 
 jest.mock('../../components/AuthComponents', () => ({
-    useAuth: () =>  {
+    useAuth: () => {
         return {
             token: "sampleToken",
-            modifyState: (modifyFunc: React.SetStateAction<AuthState>) => { },
+            modifyState: (modifyFunc: React.SetStateAction<AuthState>) => {
+            },
             user: mockedUser,
         }
     }
@@ -71,12 +72,12 @@ jest.mock('react-router-dom', () => ({
 }));
 
 jest.mock("../../components/forms/EditPatientDetailsForm", () => {
-    return function DummyEditPatientDetailsForm(props: { onSubmit: (e: any) => void, initialValues: PatientDetailsFormData}) {
+    return function DummyEditPatientDetailsForm(props: { onSubmit: (e: any) => void, initialValues: PatientDetailsFormData }) {
         return (<button onClick={
-            () => props.onSubmit(mockedData)
-        }>
-            Save
-        </button>
+                () => props.onSubmit(mockedData)
+            }>
+                Save
+            </button>
         )
     };
 });
@@ -88,7 +89,7 @@ describe("Edit Patient Details Page", () => {
     });
 
     beforeEach(() => {
-        render(<EditPatientDetailsPage/>, {wrapper: MemoryRouter });
+        render(<EditPatientDetailsPage/>, {wrapper: MemoryRouter});
     })
 
     afterAll(() => server.close());
@@ -103,9 +104,9 @@ describe("Edit Patient Details Page", () => {
                     ctx.json({}),
                     ctx.status(200),
                 )
-        }));
+            }));
         user.click(screen.getByRole('button', {name: /Save/i}))
-        await waitFor(() =>{
+        await waitFor(() => {
             expect(screen.getByText(/successfully/i)).toBeInTheDocument();
         })
     })
@@ -124,8 +125,8 @@ describe("Edit Patient Details Page", () => {
             }),
         )
 
-        await user.click(screen.getByRole('button', {name: /Save/i }))
-        await waitFor(() =>{
+        await user.click(screen.getByRole('button', {name: /Save/i}))
+        await waitFor(() => {
             expect(screen.getAllByText(/Error/i)[0]).toBeInTheDocument();
         })
     })
@@ -145,7 +146,7 @@ describe("Edit Patient Details Page", () => {
         )
         user.click(screen.getByRole('button', {name: /Save/i}))
 
-        await waitFor(() =>{
+        await waitFor(() => {
             expect(mockAlert).toHaveBeenCalled();
         })
     })
