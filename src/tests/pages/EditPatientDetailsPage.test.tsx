@@ -105,7 +105,7 @@ jest.mock('react-router-dom', () => ({
 jest.mock("../../components/forms/EditPatientDetailsForm", () => {
     return function DummyEditPatientDetailsForm(props: { onSubmit: (e: any) => void, initialValues: PatientDetailsFormData}) {
         return (<button onClick={
-            () => props.onSubmit(convertToEvent(mockedData))
+            () => props.onSubmit(mockedData)
         }>
             Save
         </button>

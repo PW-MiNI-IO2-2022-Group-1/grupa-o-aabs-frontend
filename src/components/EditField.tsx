@@ -60,4 +60,4 @@ function EditField<T>(props: EditFieldProps<T>) {
     </Container>);
 }
 
-export { EditField };
+export default EditField;

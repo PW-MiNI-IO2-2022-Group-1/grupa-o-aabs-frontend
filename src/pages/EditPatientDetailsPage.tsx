@@ -63,21 +63,8 @@ export default function EditPatientDetailsPage(): JSX.Element {
         houseNumber: patient.address.houseNumber ?? undefined,
         localNumber: patient.address.localNumber ?? undefined
     };
-    const getFormValuesFromEvent = (e: any) => {
-        return {
-            firstName: e.target.firstName.value,
-            lastName: e.target.lastName.value,
-            password: e.target.password.value,
-            city: e.target.city.value,
-            zipCode: e.target.zipCode.value,
-            street: e.target.street.value,
-            houseNumber: e.target.houseNumber.value,
-            localNumber: e.target.localNumber.value,
-        }
-    }
-    const handleSubmit = (e: any) => {
-        e.preventDefault();
-        const values = getFormValuesFromEvent(e);
+
+    const handleSubmit = (values: PatientDetailsFormData) => {
         const diff = calculateFormDifference(initialValues, values);
         const apiData: EditPatientDetailsData = convertFormDataToApiData(diff);
         editPatientDetails(auth, apiData).then(() => {

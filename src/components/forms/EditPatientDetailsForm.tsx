@@ -1,14 +1,14 @@
 import {Col, Row} from "react-bootstrap";
 import React from "react";
 import {getOrDefault} from "../../utils/dictionaryUtils";
-import {EditField} from "../EditField";
+import EditField from "../EditField";
 import {FormikProps, useFormik} from "formik";
 import {PatientDetailsFormData} from "../../pages/EditPatientDetailsPage";
 import * as Yup from "yup";
 
 
 function EditPatientDetailsForm({onSubmit, initialValues}: {
-    onSubmit: (e: any) => void,
+    onSubmit: (data: PatientDetailsFormData) => void,
     initialValues: PatientDetailsFormData,
 }) {
     const validationSchema = Yup.object().shape({
@@ -27,7 +27,7 @@ function EditPatientDetailsForm({onSubmit, initialValues}: {
     const form = useFormik<PatientDetailsFormData>({
         initialValues: initialValues,
         validationSchema: validationSchema,
-        onSubmit: () => { }
+        onSubmit: onSubmit
     });
     const displayNames = new Map<String, String>([
         ['firstName', 'First name'],
@@ -50,7 +50,7 @@ function EditPatientDetailsForm({onSubmit, initialValues}: {
                           values={form.values} handleChange={form.handleChange}
                           error={error} type={inputType}/>
     }
-    return <form onSubmit={onSubmit} className='form-container' data-testid='form'
+    return <form onSubmit={form.handleSubmit} className='form-container' data-testid='form'
                  style={{width: '800px'}}>
         <Row>
             <Col>{renderEditField('firstName')}</Col>
