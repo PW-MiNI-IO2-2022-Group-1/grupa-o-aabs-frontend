@@ -1,18 +1,34 @@
 import {Col, Row} from "react-bootstrap";
 import React from "react";
-import {PatientDetailsFormData} from "../../pages/EditPatientDetailsPage";
-import {useFormik} from "formik";
 import {getOrDefault} from "../../utils/dictionaryUtils";
 import {EditField} from "../EditField";
+import {FormikProps, useFormik} from "formik";
+import {PatientDetailsFormData} from "../../pages/EditPatientDetailsPage";
 import * as Yup from "yup";
-import {Patient} from "../../types/users";
-import {useAuth} from "../AuthComponents";
 
 
-function EditPatientDetailsForm({onSubmit, form}: {
-    onSubmit: (e: React.FormEvent) => void,
-    form: any
+function EditPatientDetailsForm({onSubmit, initialValues}: {
+    onSubmit: (e: any) => void,
+    initialValues: PatientDetailsFormData,
 }) {
+    const validationSchema = Yup.object().shape({
+        firstName: Yup.string().min(2, 'First name is required')
+            .matches(RegExp(/[A-Z].+/g), "First name has to start with uppercase letter"),
+        lastName: Yup.string().min(2, 'Last name is required')
+            .matches(RegExp(/[A-Z].+/g), "Last name has to start with uppercase letter"),
+        city: Yup.string().required('City is required')
+            .matches(RegExp(/[A-Z].+/g), "City has to start with uppercase letter"),
+        zipCode: Yup.string().required('Zip code is required')
+            .matches(RegExp(/\d\d-\d\d\d/g), "Zip code is invalid"),
+        street: Yup.string().required('Street is required'),
+        houseNumber: Yup.string().required('House number is required'),
+        localNumber: Yup.string()
+    });
+    const form = useFormik<PatientDetailsFormData>({
+        initialValues: initialValues,
+        validationSchema: validationSchema,
+        onSubmit: () => { }
+    });
     const displayNames = new Map<String, String>([
         ['firstName', 'First name'],
         ['lastName', 'Last name'],

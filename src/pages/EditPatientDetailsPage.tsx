@@ -2,16 +2,15 @@ import React, { useState } from 'react';
 import { Patient } from '../types/users';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
-import { EditField } from '../components/EditField';
 import { useAuth } from '../components/AuthComponents';
-import { getOrDefault } from '../utils/dictionaryUtils';
 import { Button, Modal } from 'react-bootstrap';
 import { editPatientDetails } from '../logic/patientApi';
 import { useNavigate } from 'react-router';
 import { logOut } from '../logic/login';
 import { EditPatientDetailsData } from '../types/patientAPITypes';
-import { Container, Row, Col} from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 import EditPatientDetailsForm from "../components/forms/EditPatientDetailsForm";
+import {initial} from "lodash";
 
 export interface PatientDetailsFormData {
     firstName?: string;
@@ -22,7 +21,7 @@ export interface PatientDetailsFormData {
     street?: string;
     houseNumber?: string;
     localNumber?: string;
-};
+}
 
 function convertFormDataToApiData(formData: PatientDetailsFormData): EditPatientDetailsData {
     return {
@@ -54,43 +53,32 @@ export default function EditPatientDetailsPage(): JSX.Element {
     const auth = useAuth();
     const navigate = useNavigate();
     const patient: Patient = auth.user as Patient;
-    const validationSchema = Yup.object().shape({
-        firstName: Yup.string().min(2, 'First name is required')
-            .matches(RegExp(/[A-Z].+/g), "First name has to start with uppercase letter"),
-        lastName: Yup.string().min(2, 'Last name is required')
-            .matches(RegExp(/[A-Z].+/g), "Last name has to start with uppercase letter"),
-        city: Yup.string().required('City is required')
-            .matches(RegExp(/[A-Z].+/g), "City has to start with uppercase letter"),
-        zipCode: Yup.string().required('Zip code is required')
-            .matches(RegExp(/\d\d-\d\d\d/g), "Zip code is invalid"),
-        street: Yup.string().required('Street is required'),
-        houseNumber: Yup.string().required('House number is required'),
-        localNumber: Yup.string()
-    });
-
-    const form = useFormik<PatientDetailsFormData>({
-        initialValues: {
-            firstName: patient.firstName ?? undefined,
-            lastName: patient.lastName ?? undefined,
-            password: undefined,
-            city: patient.address.city ?? undefined,
-            zipCode: patient.address.zipCode ?? undefined,
-            street: patient.address.street ?? undefined,
-            houseNumber: patient.address.houseNumber ?? undefined,
-            localNumber: patient.address.localNumber ?? undefined
-        },
-        validationSchema: validationSchema,
-        onSubmit: (values) => { }
-    });
-
-    const [show, setShow] = useState(false);
-    const [modalMsg, setModalMsg] = useState("");
-    const [success, setSuccess] = useState(false);
-
-
-    const onSubmit = (e: React.FormEvent) => {
+    const initialValues = {
+        firstName: patient.firstName ?? undefined,
+        lastName: patient.lastName ?? undefined,
+        password: undefined,
+        city: patient.address.city ?? undefined,
+        zipCode: patient.address.zipCode ?? undefined,
+        street: patient.address.street ?? undefined,
+        houseNumber: patient.address.houseNumber ?? undefined,
+        localNumber: patient.address.localNumber ?? undefined
+    };
+    const getFormValuesFromEvent = (e: any) => {
+        return {
+            firstName: e.target.firstName.value,
+            lastName: e.target.lastName.value,
+            password: e.target.password.value,
+            city: e.target.city.value,
+            zipCode: e.target.zipCode.value,
+            street: e.target.street.value,
+            houseNumber: e.target.houseNumber.value,
+            localNumber: e.target.localNumber.value,
+        }
+    }
+    const handleSubmit = (e: any) => {
         e.preventDefault();
-        const diff = calculateFormDifference(form.initialValues, form.values);
+        const values = getFormValuesFromEvent(e);
+        const diff = calculateFormDifference(initialValues, values);
         const apiData: EditPatientDetailsData = convertFormDataToApiData(diff);
         editPatientDetails(auth, apiData).then(() => {
             showMessage(true, 'Your account details were successfully changed');
@@ -98,14 +86,20 @@ export default function EditPatientDetailsPage(): JSX.Element {
             switch(reason.status) {
                 case 401:
                     alert('You are not authorized');
-                    logOut(auth);
+                    logOut(auth).then(() => navigate('/loginPatient'));
                     break;
                 default:
                     showMessage(false, 'Unexpected error');
             }
         });
-        
+
     }
+
+
+    const [show, setShow] = useState(false);
+    const [modalMsg, setModalMsg] = useState("");
+    const [success, setSuccess] = useState(false);
+
 
     const closeMessageAndRedirect = () => {
         setShow(false);
@@ -133,7 +127,7 @@ export default function EditPatientDetailsPage(): JSX.Element {
         </Modal>
         <Container fluid className='text-center'>Patient details
             <div className='gap'/>
-            <EditPatientDetailsForm onSubmit={onSubmit} form={form}/>
+            <EditPatientDetailsForm onSubmit={handleSubmit} initialValues={initialValues}/>
         </Container>
     </>); 
 }
