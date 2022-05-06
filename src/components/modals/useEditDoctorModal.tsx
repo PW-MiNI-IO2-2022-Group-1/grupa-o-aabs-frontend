@@ -108,7 +108,7 @@ export function useEditDoctorModal(): [(doctor: Doctor,
                 <Button variant='primary' onClick={closeModal}>
                     Cancel
                 </Button>
-                <Button variant='primary' onClick={onSubmit}>
+                <Button variant='primary' onClick={onSubmit} id='submitBtn'>
                     Edit
                 </Button>
             </Modal.Footer>

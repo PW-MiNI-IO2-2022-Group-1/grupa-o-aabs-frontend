@@ -1,10 +1,9 @@
-from re import S
 import time
 import unittest
 from config import *
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
-import random as rand
+from test_utils import *
 
 class RegisterPatientPageTests(unittest.TestCase):
     def setUp(self):
@@ -12,18 +11,9 @@ class RegisterPatientPageTests(unittest.TestCase):
         self.driver.get(base_url)
         self.driver.maximize_window()
 
-    def get_random_string_number(self, n: int):
-        return ''.join(chr(rand.randint(ord('0'), ord('9'))) for _ in range(n))
-    
-    def get_random_pesel(self):
-        return self.get_random_string_number(11)
-    
-    def get_random_email(self):
-        return 'user' + self.get_random_string_number(10) + '@email.com'
-
     def get_register_form_data(self):
-        randEmail = self.get_random_email()
-        randPesel = self.get_random_pesel()
+        randEmail = get_random_email()
+        randPesel = get_random_pesel()
         return {
             'emailInput': randEmail,
             'passwordInput': 'Selenium',
@@ -36,30 +26,21 @@ class RegisterPatientPageTests(unittest.TestCase):
             'houseNumberInput': '11',
         }
     
-    def click_submit_button(self):
-        self.driver.find_element(By.ID, 'submitBtn').click()
-
     def click_signout_button(self):
         self.driver.find_element(By.ID, 'signOutBtn').click()
-    
-    def fill_form(self, form_values):
-        for (id, value) in form_values.items():
-            self.driver.find_element(By.ID, id).send_keys(value)
-    
+
     def register_patient(self, form_data):
         self.driver.get(base_url + 'patient/register')
-        self.fill_form(form_data)
-        self.click_submit_button()
+        fill_form(self.driver, 'submitBtn', form_data)
         time.sleep(3)
         return (form_data['emailInput'], form_data['passwordInput'])
 
     def log_in_as_patient(self, email, password):
         self.driver.get(base_url + 'loginPatient')
-        self.fill_form({
+        fill_form(self.driver, 'submitBtn', {
             'email-input': email,
             'password-input': password
         })
-        self.click_submit_button()
         time.sleep(1)
 
     def register_page_validation_check(self, id, bad_value):
@@ -87,9 +68,9 @@ class RegisterPatientPageTests(unittest.TestCase):
         self.register_page_validation_check('peselInput', '1234')
         self.assertNotEqual(self.driver.current_url, base_url + 'patient')
 
-    # def test_register_page_validation_zip_code(self):
-    #     self.register_page_validation_check('zipCodeInput', '1234-1234')
-    #     self.assertNotEqual(self.driver.current_url, base_url + 'patient')
+    def test_register_page_validation_zip_code(self):
+        self.register_page_validation_check('zipCodeInput', '1234-1234')
+        self.assertNotEqual(self.driver.current_url, base_url + 'patient')
 
     def test_register_page_validation_password(self):
         self.register_page_validation_check('passwordInput', '')
