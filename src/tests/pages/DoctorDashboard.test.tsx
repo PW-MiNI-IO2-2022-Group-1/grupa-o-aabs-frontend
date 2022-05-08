@@ -6,26 +6,37 @@ import DoctorDashboard from "../../pages/DoctorDashboard";
 import {AuthState} from "../../types/auth";
 import {setupServer} from "msw/node";
 import {MockedRequest, ResponseComposition, rest} from "msw";
+import {wait} from "@testing-library/user-event/dist/utils";
+import {authErrorHandlers, unknownErrorHandlers, validationErrorHandlers} from "../testServerUtils";
 
 const mockNavigate = jest.fn();
 const mockServerGetCheck = jest.fn();
 const mockDeleteVisit = jest.fn();
 
 describe("DoctorDashboard", () => {
-
     beforeAll(() => {
         server.listen();
     });
 
     beforeEach(() => {
+        server.events.on('request:end', (req) =>{
+            if(req.method === "GET")
+                mockServerGetCheck()
+            else if(req.method === "DELETE")
+                mockDeleteVisit()
+        })
         render(<DoctorDashboard/>, {wrapper: MemoryRouter});
     })
 
     afterAll(() => server.close());
 
-    afterEach(() => server.resetHandlers());
+    afterEach(() => {
+        server.resetHandlers()
+        server.events.removeAllListeners()
+    });
 
     it('routes to setSchedule', async () => {
+
         user.click(getSetScheduleButton());
         await waitFor(() => {
             expect(mockNavigate).toHaveBeenCalledWith('/doctor/setSchedule');
@@ -33,7 +44,7 @@ describe("DoctorDashboard", () => {
     });
 
     it('calls API for visits when startDate changes', async () => {
-
+        await wait(100);
         user.click(getMockedStartDatePicker());
         await waitFor(() => {
             expect(mockServerGetCheck).toBeCalledTimes(2);
@@ -41,6 +52,7 @@ describe("DoctorDashboard", () => {
     });
 
     it('calls API for visits when endDate changes', async () => {
+        await wait(100);
         user.click(getMockedEndDatePicker());
         await waitFor(() => {
             expect(mockServerGetCheck).toBeCalledTimes(2);
@@ -48,11 +60,15 @@ describe("DoctorDashboard", () => {
     });
 
     it('calls API for visits when reserved filter changes', async () => {
+        await wait(100);
         user.click(getReservedButton());
-        expect(mockServerGetCheck).toBeCalledTimes(2);
+        await waitFor(() => {
+            expect(mockServerGetCheck).toBeCalledTimes(2);
+        })
     });
     
     it('calls API for visits when page button is clicked', async () => {
+        await wait(100);
         user.click(getNextPageButton());
         await waitFor(() => {
             expect(mockServerGetCheck).toBeCalledTimes(2);
@@ -63,6 +79,49 @@ describe("DoctorDashboard", () => {
             expect(mockServerGetCheck).toBeCalledTimes(3);
         })
     });
+
+    it('deletes free visit', async () => {
+        await wait(100)
+        const moreInfoButtons = screen.getAllByText(/more info/i);
+        await waitFor(()=>{
+            expect(moreInfoButtons[0]).toBeInTheDocument()
+        })
+        user.click(moreInfoButtons[0])
+        user.click(screen.getByText(/Delete/i));
+        await wait(200);
+        await waitFor(() =>{
+            expect(mockDeleteVisit).toHaveBeenCalled();
+        })
+
+    })
+
+    /*it('routes to login page on auth error', async () => {
+        server.use(
+            rest.get('/doctor/vaccination-slots', async (request: MockedRequest, response: ResponseComposition, ctx) => {
+                return response(
+                    ctx.json({success: false, message: "You, my dude, are not authorised"}),
+                    ctx.status(401)
+                )
+            }),
+        );
+        await waitFor(() => {
+            expect(mockNavigate).toHaveBeenCalledWith('/loginDoctor');
+        })
+    })
+
+    it('displays validation error', async () => {
+        server.use(...validationErrorHandlers);
+        await waitFor(() => {
+            expect(screen.getByText(/Validation error/i)).toBeInTheDocument();
+        })
+    })
+
+    it('displays unknown error', async () => {
+        server.use(...unknownErrorHandlers);
+        await waitFor(() => {
+            expect(screen.getByText(/Unknown errorr/i)).toBeInTheDocument();
+        })
+    })*/
 });
 
 function getSetScheduleButton() {
@@ -132,30 +191,20 @@ jest.mock('react-date-picker', () => {
     }
 });
 
-jest.mock('../../logic/doctorAPI', () => ({
-    getSlots: async () => {
-        mockServerGetCheck();
-
-        return mockedInfo;
-    },
-    deleteVisit: () => mockDeleteVisit
-}));
-
 const server = setupServer(
-    rest.get('*/doctor/vaccination-slots', async (request: MockedRequest, response: ResponseComposition, ctx) => {
-        if (request.headers.get('Authorisation') === "")
-            return response(
+    rest.delete('*/doctor/vaccination-slots/:slotId', async (request: MockedRequest, response: ResponseComposition, ctx) => {
+        return response(
                 ctx.delay(100),
-                ctx.json({success: false, msg: 'You are not authorised'}),
-                ctx.status(401)
-            );
-        else
-            return response(
-                ctx.delay(100),
-                ctx.json(mockedInfo),
+                ctx.json({}),
                 ctx.status(200)
             )
-    })
+    }),
+    rest.get('*/doctor/vaccination-slots', async (request: MockedRequest, response: ResponseComposition, ctx) => {
+        return response(
+            ctx.json(mockedInfo),
+            ctx.status(200)
+        )
+    }),
 );
 
 const mockedInfo = {
@@ -168,22 +217,22 @@ const mockedInfo = {
     data: [
         {
             id: 1,
-            date: "2022-26-20T10:00:00Z",
+            date: "2024-06-20T10:00:00Z",
             vaccination: null
         },
         {
             id: 2,
-            date: "2022-26-20T11:00:00Z",
+            date: "2024-06-20T11:00:00Z",
             vaccination: null
         },
         {
             id: 3,
-            date: "2022-26-20T12:00:00Z",
+            date: "2024-06-20T12:00:00Z",
             vaccination: null
         },
         {
             id: 4,
-            date: "2022-26-20T10:00:00Z",
+            date: "2024-06-20T10:30:00Z",
             vaccination: {
                 id: 1,
                 vaccine: {
@@ -211,7 +260,7 @@ const mockedInfo = {
         },
         {
             id: 5,
-            date: "2022-26-20T10:00:00Z",
+            date: "2024-06-20T10:15:00Z",
             vaccination: {
                 id: 1,
                 vaccine: null,

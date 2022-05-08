@@ -1,16 +1,10 @@
-import {getByText, render, screen, waitFor} from "@testing-library/react";
-import ScheduleForm, {DoctorScheduleForm} from "../../components/forms/ScheduleForm";
+import { render, screen, waitFor} from "@testing-library/react";
 import user from "@testing-library/user-event";
 import React from "react";
 import {setupServer} from "msw/node";
 import {MockedRequest, ResponseComposition, rest} from "msw";
-import {SubmitHandler} from "react-hook-form";
-import SetSchedulePage from "../../pages/SetSchedulePage";
-import {MemoryRouter, Router} from "react-router-dom";
-import {AuthState} from "../../types/auth";
-import {FormikProps} from "formik";
+import {MemoryRouter} from "react-router-dom";
 import EditPatientDetailsPage, {PatientDetailsFormData} from "../../pages/EditPatientDetailsPage";
-import {act} from "react-dom/test-utils";
 
 
 const mockedData = {
@@ -58,8 +52,7 @@ jest.mock('../../components/AuthComponents', () => ({
     useAuth: () => {
         return {
             token: "sampleToken",
-            modifyState: (modifyFunc: React.SetStateAction<AuthState>) => {
-            },
+            modifyState: ( ) => { },
             user: mockedUser,
         }
     }
@@ -89,6 +82,7 @@ describe("Edit Patient Details Page", () => {
     });
 
     beforeEach(() => {
+        // eslint-disable-next-line testing-library/no-render-in-setup
         render(<EditPatientDetailsPage/>, {wrapper: MemoryRouter});
     })
 
@@ -131,7 +125,7 @@ describe("Edit Patient Details Page", () => {
         })
     })
 
-    it('routes on ok click on error modal', async () => {
+    it('displays alert on unauthorised error', async () => {
         server.use(
             rest.put('*/patient/account', async (req, res, ctx) => {
                 return res(

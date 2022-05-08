@@ -4,13 +4,13 @@ import React from "react";
 import EditPatientDetailsForm from "../../components/forms/EditPatientDetailsForm";
 
 
-const mockedInvalidData = {
+const mockInvalidData = {
     firstName: 'adam',
     lastName: 'abacki',
     city: 'adamtown',
     zipCode: 'aa=cfc',
 }
-const mockedRequiredData = {
+const mockRequiredData = {
     firstName: '',
     lastName: '',
     city: '',
@@ -18,7 +18,7 @@ const mockedRequiredData = {
     street: '',
     houseNumber: '',
 }
-const mockedValidData = {
+const mockValidData = {
     firstName: 'Adam',
     lastName: 'Abacki',
     password: 'password',
@@ -54,7 +54,7 @@ describe("Edit Patient Details Form", () => {
         })
     });
 
-    for (let key in mockedValidData) {
+    for (let key in mockValidData) {
         it('validates properly edited ' + key, async () => {
             typeValidData(key);
             user.click(getSubmitButton());
@@ -64,7 +64,7 @@ describe("Edit Patient Details Form", () => {
         });
     }
 
-    for (let key in mockedInvalidData) {
+    for (let key in mockInvalidData) {
         it('invalidates incorrect ' + key, async () => {
             typeInvalidData(key);
             user.click(getSubmitButton());
@@ -74,7 +74,7 @@ describe("Edit Patient Details Form", () => {
         });
     }
 
-    for (let key in mockedRequiredData) {
+    for (let key in mockRequiredData) {
         it('invalidates empty required field ' + key, async () => {
             typeNothingToRequiredData(key);
             user.click(getSubmitButton());
@@ -88,18 +88,18 @@ describe("Edit Patient Details Form", () => {
 
 async function typeData(key: string, data: string) {
     user.clear(getInputByKey(key));
-    if (data !== '') user.type(getInputByKey(key), (mockedValidData as any)[key]);
+    if (data !== '') user.type(getInputByKey(key), (mockValidData as any)[key]);
     await waitFor(() => {
         expect(getInputByKey(key)).toHaveValue(data)
     })
 }
 
 function typeInvalidData(key: string) {
-    typeData(key, (mockedInvalidData as any)[key]);
+    typeData(key, (mockInvalidData as any)[key]);
 }
 
 function typeValidData(key: string) {
-    typeData(key, (mockedValidData as any)[key]);
+    typeData(key, (mockValidData as any)[key]);
 }
 
 function typeNothingToRequiredData(key: string) {

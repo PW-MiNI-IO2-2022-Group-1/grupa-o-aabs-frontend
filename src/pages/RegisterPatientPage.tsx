@@ -16,7 +16,6 @@ export default function RegisterPatientPage() {
         registerPatient(data)
             .then((response) => {
                 handleShow(true, "New patient added!")
-                console.log(response)
             })
             .catch((reason) => {
                 switch (reason.status) {
