@@ -94,10 +94,26 @@ describe("DoctorDashboard", () => {
         })
 
     })
+});
 
-    /*it('routes to login page on auth error', async () => {
+/*describe('Doctor Dashboard on getSlots error', () => {
+    beforeAll(() => {
+        server.listen();
+    });
+
+    beforeEach(() => {
+        render(<DoctorDashboard/>, {wrapper: MemoryRouter});
+    })
+
+    afterAll(() => server.close());
+
+    afterEach(() => {
+        server.resetHandlers()
+    });
+
+    it('routes to login page on auth error', async () => {
         server.use(
-            rest.get('/doctor/vaccination-slots', async (request: MockedRequest, response: ResponseComposition, ctx) => {
+            rest.get('*!/doctor/vaccination-slots', async (request: MockedRequest, response: ResponseComposition, ctx) => {
                 return response(
                     ctx.json({success: false, message: "You, my dude, are not authorised"}),
                     ctx.status(401)
@@ -109,21 +125,20 @@ describe("DoctorDashboard", () => {
         })
     })
 
-    it('displays validation error', async () => {
+    it('displays modal on validation error', async () => {
         server.use(...validationErrorHandlers);
         await waitFor(() => {
             expect(screen.getByText(/Validation error/i)).toBeInTheDocument();
         })
     })
 
-    it('displays unknown error', async () => {
+    it('displays modal on unknown error', async () => {
         server.use(...unknownErrorHandlers);
         await waitFor(() => {
             expect(screen.getByText(/Unknown errorr/i)).toBeInTheDocument();
         })
-    })*/
-});
-
+    })
+})*/
 function getSetScheduleButton() {
     return screen.getByRole('button', {
         name: /set schedule/i

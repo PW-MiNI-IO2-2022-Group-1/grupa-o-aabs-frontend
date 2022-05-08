@@ -30,20 +30,7 @@ const mockedUser = {
 
 }
 
-const server = setupServer(
-    rest.put('*/patient/account', async (request: MockedRequest, response: ResponseComposition, ctx) => {
-        if (request.headers.get('Authorisation') !== "")
-            return response(
-                ctx.delay(100),
-                ctx.json({}));
-        else
-            return response(
-                ctx.delay(100),
-                ctx.json({message: 'not authorised'}),
-                ctx.status(401),
-            )
-    })
-);
+const server = setupServer();
 
 const mockNavigate = jest.fn();
 const mockAlert = jest.spyOn(window, 'alert').mockImplementation();
@@ -113,7 +100,7 @@ describe("Edit Patient Details Page", () => {
                     ctx.json(
                         {
                             success: false,
-                            message: 'Smth wrongw'
+                            message: 'Smth wrong'
                         })
                 )
             }),
