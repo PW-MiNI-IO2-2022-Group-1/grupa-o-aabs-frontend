@@ -1,4 +1,3 @@
-import time
 import unittest
 from config import *
 from selenium.webdriver.common.by import By
@@ -32,31 +31,25 @@ class RegisterPatientPageTests(unittest.TestCase):
     def register_patient(self, form_data):
         self.driver.get(base_url + 'patient/register')
         fill_form(self.driver, 'submitBtn', form_data)
-        time.sleep(3)
         return (form_data['emailInput'], form_data['passwordInput'])
-
-    def log_in_as_patient(self, email, password):
-        self.driver.get(base_url + 'loginPatient')
-        fill_form(self.driver, 'submitBtn', {
-            'email-input': email,
-            'password-input': password
-        })
-        time.sleep(1)
 
     def register_page_validation_check(self, id, bad_value):
         form_data = self.get_register_form_data()
         form_data[id] = bad_value
         (email, password) = self.register_patient(form_data)
-        with self.assertRaises(NoSuchElementException):
-            self.driver.find_element(By.ID, 'modal')
-        self.log_in_as_patient(email, password)
+        WebDriverWait(self.driver, 5).until(
+            EC.visibility_of_any_elements_located((By.CLASS_NAME, 'invalid-feedback'))
+        )
+        login_as_patient_fail(self.driver, email, password)
         self.assertNotEqual(self.driver.current_url, base_url + 'patient')
 
     def test_register_page(self):
         form_data = self.get_register_form_data()
         (email, password) = self.register_patient(form_data)
-        self.driver.find_element(By.ID, 'modal')
-        self.log_in_as_patient(email, password)
+        WebDriverWait(self.driver, 5).until(
+            EC.visibility_of_element_located((By.ID, 'modal'))
+        )
+        login_as_patient(self.driver, email, password)
         self.assertEqual(self.driver.current_url, base_url + 'patient')
         self.click_signout_button()
 
@@ -95,7 +88,6 @@ class RegisterPatientPageTests(unittest.TestCase):
     def test_register_page_validation_house_number(self):
         self.register_page_validation_check('houseNumberInput', '')
         self.assertNotEqual(self.driver.current_url, base_url + 'patient')
-
 
     def tearDown(self):
         self.driver.quit()

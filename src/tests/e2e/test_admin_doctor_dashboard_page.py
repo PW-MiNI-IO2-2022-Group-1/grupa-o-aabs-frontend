@@ -31,15 +31,8 @@ class AdminDoctorDashboardTests(unittest.TestCase):
         )
     
     def login_as_admin(self):
-        self.driver.get(base_url + 'loginAdmin')
-        if self.driver.current_url != base_url + 'admin':
-            (email, password) = get_test_admin_credentials()
-            fill_form(self.driver, 'submitBtn', {
-                'email-input': email,
-                'password-input': password,
-            })
-            self.wait_until_loading()
-            self.wait_until_loaded()
+        login_as_admin(self.driver) 
+        self.wait_until_loaded()
     
     def add_new_doctor(self):
         self.driver.find_element(By.ID, 'addNewDoctorBtn').click()
@@ -95,8 +88,8 @@ class AdminDoctorDashboardTests(unittest.TestCase):
         last_page_index = len(links) - 2
         last_page_link = links[last_page_index]
         new_page = last_page_link.text
-        time.sleep(1)
-        WebDriverWait(self.driver, 12).until(
+        time.sleep(0.5)
+        WebDriverWait(self.driver, 5).until(
             EC.element_to_be_clickable(last_page_link)
         ).click()
         self.wait_until_loaded()
@@ -147,6 +140,9 @@ class AdminDoctorDashboardTests(unittest.TestCase):
     def tearDown(self):
         self.driver.get(base_url + 'admin')
         self.driver.find_element(By.ID, 'signOutBtn').click()
+        WebDriverWait(self.driver, 5).until(
+            EC.url_to_be(base_url)
+        )
         time.sleep(1)
         self.driver.quit()
 
