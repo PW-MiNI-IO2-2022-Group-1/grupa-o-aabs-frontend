@@ -44,7 +44,10 @@ describe("DoctorDashboard", () => {
     });
 
     it('calls API for visits when startDate changes', async () => {
-        await wait(100);
+        await waitFor(() =>{
+            expect(mockServerGetCheck).toHaveBeenCalled();
+        })
+        expect(getMockedStartDatePicker()).toBeInTheDocument();
         user.click(getMockedStartDatePicker());
         await waitFor(() => {
             expect(mockServerGetCheck).toBeCalledTimes(2);
@@ -52,7 +55,10 @@ describe("DoctorDashboard", () => {
     });
 
     it('calls API for visits when endDate changes', async () => {
-        await wait(100);
+        await waitFor(() =>{
+            expect(mockServerGetCheck).toHaveBeenCalled();
+        })
+        expect(getMockedEndDatePicker()).toBeInTheDocument();
         user.click(getMockedEndDatePicker());
         await waitFor(() => {
             expect(mockServerGetCheck).toBeCalledTimes(2);
@@ -60,7 +66,9 @@ describe("DoctorDashboard", () => {
     });
 
     it('calls API for visits when reserved filter changes', async () => {
-        await wait(100);
+        await waitFor(() =>{
+            expect(mockServerGetCheck).toHaveBeenCalled();
+        })
         user.click(getReservedButton());
         await waitFor(() => {
             expect(mockServerGetCheck).toBeCalledTimes(2);
@@ -68,7 +76,9 @@ describe("DoctorDashboard", () => {
     });
     
     it('calls API for visits when page button is clicked', async () => {
-        await wait(100);
+        await waitFor(() =>{
+            expect(mockServerGetCheck).toHaveBeenCalled();
+        })
         user.click(getNextPageButton());
         await waitFor(() => {
             expect(mockServerGetCheck).toBeCalledTimes(2);
@@ -81,7 +91,9 @@ describe("DoctorDashboard", () => {
     });
 
     it('deletes free visit', async () => {
-        await wait(100)
+        await waitFor(() =>{
+            expect(mockServerGetCheck).toHaveBeenCalled();
+        })
         const moreInfoButtons = screen.getAllByText(/more info/i);
         await waitFor(()=>{
             expect(moreInfoButtons[0]).toBeInTheDocument()

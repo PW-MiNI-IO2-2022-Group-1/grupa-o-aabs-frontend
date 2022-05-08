@@ -1,11 +1,10 @@
-import { render, screen, waitFor} from "@testing-library/react";
+import {configure, render, screen, waitFor} from "@testing-library/react";
 import user from "@testing-library/user-event";
 import React from "react";
 import {setupServer} from "msw/node";
 import {MockedRequest, ResponseComposition, rest} from "msw";
 import {MemoryRouter} from "react-router-dom";
 import EditPatientDetailsPage, {PatientDetailsFormData} from "../../pages/EditPatientDetailsPage";
-
 
 const mockedData = {
     firstName: 'Adam',
@@ -62,6 +61,7 @@ jest.mock("../../components/forms/EditPatientDetailsForm", () => {
     };
 });
 
+configure({ asyncUtilTimeout: 5000 });
 describe("Edit Patient Details Page", () => {
 
     beforeAll(() => {
@@ -116,12 +116,12 @@ describe("Edit Patient Details Page", () => {
         server.use(
             rest.put('*/patient/account', async (req, res, ctx) => {
                 return res(
-                    ctx.status(401),
                     ctx.json(
                         {
                             success: false,
                             message: 'User unauthorised: invalid or empty bearer token'
-                        })
+                        }),
+                    ctx.status(401),
                 )
             }),
         )
