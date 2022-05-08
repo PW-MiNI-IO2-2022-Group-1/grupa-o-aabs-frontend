@@ -47,7 +47,8 @@ export default function RegisterPatientPage() {
 
     return (
         <>
-            <Modal show={show} onHide={handleClose} backdrop="static">
+            <Modal show={show} onHide={handleClose} backdrop="static" 
+                   id='modal'>
                 <Modal.Header>
                     <Modal.Title>{success ? "Success" : "Error"}</Modal.Title>
                 </Modal.Header>

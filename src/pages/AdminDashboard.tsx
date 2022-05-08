@@ -15,6 +15,7 @@ import { logOut } from '../logic/login';
 function AdminDashboard(): JSX.Element {
     const auth = useAuth();
     const [doctors, setDoctors] = useState<Doctor[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
 
     const [page, setPage] = useState<number>(1);
     const [pageNumber, setPageNumber] = useState<number>(1);
@@ -34,38 +35,44 @@ function AdminDashboard(): JSX.Element {
         API.getDoctors(auth, page).then(pair => {
             setDoctors(pair[0]);
             setPageNumber(pair[1].totalPages);
+            setLoading(false);
         }).catch(handleApiError);
     }
 
     const deleteDoctor = (doctor: Doctor) => {
+        setLoading(true);
         API.deleteDoctor(auth, doctor).catch(handleApiError)
            .then(() => loadDoctors());
     }
 
     const editDoctor = (doctor: Doctor) => {
+        setLoading(true);
         API.editDoctor(auth, doctor).catch(handleApiError)
            .then(() => loadDoctors());
     }
 
     const createDoctor = (doctorData: NewDoctorData) => {
+        setLoading(true);
         API.createDoctor(auth, doctorData).catch(handleApiError)
            .then(() => loadDoctors());
     }
 
     useEffect(() => {
+        setLoading(true);
         loadDoctors();
     }, [page]);
 
     const renderDoctorRow = (doctor: Doctor) => {
-        return (<tr key={`row-${doctor.id}`}>
+        return (<tr id={`row-${doctor.id}`} key={`row-${doctor.id}`}>
             <td style={{width: '350px'}}>{doctor.firstName}</td>
             <td style={{width: '350px'}}>{doctor.lastName}</td>
             <td style={{width: '350px'}}>{doctor.email}</td>
             <td style={{width: '100px'}}>
-                <Icons.PencilSquare className='text-primary'
+                <Icons.PencilSquare className='text-primary modifyBtn'
                  style={{cursor: 'pointer'}}
                  onClick={() => showEditModal(doctor, editDoctor)}/>
-                <Icons.Trash3Fill className='text-danger'
+                <Icons.Trash3Fill className='text-danger deleteBtn'
+                 id={'delete' + doctor.id + 'Btn'}
                  style={{cursor: 'pointer'}}
                  onClick={() => deleteDoctor(doctor)}/>
             </td>
@@ -79,6 +86,7 @@ function AdminDashboard(): JSX.Element {
             <td></td>
             <td>
                 <Icons.PersonPlusFill className='text-primary'
+                  id = 'addNewDoctorBtn'
                   style={{cursor: 'pointer'}}
                   onClick={() => showAddModal(createDoctor)}/>
             </td>
@@ -100,7 +108,8 @@ function AdminDashboard(): JSX.Element {
         return (<nav className='d-flex justify-content-center'>
             <ul className='pagination'>
                 <li className='page-item' style={{cursor: 'pointer'}}>
-                    <a className='page-link' onClick={() => modifyPage(-1)}>&laquo;</a>
+                    <a className='page-link'
+                       onClick={() => modifyPage(-1)}>&laquo;</a>
                 </li>
                 {visiblePages.map(x => {
                     return (<li style={{cursor: 'pointer'}} className={'page-item' + (page == x ? ' active' : '')}>
@@ -123,7 +132,10 @@ function AdminDashboard(): JSX.Element {
         {renderEditModal()}
         {renderAddModal()}
         {renderErrorModal()}
-        <Container>
+        {loading && 
+            <div className='spinner-border text-large'
+                style={{width: '100px', height: '100px'}} id='loadingIndicator'></div>}
+        {!loading && <Container>
             <Table bordered className='text-center'>
                 <thead className='table-dark'>
                     <tr>
@@ -144,7 +156,7 @@ function AdminDashboard(): JSX.Element {
                 </tbody>
             </Table>
             {renderPaginationMenu()}
-        </Container>
+        </Container>}
     </>);
 
 }

@@ -88,12 +88,13 @@ export function useAddDoctorModal(): [(callback: (doctor: NewDoctorData) => void
         return (<>
             <label className='form-label text-sm-start'>{displayName}</label>
             <input
-                name={key}
-                value={value}
-                type={type}
-                placeholder={placeholder ?? ''}
-                className={`form-control ${error ? 'is-invalid' : ''}`}
-                onChange={form.handleChange}
+                id = {key + 'Input'}
+                name = {key}
+                value = {value}
+                type = {type}
+                placeholder = {placeholder ?? ''}
+                className = {`form-control ${error ? 'is-invalid' : ''}`}
+                onChange = {form.handleChange}
             />
             {error ?
                 <div className='invalidfeedback text-sm-center text-small' id={key + 'error'}>{error}</div>:
@@ -123,7 +124,7 @@ export function useAddDoctorModal(): [(callback: (doctor: NewDoctorData) => void
                 <Button variant='primary' onClick={closeModal}>
                     Cancel
                 </Button>
-                <Button variant='primary' onClick={onSubmit}>
+                <Button variant='primary' onClick={onSubmit} id='submitBtn'>
                     Add
                 </Button>
             </Modal.Footer>
