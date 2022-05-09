@@ -6,7 +6,7 @@ import '../VaccinationDateChoiceForm.css';
 import { Row, Col } from 'react-bootstrap';
 import { getAvailableTimeslots } from '../../logic/patientApi';
 import { useAuth } from '../AuthComponents';
-import { useSimpleModal } from '../useSimpleModal';
+import { useSimpleModal } from '../modals/useSimpleModal';
 import { UnauthorizedRequestError } from '../../types/requestErrors';
 import { logOut } from '../../logic/login';
 

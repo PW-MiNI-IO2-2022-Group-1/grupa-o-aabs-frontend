@@ -4,6 +4,9 @@
 .idea
 .expo
 
+# Python cache
+*__pycache__*
+
 # dependencies
 /node_modules
 /.pnp

@@ -6,7 +6,7 @@ import { Row, Col } from 'react-bootstrap';
 import { useAuth } from '../AuthComponents';
 import { getAvailableVaccines } from '../../logic/patientApi';
 import { UnauthorizedRequestError } from '../../types/requestErrors';
-import { useSimpleModal } from '../useSimpleModal';
+import { useSimpleModal } from '../modals/useSimpleModal';
 import { logOut } from '../../logic/login';
 
 interface VaccineChoiceFormProps {

@@ -15,15 +15,12 @@ function LoginPage({role}: {role: Role}) {
     const [modalMsg, setModalMsg] = useState("")
 
     const onSubmit = async (data: UserLoginForm) => {
-        try {
-            await logIn(auth, role, data.email, data.password);
-        } 
-        catch(error) {
+        logIn(auth, role, data.email, data.password).catch((error) => {
             if(error instanceof UnauthorizedRequestError)
                 handleShow('Invalid credentials');
             else
                 handleShow('Unknown error');
-        }
+        });
     };
 
     useEffect(() => {
@@ -42,7 +39,7 @@ function LoginPage({role}: {role: Role}) {
     }
 
     return (<>
-        <Modal show={show} onHide={handleClose} backdrop='static'>
+        <Modal show={show} onHide={handleClose} backdrop='static' id='modal'>
             <Modal.Header>
                 <Modal.Title>Error</Modal.Title>
             </Modal.Header>

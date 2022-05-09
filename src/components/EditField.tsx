@@ -25,12 +25,12 @@ function EditField<T>(props: EditFieldProps<T>) {
         <Col>
             <Row>
                 <small className='d-flex form-label text-sm' 
-                    id={key}>{props.displayName}
+                    id={'row-' + key}>{props.displayName}
                 </small>
             </Row>
             <Row className='justify-content-center'>
                 <input
-                    id={key}
+                    id = {key}
                     disabled={!isEnabled}
                     type={props.type}
                     onChange={props.handleChange}    
@@ -41,6 +41,7 @@ function EditField<T>(props: EditFieldProps<T>) {
                         : ' is-invalid'}`}
                 />
                 <button type="button" 
+                    id={key + 'InputEnabler'}
                     onClick={toggleEnabled}
                     className="btn btn-dark \
                     btn-sm pb-1 pt-0 mx-2"

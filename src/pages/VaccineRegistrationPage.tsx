@@ -9,7 +9,7 @@ import moment from 'moment';
 import { useNavigate } from "react-router";
 import { reserveTimeslot } from "../logic/patientApi";
 import { useAuth } from "../components/AuthComponents";
-import { useSimpleModal } from "../components/useSimpleModal";
+import { useSimpleModal } from "../components/modals/useSimpleModal";
 import { UnauthorizedRequestError } from '../types/requestErrors';
 import { logOut } from "../logic/login";
 

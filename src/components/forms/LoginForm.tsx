@@ -34,6 +34,7 @@ function LoginForm({onSubmit}: {onSubmit: (data: UserLoginForm) => void}) {
         <div className='form-group'>
             <label className='form-label text-sm-start ' id='email'>Email</label>
             <input
+                id='email-input'
                 aria-labelledby='email'
                 type='text'
                 placeholder='email@example.com'
@@ -48,6 +49,7 @@ function LoginForm({onSubmit}: {onSubmit: (data: UserLoginForm) => void}) {
         <div className='form-group'>
             <label className='form-label text-sm-start' id='password'>Password</label>
             <input
+                id='password-input'
                 aria-labelledby='password'
                 placeholder='Password'
                 type='password'
@@ -60,7 +62,7 @@ function LoginForm({onSubmit}: {onSubmit: (data: UserLoginForm) => void}) {
                 <div className='gap'/>}
         </div>
         <div className='form-group'>
-            <button type='submit' className='btn btn-primary' data-testid='login'>
+            <button type='submit' className='btn btn-primary' data-testid='login' id='submitBtn'>
                 Log in
             </button>
         </div>
