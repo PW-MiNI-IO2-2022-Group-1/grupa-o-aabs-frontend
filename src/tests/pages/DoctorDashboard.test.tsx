@@ -1,12 +1,68 @@
 import {render, screen, waitFor} from "@testing-library/react";
 import user from "@testing-library/user-event";
+import {MemoryRouter} from "react-router-dom";
+import React from "react";
+import DoctorDashboard from "../../pages/DoctorDashboard";
+import {AuthState} from "../../types/auth";
+import {setupServer} from "msw/node";
+import {MockedRequest, ResponseComposition, rest} from "msw";
+import {wait} from "@testing-library/user-event/dist/utils";
+import {authErrorHandlers, unknownErrorHandlers, validationErrorHandlers} from "../testServerUtils";
+
+const mockNavigate = jest.fn();
+const mockServerGetCheck = jest.fn();
+const mockDeleteVisit = jest.fn();
 
 describe("DoctorDashboard", () => {
-    it('routes to setSchedule', async () => {
-        //TODO
+    beforeAll(() => {
+        server.listen();
     });
-    it('calls API for visits', async () => {
-        //TODO
+
+    beforeEach(() => {
+        server.events.on('request:end', (req) =>{
+            if(req.method === "GET")
+                mockServerGetCheck()
+            else if(req.method === "DELETE")
+                mockDeleteVisit()
+        })
+        render(<DoctorDashboard/>, {wrapper: MemoryRouter});
+    })
+
+    afterAll(() => server.close());
+
+    afterEach(() => {
+        server.resetHandlers()
+        server.events.removeAllListeners()
+    });
+
+    it('routes to setSchedule', async () => {
+
+        user.click(getSetScheduleButton());
+        await waitFor(() => {
+            expect(mockNavigate).toHaveBeenCalledWith('/doctor/setSchedule');
+        })
+    });
+
+    it('calls API for visits when startDate changes', async () => {
+        await waitFor(() =>{
+            expect(mockServerGetCheck).toHaveBeenCalled();
+        })
+        expect(getMockedStartDatePicker()).toBeInTheDocument();
+        user.click(getMockedStartDatePicker());
+        await waitFor(() => {
+            expect(mockServerGetCheck).toBeCalledTimes(2);
+        })
+    });
+
+    it('calls API for visits when endDate changes', async () => {
+        await waitFor(() =>{
+            expect(mockServerGetCheck).toHaveBeenCalled();
+        })
+        expect(getMockedEndDatePicker()).toBeInTheDocument();
+        user.click(getMockedEndDatePicker());
+        await waitFor(() => {
+            expect(mockServerGetCheck).toBeCalledTimes(2);
+        })
     });
 
     it('calls API for visits when reserved filter changes', async () => {

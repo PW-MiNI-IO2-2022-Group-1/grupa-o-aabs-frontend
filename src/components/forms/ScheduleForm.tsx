@@ -53,7 +53,7 @@ const initSlots = [
     },
 
 ]
-function validateBeginningTime(ts: TimeSlot, prevTS: TimeSlot) {
+/*function validateBeginningTime(ts: TimeSlot, prevTS: TimeSlot) {
     return parseInt(ts.beginning.hour) * 60
         + parseInt(ts.beginning.minute) >
         parseInt(prevTS.end.hour) * 60
@@ -64,7 +64,7 @@ function validateEndTime(ts: TimeSlot) {
         + parseInt(ts.beginning.minute) >
         parseInt(ts.end.hour) * 60
         + parseInt(ts.end.minute);
-}
+}*/
 function ScheduleForm({onSubmit} : {onSubmit: (data: DoctorScheduleForm) => void})
 {
     /*const validationSchema = Yup.object().shape({
