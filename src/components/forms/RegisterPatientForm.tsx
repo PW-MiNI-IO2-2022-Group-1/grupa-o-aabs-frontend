@@ -37,11 +37,14 @@ export default function RegisterPatientForm(props: { onSubmit: SubmitHandler<Reg
                     Email
                 </Form.Label>
                 <Form.Control
-                    id = 'emailInput'
-                    type="email"
+                    type="text"
                     placeholder="example@domain.com"
                     {...register("email", {
-                        required: "Email required"
+                        required: "Email required",
+                        pattern: {
+                            value: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                            message: 'Wrong PESEL format'
+                        }
                     })}
                     isInvalid={!!errors.email}
                 />
@@ -56,7 +59,6 @@ export default function RegisterPatientForm(props: { onSubmit: SubmitHandler<Reg
                         Password
                     </Form.Label>
                     <Form.Control
-                        id = 'passwordInput'
                         type="password"
                         placeholder=""
                         {...register("password", {
@@ -78,7 +80,6 @@ export default function RegisterPatientForm(props: { onSubmit: SubmitHandler<Reg
                         First name
                     </Form.Label>
                     <Form.Control
-                        id = 'firstNameInput'
                         type="text"
                         placeholder="First Name"
                         {...register("firstName", {
@@ -96,7 +97,6 @@ export default function RegisterPatientForm(props: { onSubmit: SubmitHandler<Reg
                         Last name
                     </Form.Label>
                     <Form.Control
-                        id = 'lastNameInput'
                         type="text"
                         placeholder="Last Name"
                         {...register("lastName", {
@@ -115,7 +115,6 @@ export default function RegisterPatientForm(props: { onSubmit: SubmitHandler<Reg
                         PESEL
                     </Form.Label>
                     <Form.Control
-                        id = 'peselInput'
                         type="text"
                         placeholder="PESEL"
                         {...register("pesel", {
@@ -145,7 +144,6 @@ export default function RegisterPatientForm(props: { onSubmit: SubmitHandler<Reg
                         City
                     </Form.Label>
                     <Form.Control
-                        id = 'cityInput'
                         type="text"
                         placeholder="City"
                         {...register("address.city", {
@@ -164,7 +162,6 @@ export default function RegisterPatientForm(props: { onSubmit: SubmitHandler<Reg
                         Zip code
                     </Form.Label>
                     <Form.Control
-                        id = 'zipCodeInput'
                         type="text"
                         placeholder="00-000"
                         {...register("address.zipCode", {
@@ -189,7 +186,6 @@ export default function RegisterPatientForm(props: { onSubmit: SubmitHandler<Reg
                         Street
                     </Form.Label>
                     <Form.Control
-                        id = 'streetInput'
                         type="text"
                         placeholder="Street"
                         {...register("address.street", {
@@ -207,7 +203,6 @@ export default function RegisterPatientForm(props: { onSubmit: SubmitHandler<Reg
                         House number
                     </Form.Label>
                     <Form.Control
-                        id = 'houseNumberInput'
                         type="text"
                         placeholder="House number"
                         {...register("address.houseNumber", {
@@ -225,7 +220,6 @@ export default function RegisterPatientForm(props: { onSubmit: SubmitHandler<Reg
                         Local number
                     </Form.Label>
                     <Form.Control
-                        id = 'localNumberInput'
                         type="text"
                         placeholder="Local Number"
                         {...register("address.localNumber")}
