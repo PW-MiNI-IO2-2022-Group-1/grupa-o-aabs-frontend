@@ -36,7 +36,6 @@ function DoctorDashboard() {
         getSlots(startDate, endDate, reserved, auth, Math.max(page,1)).then((response) => {
             setPage(Math.min(response.pagination.totalPages, page))
             setMaxPage(response.pagination.totalPages);
-            console.log(response.data);
             const visits = response.data.map((v: { date: string, id: number, vaccination: Vaccination | null }) => {
                 return {
                     date: new Date(v.date),
@@ -92,6 +91,7 @@ function DoctorDashboard() {
                         minDate={today}
                         value={startDate}
                         format='dd.MM.y'
+                        data-testid='Start'
                     /></Col>
                 </Row>
                 <Row style={{padding: '2px'}}>
@@ -105,6 +105,7 @@ function DoctorDashboard() {
                         minDate={today}
                         value={endDate}
                         format='dd.MM.y'
+                        data-testid='End'
                     /></Col>
                 </Row>
                 <Row style={{padding: '2px'}} xs={'auto'}>
