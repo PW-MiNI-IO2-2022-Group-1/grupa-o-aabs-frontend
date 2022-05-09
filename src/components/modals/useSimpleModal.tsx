@@ -43,7 +43,7 @@ export function useSimpleModal(): [(title: string, message: string, callback?: (
 
     const renderModal = () => {
         return <Modal show={state.isVisible} onHide={closeModal}
-               backdrop='static'>
+               backdrop='static' id='modal'>
             <Modal.Header>
                 <Modal.Title>{state.title}</Modal.Title>     
             </Modal.Header>

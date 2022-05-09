@@ -112,7 +112,7 @@ describe("Edit Patient Details Page", () => {
         })
     })
 
-    it('displays alert on unauthorised error', async () => {
+    it('displays modal on unauthorised error', async () => {
         server.use(
             rest.put('*/patient/account', async (req, res, ctx) => {
                 return res(
@@ -127,8 +127,8 @@ describe("Edit Patient Details Page", () => {
         )
         user.click(screen.getByRole('button', {name: /Save/i}))
 
-        /*await waitFor(() => {
-            expect(mockAlert).toHaveBeenCalled();
-        })*/
+        await waitFor(() => {
+            expect(screen.getByText(/error/i)).toBeInTheDocument();
+        })
     })
 });

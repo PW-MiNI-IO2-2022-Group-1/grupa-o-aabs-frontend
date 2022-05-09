@@ -1,10 +1,9 @@
 import { useFormik } from "formik";
 import { useState } from "react";
-import { Button, Container, Modal, Row} from "react-bootstrap";
+import { Button, Container, Modal } from "react-bootstrap";
 import { Doctor } from "../..//types/users";
 import * as Yup from 'yup'
-import { EditField } from "../EditField";
-import DoctorDashboard from "../../pages/DoctorDashboard";
+import EditField from "../EditField";
 
 interface EditDoctorModalState {
     isVisible: boolean;

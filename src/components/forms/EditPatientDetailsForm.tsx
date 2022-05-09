@@ -1,8 +1,7 @@
 import {Col, Row} from "react-bootstrap";
-import React from "react";
 import {getOrDefault} from "../../utils/dictionaryUtils";
 import EditField from "../EditField";
-import {FormikProps, useFormik} from "formik";
+import {useFormik} from "formik";
 import {PatientDetailsFormData} from "../../pages/EditPatientDetailsPage";
 import * as Yup from "yup";
 
@@ -75,7 +74,8 @@ function EditPatientDetailsForm({onSubmit, initialValues}: {
         </Row>
         <Row><div style={{height: '50px'}}/></Row>
         <Row className='justify-content-center'>
-            <input type='submit' className='btn btn-light btn-outline-dark'
+            <input id='submitBtn' type='submit' 
+                   className='btn btn-light btn-outline-dark'
                    style={{width: '150px'}} value='Change details'/>
         </Row>
     </form>

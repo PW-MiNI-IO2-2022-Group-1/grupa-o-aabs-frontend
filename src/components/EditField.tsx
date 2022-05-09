@@ -11,7 +11,7 @@ interface EditFieldProps<T> {
     error: string | undefined;
 };
 
-function EditField<T>(props: EditFieldProps<T>) {
+export default function EditField<T>(props: EditFieldProps<T>) {
     const key = props.valueKey;
     const [isEnabled, setEnabled] = useState<boolean>(false);
 
@@ -60,5 +60,3 @@ function EditField<T>(props: EditFieldProps<T>) {
         </Col>
     </Container>);
 }
-
-export default EditField;

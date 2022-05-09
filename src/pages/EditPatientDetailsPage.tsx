@@ -1,16 +1,13 @@
-import React, { useState } from 'react';
 import { Patient } from '../types/users';
-import * as Yup from 'yup';
-import { useFormik } from 'formik';
 import { useAuth } from '../components/AuthComponents';
-import { Button, Modal } from 'react-bootstrap';
 import { editPatientDetails } from '../logic/patientApi';
 import { useNavigate } from 'react-router';
 import { logOut } from '../logic/login';
 import { EditPatientDetailsData } from '../types/patientAPITypes';
 import { Container } from 'react-bootstrap';
 import EditPatientDetailsForm from "../components/forms/EditPatientDetailsForm";
-import {initial} from "lodash";
+import { useSimpleModal } from '../components/modals/useSimpleModal';
+import { UnauthorizedRequestError } from '../types/requestErrors';
 
 export interface PatientDetailsFormData {
     firstName?: string;
@@ -63,55 +60,29 @@ export default function EditPatientDetailsPage(): JSX.Element {
         houseNumber: patient.address.houseNumber ?? undefined,
         localNumber: patient.address.localNumber ?? undefined
     };
+    const [showModal, renderModal] = useSimpleModal();
 
     const handleSubmit = (values: PatientDetailsFormData) => {
         const diff = calculateFormDifference(initialValues, values);
         const apiData: EditPatientDetailsData = convertFormDataToApiData(diff);
         editPatientDetails(auth, apiData).then(() => {
-            showMessage(true, 'Your account details were successfully changed');
+            showModal('Success', 'Your account details were successfully changed', () => {
+                navigate('/patient');
+            });
         }).catch((reason) => {
-            switch(reason.status) {
-                case 401:
-                    alert('You are not authorized');
-                    logOut(auth).then(() => navigate('/loginPatient'));
-                    break;
-                default:
-                    showMessage(false, 'Unexpected error');
+            if(reason instanceof UnauthorizedRequestError) {
+                showModal('Error', 'You are not authorized', () => {
+                    logOut(auth);
+                });
+            } else {
+                showModal('Error', 'Unexpected error')
             }
         });
 
     }
 
-
-    const [show, setShow] = useState(false);
-    const [modalMsg, setModalMsg] = useState("");
-    const [success, setSuccess] = useState(false);
-
-
-    const closeMessageAndRedirect = () => {
-        setShow(false);
-        navigate('/patient');
-    }
-    const closeMessage = () => setShow(false);
-    const showMessage = (success: boolean, msg: string) => {
-        setModalMsg(msg)
-        setSuccess(success)
-        setShow(true);
-    }
-
     return (<>
-        <Modal show={show} onHide={closeMessage} backdrop="static">
-            <Modal.Header>
-                <Modal.Title>{success ? "Success" : "Error"}</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>{modalMsg}</Modal.Body>
-            <Modal.Footer>
-                <Button variant="primary" 
-                    onClick={success ? closeMessageAndRedirect : closeMessage}>
-                        OK
-                </Button>
-            </Modal.Footer>
-        </Modal>
+        {renderModal()}
         <Container fluid className='text-center'>Patient details
             <div className='gap'/>
             <EditPatientDetailsForm onSubmit={handleSubmit} initialValues={initialValues}/>
