@@ -11,7 +11,7 @@ interface EditFieldProps<T> {
     error: string | undefined;
 };
 
-export default function EditField<T>(props: EditFieldProps<T>) {
+export default function EditField<T>(props: EditFieldProps<T>): JSX.Element {
     const key = props.valueKey;
     const [isEnabled, setEnabled] = useState<boolean>(false);
 
@@ -31,6 +31,7 @@ export default function EditField<T>(props: EditFieldProps<T>) {
             <Row className='justify-content-center'>
                 <input
                     id = {key}
+                    data-testid='editFieldInput'
                     disabled={!isEnabled}
                     type={props.type}
                     onChange={props.handleChange}    
@@ -41,6 +42,7 @@ export default function EditField<T>(props: EditFieldProps<T>) {
                         : ' is-invalid'}`}
                 />
                 <button type="button" 
+                    data-testid='editFieldButton'
                     id={key + 'InputEnabler'}
                     onClick={toggleEnabled}
                     className="btn btn-dark \

@@ -7,8 +7,6 @@ export default function PatientDashboard() {
     const auth = useAuth();
     const navigate = useNavigate();
 
-
-
     return (<>
         <div style={{width: '1000px'}}>
             <h1 style={{textAlign: 'center'}}>Dashboard</h1>
