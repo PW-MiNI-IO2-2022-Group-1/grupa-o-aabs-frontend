@@ -9,7 +9,7 @@ export default function PatientVaccinationList() {
     const [vaccinations, setVaccinations] = useState<PatientVaccination[]>([]);
     const [isLoading, setLoadingStatus] = useState<Boolean>(true);
     const [currPage, setCurrPage] = useState<number>(1);
-    const [pageCount, setPageCount] = useState<number>(1);
+    const [pageCount, setPageCount] = useState<number>(3);
     const [showDetails, renderModal] = useVaccinationDetailsModal();
 
     useEffect(() => {
@@ -78,8 +78,8 @@ export default function PatientVaccinationList() {
         <PaginationMenu
             currentPage = {currPage} 
             pageCount = {pageCount}
-            setPage = {(page) => {}}
-            modifyPage = {(page) => {}}
+            setPage = {setCurrPage}
+            modifyPage = {(pageDelta) => setCurrPage((page) => page+pageDelta)}
         />
         <div style={{height: '10px'}}/>
     </>);
