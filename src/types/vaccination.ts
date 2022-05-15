@@ -1,9 +1,14 @@
-import { Patient } from './users';
+import { Doctor, Patient } from './users';
 
 export type Visit = {
     date: Date;
     id: number;
     vaccination: Vaccination | null;
+}
+
+export type Timeslot = {
+    id: number;
+    date: Date;
 }
 
 export type Vaccination = {
@@ -13,6 +18,15 @@ export type Vaccination = {
     patient: Patient | null
 }
 
+export type PatientVaccination = {
+    id: number;
+    vaccine: Vaccine;
+    vaccinationSlot: Timeslot;
+    status: 'Planned' | 'Completed' | 'Canceled';
+    patient: Patient;
+    doctor: Doctor;
+}
+
 export const validDiseases: readonly string[] = [
     'COVID-19',
     'COVID-21',
@@ -20,16 +34,9 @@ export const validDiseases: readonly string[] = [
     'OTHER'
 ];
 
-
 export type Vaccine = {
     id: number;
     name: string;
     disease: string;
     requiredDoses: number;
 }
-
-export type Timeslot = {
-    id: number;
-    date: Date;
-}
-
