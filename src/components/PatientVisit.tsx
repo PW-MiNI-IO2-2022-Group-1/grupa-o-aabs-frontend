@@ -78,7 +78,7 @@ const PatientVisitField: React.FC<patientVisitProps> = (props) => {
             </Modal.Body>
             <Modal.Footer>
 
-                <Button variant='secondary' onClick={handleDelete}>Delete</Button>
+                <Button variant='secondary' disabled={isExpired() || props.visit.vaccination === null} onClick={handleDelete}>Delete</Button>
                 <Button variant='primary' onClick={handleHide}>Close</Button>
             </Modal.Footer>
         </Modal>
