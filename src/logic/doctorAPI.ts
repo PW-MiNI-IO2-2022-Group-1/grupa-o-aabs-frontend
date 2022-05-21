@@ -1,8 +1,8 @@
 import {Visit} from '../types/vaccination';
 import {BASE_URL} from './config';
 import moment from "moment";
-import { checkStatusAndGetBody, checkStatusAndIgnoreBody, apiGet, apiDelete, apiPost } from './API';
-import { AuthState } from '../types/auth';
+import {checkStatusAndGetBody, checkStatusAndIgnoreBody, apiGet, apiDelete, apiPost, apiPut} from './API';
+import {AuthState} from '../types/auth';
 
 export function getSlots(start: Date | null, end: Date | null, onlyReserved: string, auth: AuthState, page: number) {
     if (start != null) start.setHours(0, 0, 0, 0);
@@ -13,8 +13,8 @@ export function getSlots(start: Date | null, end: Date | null, onlyReserved: str
     let reserved = onlyReserved === '-1' ? '' : `onlyReserved=${encodeURIComponent(onlyReserved)}&`
 
     return apiGet(`${BASE_URL}/doctor/vaccination-slots?${reserved}page=${page}${sDate}${eDate}`,
-                   auth)
-            .then(checkStatusAndGetBody);
+        auth)
+        .then(checkStatusAndGetBody);
 }
 
 export function deleteVisit(visit: Visit, auth: AuthState) {
@@ -24,6 +24,12 @@ export function deleteVisit(visit: Visit, auth: AuthState) {
 
 export function setScheduleDate(slot: Date, auth: AuthState) {
     return apiPost(`${BASE_URL}/doctor/vaccination-slots`, auth,
-           JSON.stringify({'date': moment(slot).toISOString()}))
+        JSON.stringify({'date': moment(slot).toISOString()}))
+        .then(checkStatusAndIgnoreBody);
+}
+
+export function vaccinatePatient(vaccinationSlotId: number, auth: AuthState, status: 'COMPLETED' | 'CANCELED') {
+    return apiPut(`${BASE_URL}/doctor/vaccination-slots/${vaccinationSlotId}`, auth,
+        JSON.stringify({'status': status}))
         .then(checkStatusAndIgnoreBody);
 }

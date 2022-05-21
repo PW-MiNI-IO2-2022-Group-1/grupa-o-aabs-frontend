@@ -7,9 +7,9 @@ import {AuthContextType} from '../types/auth';
 import {Vaccination, Visit} from '../types/vaccination';
 import {addDays, addMinutes} from '../utils/dateUtils';
 import DatePicker from 'react-date-picker';
-import { deleteVisit, getSlots } from '../logic/doctorAPI';
-import { useAuth } from '../components/AuthComponents';
-import { logOut } from '../logic/login';
+import {deleteVisit, getSlots, vaccinatePatient} from '../logic/doctorAPI';
+import {useAuth} from '../components/AuthComponents';
+import {logOut} from '../logic/login';
 
 function DoctorDashboard() {
     const auth: AuthContextType = useAuth();
@@ -33,7 +33,7 @@ function DoctorDashboard() {
     const getVisits = () => {
         setError('')
         setLoading(true);
-        getSlots(startDate, endDate, reserved, auth, Math.max(page,1)).then((response) => {
+        getSlots(startDate, endDate, reserved, auth, Math.max(page, 1)).then((response) => {
             setPage(Math.min(response.pagination.totalPages, page))
             setMaxPage(response.pagination.totalPages);
             const visits = response.data.map((v: { date: string, id: number, vaccination: Vaccination | null }) => {
@@ -67,13 +67,23 @@ function DoctorDashboard() {
     }, [startDate, endDate, reserved, page])
 
     function remove(index: number) {
-        deleteVisit(Visits[index], auth).then( () => {
+        deleteVisit(Visits[index], auth).then(() => {
             getVisits();
             return '';
         }).catch((reason => {
             return reason.message;
         }));
         return '';
+    }
+
+    const vaccinate = (index: number, status: 'COMPLETED' | 'CANCELED') => {
+        return vaccinatePatient(Visits[index].id, auth, status)
+            .then(() => {
+                    getVisits();
+                }
+            ).catch(reason => {
+                throw reason
+            })
     }
 
     return (
@@ -139,11 +149,11 @@ function DoctorDashboard() {
 
             <Container>
                 <Col
-                    className={`d-flex${Visits.length === 0 || loading? '' : '-nowrap'} justify-content-center`}>
+                    className={`d-flex${Visits.length === 0 || loading ? '' : '-nowrap'} justify-content-center`}>
                     {
-                        loading?
+                        loading ?
                             <Spinner animation='border'/> :
-                            (Visits.length === 0?
+                            (Visits.length === 0 ?
                                     <div>{error}</div> :
                                     Visits.map((field, index) => {
                                         return <PatientVisitField
@@ -151,6 +161,7 @@ function DoctorDashboard() {
                                             visit={field}
                                             index={index}
                                             remove={remove}
+                                            vaccinate={vaccinate}
                                         />
                                     })
                             )}
@@ -161,7 +172,7 @@ function DoctorDashboard() {
                     <Col className='d-flex justify-content-center'><Button disabled={loading || page <= 1}
                                                                            onClick={() => setPage(page - 1)}> Previous
                         Page</Button></Col>
-                    <Col className='d-flex justify-content-center'>{loading? '...' : `${page} of ${maxPage}`}</Col>
+                    <Col className='d-flex justify-content-center'>{loading ? '...' : `${page} of ${maxPage}`}</Col>
                     <Col className='d-flex justify-content-center'><Button disabled={loading || page >= maxPage}
                                                                            onClick={() => setPage(page + 1)}> Next
                         Page</Button></Col>

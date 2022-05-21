@@ -7,6 +7,7 @@ interface patientVisitProps {
     visit: Visit;
     index: number;
     remove: (index: number) => string;
+    vaccinate: (index: number, status: 'COMPLETED' | 'CANCELED') => Promise<any>;
 }
 
 const PatientVisitField: React.FC<patientVisitProps> = (props) => {
@@ -32,6 +33,26 @@ const PatientVisitField: React.FC<patientVisitProps> = (props) => {
         else
             setError(errorMsg);
     }
+
+    const handleVaccinate = (status: 'COMPLETED' | 'CANCELED') => {
+        props.vaccinate(props.index, status)
+            .catch(reason => {
+                if (reason.status == 404) {
+                    reason.json().then((body: any) => setError(body.msg))
+                } else if (reason.status == 422) {
+                    reason.json().then((body: any) => {
+                        const messages = body.data
+                        let errorMsg = ''
+                        for (const msg in messages) {
+                            errorMsg = errorMsg + `${msg}: ${messages[msg]}`
+                        }
+                    })
+                } else if (reason.status == 401) {
+                    reason.json().then((body: any) => setError(body.msg))
+                }
+            })
+    }
+
     const vaccInfo = props.visit.vaccination == null ? 'No patient assigned' :
         `${props.visit.vaccination.vaccine === undefined || props.visit.vaccination.vaccine === null ?
             'Vaccine not chosen' :
@@ -64,7 +85,10 @@ const PatientVisitField: React.FC<patientVisitProps> = (props) => {
                 <>{error === '' ? '' : <><br/>{error}</>}</>
             </Modal.Body>
             <Modal.Footer>
-
+                {props.visit.vaccination?.status == 'Planned' &&
+                    <Button variant='success' onClick={() => handleVaccinate('COMPLETED')}>Complete vaccination</Button>}
+                {props.visit.vaccination?.status == 'Planned' &&
+                    <Button variant='danger' onClick={() => handleVaccinate('CANCELED')}>Cancel</Button>}
                 <Button variant='secondary' onClick={handleDelete}>Delete</Button>
                 <Button variant='primary' onClick={handleHide}>Close</Button>
             </Modal.Footer>
