@@ -80,7 +80,12 @@ export default function App() {
                         </RequireAuth>}
                     />
                     
-                    <Route path='bugs' element={<ReportBugPage/>}/>
+                    <Route 
+                      path='bugs' 
+                      element={<RequireAuth role={null} authLocation={'/'}>
+                          <ReportBugPage/>
+                          </RequireAuth>}
+                    />
             </Routes>
             </PageHeader>
         </AuthProvider>
