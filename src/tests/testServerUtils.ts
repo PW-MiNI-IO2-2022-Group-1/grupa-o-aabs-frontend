@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import {DefaultRequestBody, ResponseComposition, rest, RestContext} from "msw";
 
 const authErrorResponse = (res: ResponseComposition<DefaultRequestBody>, ctx: RestContext) => {

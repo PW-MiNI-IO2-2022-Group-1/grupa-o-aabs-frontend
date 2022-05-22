@@ -16,6 +16,7 @@ const mockedData = {
     houseNumber: '21',
     localNumber: '37',
 }
+
 const mockedUser = {
     firstName: 'Adam',
     lastName: 'Abacki',
