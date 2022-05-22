@@ -1,6 +1,5 @@
 import {Visit} from '../types/vaccination';
 import {BASE_URL} from './config';
-import moment from "moment";
 
 export function getSlots(start: Date | null, end: Date | null, onlyReserved: string, authToken: string | null, page: number) {
     if (start != null) start.setHours(0, 0, 0, 0);
@@ -52,3 +51,4 @@ export function setScheduleDate(slot: Date, authToken: string | null) {
         throw response;
     });
 }
+
