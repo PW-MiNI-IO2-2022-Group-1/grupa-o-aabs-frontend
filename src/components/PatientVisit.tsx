@@ -4,6 +4,7 @@ import React, {useState} from 'react';
 import {Visit} from '../types/vaccination';
 import {Button, Row, Col, Modal} from 'react-bootstrap';
 
+
 interface patientVisitProps {
     visit: Visit;
     index: number;
@@ -78,7 +79,9 @@ const PatientVisitField: React.FC<patientVisitProps> = (props) => {
             </Modal.Body>
             <Modal.Footer>
 
-                <Button variant='secondary' disabled={isExpired() || props.visit.vaccination !== null} onClick={handleDelete}>Delete</Button>
+                <Button variant='secondary' 
+                  disabled={isExpired() || props.visit.vaccination !== null}
+                  onClick={handleDelete}>Delete</Button>
                 <Button variant='primary' onClick={handleHide}>Close</Button>
             </Modal.Footer>
         </Modal>

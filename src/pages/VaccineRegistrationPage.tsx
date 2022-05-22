@@ -116,8 +116,11 @@ export default function VaccineRegistrationPage() {
    
     return (<div>
         <div className='mb-5'>
-            <StageChoice<VaccineRegistrationStage> onChoiceCallback={setStage}
-                stageNames={stageNames} currentStage={currentStage}></StageChoice>
+            <StageChoice<VaccineRegistrationStage>
+                onChoiceCallback={setStage}
+                stageNames={stageNames}
+                currentStage={currentStage}
+            />
         </div>
         <SwitchTransition>
             <CSSTransition
