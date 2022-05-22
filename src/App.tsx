@@ -16,6 +16,7 @@ import PageHeader from './components/PageHeader';
 import RegisterPatientPage from "./pages/RegisterPatientPage";
 import VaccineRegistrationPage from './pages/VaccineRegistrationPage';
 import { PatientFrontPage } from './pages/PatientFrontPage';
+import ReportBugPage from './pages/ReportBugPage';
 
 export default function App() {
     return (
@@ -78,7 +79,8 @@ export default function App() {
                             <VaccineRegistrationPage/>
                         </RequireAuth>}
                     />
-
+                    
+                    <Route path='bugs' element={<ReportBugPage/>}/>
             </Routes>
             </PageHeader>
         </AuthProvider>
