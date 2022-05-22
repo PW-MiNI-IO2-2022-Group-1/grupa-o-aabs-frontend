@@ -31,7 +31,7 @@ function PageHeader({children} : {children: React.ReactNode}) {
             onClick={goToFrontPage}><h1>Szczepiarz</h1></button>
         {auth.user != null &&
         <div className='align-items-end mx-4'>
-        <button onClick={signOut} className='btn btn-outline-success'
+        <button onClick={signOut} className='btn btn-outline-light'
             id='signOutBtn'>Sign out</button>
         </div>}
     </nav>

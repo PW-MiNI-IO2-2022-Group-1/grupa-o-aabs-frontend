@@ -31,11 +31,11 @@ describe('EditField', () => {
     });
 
     it('enables/disables after button click', async () => {
-        act(async () => user.click(await screen.findByTestId('editFieldButton')));
+        user.click(await screen.findByTestId('editFieldButton'));
         await waitFor(() => 
             expect(screen.queryByTestId('editFieldInput')).not.toBeDisabled()
         );
-        act(async () => user.click(await screen.findByTestId('editFieldButton')));
+        user.click(await screen.findByTestId('editFieldButton'));
         await waitFor(() => 
             expect(screen.queryByTestId('editFieldInput')).toBeDisabled()
         );

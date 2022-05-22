@@ -41,7 +41,7 @@ export default function useVaccinationDetailsModal(): [(vacc: PatientVaccination
                 <h4>Status: {state.vaccination?.status}</h4>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant='primary' onClick={closeModal}>
+                <Button variant='dark' onClick={closeModal}>
                     Ok
                 </Button>
             </Modal.Footer>
