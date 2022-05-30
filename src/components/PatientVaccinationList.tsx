@@ -1,19 +1,38 @@
 import { useEffect, useState } from "react";
-import { getVaccinationHistory } from "../logic/patientApi";
-import { Address, Doctor, Patient } from "../types/users";
-import { PatientVaccination, Timeslot, Vaccine } from "../types/vaccination";
+import { logOut } from "../logic/login";
+import { getAvailableVaccines, getVaccinationHistory } from "../logic/patientApi";
+import { UnauthorizedRequestError } from "../types/requestErrors";
+import { PatientVaccination } from "../types/vaccination";
 import { useAuth } from "./AuthComponents";
+import { useSimpleModal } from "./modals/useSimpleModal";
 import useVaccinationDetailsModal from "./modals/useVaccinationDetailsModal";
 import PaginationMenu from "./PaginationMenu";
 import './PatientVaccinationList.css';
 
 export default function PatientVaccinationList() {
     const auth = useAuth();
+    const [showModal, renderErrorModal] = useSimpleModal();
     const [vaccinations, setVaccinations] = useState<PatientVaccination[]>([]);
     const [isLoading, setLoadingStatus] = useState<Boolean>(true);
     const [currPage, setCurrPage] = useState<number>(1);
     const [pageCount, setPageCount] = useState<number>(1);
     const [showDetails, renderModal] = useVaccinationDetailsModal();
+
+    const [diseaseFilter, setDiseaseFilter] = useState<string>('All');
+    const [diseases, setDiseases] = useState<string[]>([]);
+
+    useEffect(() => {
+       getAvailableVaccines(auth).then((vaccines) => {
+           const diseases = vaccines.map(vaccine => vaccine.disease);
+           const uniqueDiseases = Array.from(new Set(diseases));
+           setDiseases(uniqueDiseases);
+       }).catch(error => {
+            if(error instanceof UnauthorizedRequestError)
+                showModal('Error', 'You are not authorized', () => logOut(auth));
+            else
+                showModal('Error', 'Unexpected error');
+       })
+    }, []);
 
     useEffect(() => {
         setLoadingStatus(true);
@@ -21,6 +40,11 @@ export default function PatientVaccinationList() {
             setVaccinations(data[0]);
             setPageCount(data[1]);
             setLoadingStatus(false);
+        }).catch(error => {
+            if(error instanceof UnauthorizedRequestError)
+                showModal('Error', 'You are not authorized', () => logOut(auth));
+            else
+                showModal('Error', 'Unexpected error');
         })
     }, [currPage])
 
@@ -35,20 +59,8 @@ export default function PatientVaccinationList() {
         </tr>)
     }
 
-
-    function loadVaccinations() {
-        setVaccinations([
-        getVaccination('Completed'),
-        getVaccination('Planned'),
-        getVaccination('Canceled'),
-        getVaccination('Planned'),
-        getVaccination('Canceled'),
-        getVaccination('Completed'),
-        getVaccination('Planned'),
-        getVaccination('Canceled'),
-        getVaccination('Completed'),
-        getVaccination('Completed'),
-        getVaccination('Planned')]);
+    const handleSelectChange = (selectObject: React.FormEvent<HTMLSelectElement>): void => {
+        setDiseaseFilter(selectObject.currentTarget.value);
     }
 
     function renderVaccinationTable() {
@@ -69,14 +81,24 @@ export default function PatientVaccinationList() {
                     </tr>
                 </thead>
                 <tbody className = 'noselect'>
-                    {vaccinations.map(renderVaccinationRow)}
+                    {vaccinations.filter((vaccination => {
+                        return (diseaseFilter === 'All' 
+                            || vaccination.vaccine.disease === diseaseFilter);
+                    })).map(renderVaccinationRow)}
                 </tbody>
             </table>}
         </>);
     }
 
     return (<>
+        {renderErrorModal()}
         {renderModal()}
+        <label>Disease</label>
+        <select className='d-inline mx-5 align-' onChange={handleSelectChange}
+                            style={{width: '250px'}}>
+                            <option value='All'>All</option>
+                            {diseases.map((x) => <option value={x}>{x}</option>)}
+                        </select>
         {renderVaccinationTable()} 
         <div style={{height: '30px'}}/>
         <PaginationMenu
@@ -87,48 +109,4 @@ export default function PatientVaccinationList() {
         />
         <div style={{height: '10px'}}/>
     </>);
-}
-
-function getVaccination(status: 'Completed' | 'Canceled' | 'Planned'): PatientVaccination {
-    const address: Address = {
-        id: 12,
-        city: 'Warsaw',
-        zipCode: '63-232',
-        street: 'Wawelska',
-        houseNumber: '12',
-        localNumber: null
-    }
-    const patient: Patient = {
-       id: 2,
-       email: 'email@email.com' ,
-       firstName: 'John',
-       lastName: 'Doe',
-       pesel: '12345678912',
-       address: address
-    }
-    const doctor: Doctor = {
-        id: 3,
-        email: 'doctor@doctor.com',
-        firstName: 'Joe',
-        lastName: 'Mama'
-    }
-    const vaccine: Vaccine = {
-        id: 4,
-        name: 'Modafelex',
-        disease: 'Flu',
-        requiredDoses: 2
-    }
-    const slot: Timeslot = {
-        id: 123,
-        date: new Date()
-    }
-    const vaccination: PatientVaccination = {
-        id: 12,
-        vaccine: vaccine,
-        vaccinationSlot: slot,
-        status: status,
-        patient: patient,
-        doctor: doctor
-    }
-    return vaccination;
 }
