@@ -1,23 +1,27 @@
 import { useEffect, useState } from "react";
+import { getVaccinationHistory } from "../logic/patientApi";
 import { Address, Doctor, Patient } from "../types/users";
 import { PatientVaccination, Timeslot, Vaccine } from "../types/vaccination";
+import { useAuth } from "./AuthComponents";
 import useVaccinationDetailsModal from "./modals/useVaccinationDetailsModal";
 import PaginationMenu from "./PaginationMenu";
 import './PatientVaccinationList.css';
 
 export default function PatientVaccinationList() {
+    const auth = useAuth();
     const [vaccinations, setVaccinations] = useState<PatientVaccination[]>([]);
     const [isLoading, setLoadingStatus] = useState<Boolean>(true);
     const [currPage, setCurrPage] = useState<number>(1);
-    const [pageCount, setPageCount] = useState<number>(3);
+    const [pageCount, setPageCount] = useState<number>(1);
     const [showDetails, renderModal] = useVaccinationDetailsModal();
 
     useEffect(() => {
         setLoadingStatus(true);
-        setTimeout(() => {
-           loadVaccinations();
-           setLoadingStatus(false);
-        }, 1500);
+        getVaccinationHistory(auth, currPage).then((data) => {
+            setVaccinations(data[0]);
+            setPageCount(data[1]);
+            setLoadingStatus(false);
+        })
     }, [currPage])
 
     function renderVaccinationRow(vaccination: PatientVaccination) {

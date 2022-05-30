@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button, Container, Modal } from "react-bootstrap";
-import { PatientVaccination } from "../../types/vaccination";
+import { PatientVaccination, Visit } from "../../types/vaccination";
+import DownloadCertificateButton from "../DownloadCertificateButton";
 
 interface VaccinationDetailsModalState {
     isVisible: boolean;
@@ -25,6 +26,19 @@ export default function useVaccinationDetailsModal(): [(vacc: PatientVaccination
         });
     }
 
+    function patientVaccinationToVisit(vaccination: PatientVaccination): Visit {
+        return {
+            id: vaccination.id,
+            date: vaccination.vaccinationSlot.date,
+            vaccination: {
+                id: vaccination.id,
+                vaccine: vaccination.vaccine,
+                status: vaccination.status,
+                patient: vaccination.patient,
+            }
+        };
+    }
+
     function renderModal() {
         return <Modal show={state.isVisible} onHide={closeModal}
                backdrop='static'>
@@ -41,6 +55,11 @@ export default function useVaccinationDetailsModal(): [(vacc: PatientVaccination
                 <h4>Status: {state.vaccination?.status}</h4>
             </Modal.Body>
             <Modal.Footer>
+                {
+                    state.vaccination !== undefined &&
+                    state.vaccination.status === 'Completed' &&
+                        <DownloadCertificateButton visit={patientVaccinationToVisit(state.vaccination)}/>
+                }
                 <Button variant='dark' onClick={closeModal}>
                     Ok
                 </Button>
