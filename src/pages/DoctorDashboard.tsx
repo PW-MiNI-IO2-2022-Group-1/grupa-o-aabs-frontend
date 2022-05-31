@@ -10,6 +10,8 @@ import DatePicker from 'react-date-picker';
 import {deleteVisit, getSlots, vaccinatePatient} from '../logic/doctorAPI';
 import {useAuth} from '../components/AuthComponents';
 import {logOut} from '../logic/login';
+import {UnauthorizedRequestError} from "../types/requestErrors";
+import {useSimpleModal} from "../components/modals/useSimpleModal";
 
 function DoctorDashboard() {
     const auth: AuthContextType = useAuth();
@@ -21,7 +23,7 @@ function DoctorDashboard() {
     const [reserved, setReserved] = useState<string>('-1');
     const [page, setPage] = useState<number>(1);
     const [maxPage, setMaxPage] = useState<number>(10);
-    const [error, setError] = useState('');
+    const [showErrorModal, renderErrorModal] = useSimpleModal();
     const [loading, setLoading] = useState(false);
     const [Visits, setVisits] = useState<Visit[]>([]);
     const radios = [
@@ -31,7 +33,6 @@ function DoctorDashboard() {
     ];
 
     const getVisits = () => {
-        setError('')
         setLoading(true);
         getSlots(startDate, endDate, reserved, auth, Math.max(page, 1)).then((response) => {
             setPage(Math.min(response.pagination.totalPages, page))
@@ -46,16 +47,15 @@ function DoctorDashboard() {
             setVisits(visits);
             return;
         }).catch(reason => {
-            switch (reason.status) {
-                case 401:
-                    logOut(auth);
-                    navigate('/loginDoctor');
-                    break;
+            if (reason instanceof UnauthorizedRequestError) {
+                logOut(auth);
+                navigate('/loginDoctor');
+            } else switch (reason.status) {
                 case 422:
-                    setError('Validation error');
+                    showErrorModal('Error', 'Validation error');
                     break;
                 default:
-                    setError('Unknown error');
+                    showErrorModal('Error', 'Unknown error');
                     console.log(reason.message);
             }
             setVisits([]);
@@ -71,7 +71,11 @@ function DoctorDashboard() {
             getVisits();
             return '';
         }).catch((reason => {
-            return reason.message;
+            if (reason instanceof UnauthorizedRequestError) {
+                logOut(auth);
+                navigate('/loginDoctor');
+            } else
+                return reason.message;
         }));
         return '';
     }
@@ -82,12 +86,16 @@ function DoctorDashboard() {
                     getVisits();
                 }
             ).catch(reason => {
-                throw reason
+                if (reason instanceof UnauthorizedRequestError) {
+                    logOut(auth);
+                    navigate('/loginDoctor');
+                } else
+                    throw reason
             })
     }
 
     return (
-        <div>
+        <>
             <Container style={{width: '500px', margin: 5}}>
                 <Row>Doctor Dashboard</Row>
                 <Row style={{padding: '2px'}}>
@@ -98,7 +106,7 @@ function DoctorDashboard() {
                             setPage(1);
                             onStartDateChange(date)
                         }}
-                        minDate={today}
+                        minDate={new Date('1990-01-01')}
                         value={startDate}
                         format='dd.MM.y'
                         data-testid='Start'
@@ -112,7 +120,7 @@ function DoctorDashboard() {
                             setPage(1);
                             onEndDateChange(date)
                         }}
-                        minDate={today}
+                        minDate={new Date('1990-01-02')}
                         value={endDate}
                         format='dd.MM.y'
                         data-testid='End'
@@ -147,39 +155,44 @@ function DoctorDashboard() {
                 </Row>
             </Container>
 
-            <Container>
-                <Col
-                    className={`d-flex${Visits.length === 0 || loading ? '' : '-nowrap'} justify-content-center`}>
-                    {
-                        loading ?
-                            <Spinner animation='border'/> :
-                            (Visits.length === 0 ?
-                                    <div>{error}</div> :
-                                    Visits.map((field, index) => {
-                                        return <PatientVisitField
-                                            key={`visit_${index}`}
-                                            visit={field}
-                                            index={index}
-                                            remove={remove}
-                                            vaccinate={vaccinate}
-                                        />
-                                    })
-                            )}
-                </Col>
-            </Container>
-            <Container>
-                <Row>
-                    <Col className='d-flex justify-content-center'><Button disabled={loading || page <= 1}
-                                                                           onClick={() => setPage(page - 1)}> Previous
-                        Page</Button></Col>
-                    <Col className='d-flex justify-content-center'>{loading ? '...' : `${page} of ${maxPage}`}</Col>
-                    <Col className='d-flex justify-content-center'><Button disabled={loading || page >= maxPage}
-                                                                           onClick={() => setPage(page + 1)}> Next
-                        Page</Button></Col>
-                </Row>
+            {Visits.length === 0 ?
+                <div/> :
+                <>
+                    <Container>
+                        <Col
+                            className={`d-flex${Visits.length === 0 || loading ? '' : '-nowrap'} justify-content-center`}>
+                            {
+                                loading ?
+                                    <Spinner animation='border'/> :
+                                    (
+                                        Visits.map((field, index) => {
+                                            return <PatientVisitField
+                                                key={`visit_${index}`}
+                                                visit={field}
+                                                index={index}
+                                                remove={remove}
+                                                vaccinate={vaccinate}
+                                            />
+                                        })
+                                    )}
+                        </Col>
+                    </Container>
+                    <Container>
+                        <Row>
+                            <Col className='d-flex justify-content-center'><Button disabled={loading || page <= 1}
+                                                                                   onClick={() => setPage(page - 1)}> Previous
+                                Page</Button></Col>
+                            <Col
+                                className='d-flex justify-content-center'>{loading ? '...' : `${page} of ${maxPage}`}</Col>
+                            <Col className='d-flex justify-content-center'><Button disabled={loading || page >= maxPage}
+                                                                                   onClick={() => setPage(page + 1)}> Next
+                                Page</Button></Col>
+                        </Row>
 
-            </Container>
-        </div>
+                    </Container>
+                </>}
+            {renderErrorModal()}
+        </>
 
     )
 }

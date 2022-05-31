@@ -3,6 +3,11 @@ import './PatientVisit.css';
 import React, {useState} from 'react';
 import {Visit} from '../types/vaccination';
 import {Button, Row, Col, Modal} from 'react-bootstrap';
+import DownloadCertificateButton from "./DownloadCertificateButton";
+import {UnauthorizedRequestError} from "../types/requestErrors";
+import {logOut} from "../logic/login";
+import {useAuth} from "./AuthComponents";
+import {useNavigate} from "react-router-dom";
 
 
 interface patientVisitProps {
@@ -42,9 +47,9 @@ const PatientVisitField: React.FC<patientVisitProps> = (props) => {
     const handleVaccinate = (status: 'COMPLETED' | 'CANCELED') => {
         props.vaccinate(props.index, status)
             .catch(reason => {
-                if (reason.status == 404) {
+                if (reason.status === 404) {
                     reason.json().then((body: any) => setError(body.msg))
-                } else if (reason.status == 422) {
+                } else if (reason.status === 422) {
                     reason.json().then((body: any) => {
                         const messages = body.data
                         let errorMsg = ''
@@ -52,8 +57,6 @@ const PatientVisitField: React.FC<patientVisitProps> = (props) => {
                             errorMsg = errorMsg + `${msg}: ${messages[msg]}`
                         }
                     })
-                } else if (reason.status == 401) {
-                    reason.json().then((body: any) => setError(body.msg))
                 }
             })
     }
@@ -99,9 +102,9 @@ const PatientVisitField: React.FC<patientVisitProps> = (props) => {
                 <>{error === '' ? '' : <><br/>{error}</>}</>
             </Modal.Body>
             <Modal.Footer>
-                {props.visit.vaccination?.status == 'Planned' &&
+                {props.visit.vaccination?.status === 'Planned' &&
                     <Button variant='success' onClick={() => handleVaccinate('COMPLETED')}>Complete vaccination</Button>}
-                {props.visit.vaccination?.status == 'Planned' &&
+                {props.visit.vaccination?.status === 'Planned' &&
                     <Button variant='danger' onClick={() => handleVaccinate('CANCELED')}>Cancel</Button>}
                 <Button variant='secondary' 
                   disabled={isExpired() || props.visit.vaccination !== null}
