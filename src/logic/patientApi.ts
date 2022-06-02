@@ -36,7 +36,7 @@ export function getAvailableVaccines(auth: AuthContextType): Promise<Vaccine[]> 
 }
 
 export function getAvailableTimeslots(auth: AuthContextType): Promise<Timeslot[]> {
-    return apiGet(`${BASE_URL}/patient/vaccination-slots`, auth)
+    return apiGet(`${BASE_URL}/vaccination-slots`, auth)
         .then(checkStatusAndGetBody)
         .then((json) => (json as any[]).map(x => {
             let d: Date = new Date(x.date);

@@ -15,7 +15,7 @@ export function apiCall(url: string, method: string, auth?: AuthState,
             method: method,
             headers: headers,
             body: body
-        }).then()
+        });
 }
 
 export function apiGet(url: string, auth?: AuthState, body?: string) {
