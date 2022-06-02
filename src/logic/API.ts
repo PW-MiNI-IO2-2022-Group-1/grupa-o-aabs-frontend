@@ -47,3 +47,40 @@ export function checkStatusAndIgnoreBody(response: Response): void {
         throw new UnauthorizedRequestError('You are not authorized');
     throw response;
 }
+
+export function apiGetPdf(url: string, auth?: AuthState) {
+    return fetch(url, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/pdf',
+            'Authorization': auth?.token ?? ''
+        }
+    }).then((response) => {
+
+        if (response.ok) {
+            console.log(response.headers.get("Content-Disposition"))
+            return response.blob();
+        }
+        if (response.status === StatusCodes.UNAUTHORIZED)
+            throw new UnauthorizedRequestError('You are not authorized');
+        throw response;
+    }).then(showFile)
+}
+
+function showFile(blob: BlobPart){
+    // It is necessary to create a new blob object with mime-type explicitly set
+    // otherwise only Chrome works like it should
+    const newBlob = new Blob([blob], {type: "application/pdf"});
+
+    // For other browsers:
+    // Create a link pointing to the ObjectURL containing the blob.
+    const data = window.URL.createObjectURL(newBlob);
+    const link = document.createElement('a');
+    link.href = data;
+    link.download="file.pdf";
+    link.click();
+    setTimeout(function(){
+        // For Firefox it is necessary to delay revoking the ObjectURL
+        window.URL.revokeObjectURL(data);
+    }, 100);
+}

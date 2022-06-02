@@ -16,7 +16,7 @@ function DownloadCertificateButton({visit}: ({visit: Visit})) {
         downloadCertificate(auth, visit.vaccination?.id ?? -1).catch((error) => {
             if(error instanceof UnauthorizedRequestError){
                 logOut(auth)
-                navigate('/patientLogin')
+                navigate('/loginPatient')
             }
             else {
                 console.log(error.msg)
@@ -27,11 +27,11 @@ function DownloadCertificateButton({visit}: ({visit: Visit})) {
     return (
             <Button /*disabled={visit.vaccination?.status !== "Completed"}*/
                 onClick={downloadFile}
-                variant="light"
+                variant="dark"
             >
                 {loading?
                     <Spinner animation="border"/>:
-                    <Download color="royalblue"/>}
+                    <Download color="white"/>}
             </Button>
 
     )
