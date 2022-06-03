@@ -2,7 +2,7 @@ import { AuthState } from "../types/auth";
 import { BASE_URL } from "./config";
 import { Pagination } from '../types/pagination';
 import { Doctor } from "../types/users";
-import { NewDoctorData } from "../types/adminAPITypes";
+import {NewDoctorData, ReportDisease} from "../types/adminAPITypes";
 import moment from "moment";
 import {checkStatusAndGetBody, checkStatusAndIgnoreBody, apiGet, apiPut, apiDelete, apiPost, apiGetPdf} from "./API";
 
@@ -33,13 +33,18 @@ export function createDoctor(auth: AuthState, doctorData: NewDoctorData): Promis
            .then(checkStatusAndIgnoreBody)
 }
 
-export function getReportData(auth: AuthState, start: Date, end: Date): Promise<void> {
-    start.setHours(0, 0, 0, 0);
+export function getReportData(auth: AuthState, start: Date, end: Date): Promise<ReportDisease[]> {
+    start = start === null? new Date('1990-01-01') : start;
+    end = end === null? new Date() : end;
+        start.setHours(0, 0, 0, 0);
     end.setHours(23, 59, 59, 999);
     let sDate = encodeURIComponent(start.toISOString());
     let eDate = encodeURIComponent(end.toISOString());
-    return apiGet(`${BASE_URL}/admin/vaccinations?startDate=${sDate}&endDate=${eDate}`,auth)
-        .then(checkStatusAndGetBody);
+    return apiGet(`${BASE_URL}/admin/vaccinations/report?startDate=${sDate}&endDate=${eDate}`,auth)
+        .then(checkStatusAndGetBody)
+        .then((json) => {
+            return json.diseases;
+        });
 }
 
 export function downloadReport(auth: AuthState, start: Date, end: Date): Promise<void> {

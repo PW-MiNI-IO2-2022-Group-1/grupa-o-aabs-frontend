@@ -1,6 +1,6 @@
 import { useAuth } from '../components/AuthComponents';
 import 'bootstrap';
-import { Container, Table, Button } from 'react-bootstrap';
+import { Container, Table, Row, Col, Button } from 'react-bootstrap';
 import * as Icons from 'react-bootstrap-icons';
 import { Doctor } from '../types/users';
 import { useEffect, useState } from 'react';
@@ -11,9 +11,11 @@ import { NewDoctorData } from '../types/adminAPITypes';
 import * as API from '../logic/adminAPI';
 import { UnauthorizedRequestError } from '../types/requestErrors';
 import { logOut } from '../logic/login';
+import {useNavigate} from "react-router-dom";
 
 function AdminDashboard(): JSX.Element {
     const auth = useAuth();
+    const navigate = useNavigate();
     const [doctors, setDoctors] = useState<Doctor[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
 
@@ -132,31 +134,42 @@ function AdminDashboard(): JSX.Element {
         {renderEditModal()}
         {renderAddModal()}
         {renderErrorModal()}
-        {loading && 
-            <div className='spinner-border text-large'
-                style={{width: '100px', height: '100px'}} id='loadingIndicator'></div>}
-        {!loading && <Container>
-            <Table bordered className='text-center'>
-                <thead className='table-dark'>
+        <Container>
+            <Row style={{paddingBottom:"2px",}}>
+                <Col className="d-flex justify-content-end">
+                    <Button variant="dark" onClick={() => navigate("/admin/report/vaccinations")}>
+                        Vaccination Report
+                    </Button>
+                </Col>
+            </Row>
+            <Row className="d-flex justify-content-center">{loading &&
+                <div className='spinner-border text-large'
+                     style={{width: '100px', height: '100px'}} id='loadingIndicator'/>}
+            {!loading && <Container>
+                <Table bordered className='text-center'>
+                    <thead className='table-dark'>
                     <tr>
                         <th colSpan={4}>Doctors</th>
                     </tr>
-                </thead>
-                <thead className='table-dark'>
+                    </thead>
+                    <thead className='table-dark'>
                     <tr>
                         <th scope='col'>First name</th>
                         <th scope='col'>Last name</th>
                         <th scope='col'>Email</th>
                         <th scope='col'>Actions</th>
                     </tr>
-                </thead>
-                <tbody>
+                    </thead>
+                    <tbody>
                     {doctors.map(renderDoctorRow)}
                     {renderAddNewDoctorRow()}
-                </tbody>
-            </Table>
-            {renderPaginationMenu()}
-        </Container>}
+                    </tbody>
+                </Table>
+                {renderPaginationMenu()}
+            </Container>}
+            </Row>
+        </Container>
+
     </>);
 
 }
