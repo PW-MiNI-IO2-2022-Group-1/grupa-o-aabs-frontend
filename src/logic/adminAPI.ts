@@ -3,7 +3,8 @@ import { BASE_URL } from "./config";
 import { Pagination } from '../types/pagination';
 import { Doctor } from "../types/users";
 import { NewDoctorData } from "../types/adminAPITypes";
-import { checkStatusAndGetBody, checkStatusAndIgnoreBody, apiGet, apiPut, apiDelete, apiPost } from "./API";
+import moment from "moment";
+import {checkStatusAndGetBody, checkStatusAndIgnoreBody, apiGet, apiPut, apiDelete, apiPost, apiGetPdf} from "./API";
 
 export function getDoctors(auth: AuthState, page: number): Promise<[Doctor[], Pagination]> {
     return apiGet(`${BASE_URL}/admin/doctors?page=${page.toString()}`, auth)
@@ -30,4 +31,22 @@ export function createDoctor(auth: AuthState, doctorData: NewDoctorData): Promis
     return apiPost(`${BASE_URL}/admin/doctors`, auth, 
                     JSON.stringify(doctorData))
            .then(checkStatusAndIgnoreBody)
+}
+
+export function getReportData(auth: AuthState, start: Date, end: Date): Promise<void> {
+    start.setHours(0, 0, 0, 0);
+    end.setHours(23, 59, 59, 999);
+    let sDate = encodeURIComponent(start.toISOString());
+    let eDate = encodeURIComponent(end.toISOString());
+    return apiGet(`${BASE_URL}/admin/vaccinations?startDate=${sDate}&endDate=${eDate}`,auth)
+        .then(checkStatusAndGetBody);
+}
+
+export function downloadReport(auth: AuthState, start: Date, end: Date): Promise<void> {
+    start.setHours(0, 0, 0, 0);
+    end.setHours(23, 59, 59, 999);
+    let sDate = encodeURIComponent(start.toISOString());
+    let eDate = encodeURIComponent(end.toISOString());
+    let name = `${moment(start).format("YYYY-MM-DD")}_to_${moment(end).format("YYYY-MM-DD")}_vaccinations_report.pdf`
+    return apiGetPdf(`${BASE_URL}/admin/vaccinations/report/download?startDate=${sDate}&endDate=${eDate}`,auth, name)
 }

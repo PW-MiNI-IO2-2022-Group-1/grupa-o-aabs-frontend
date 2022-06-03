@@ -3,7 +3,7 @@ import './PatientVisit.css';
 import React, {useState} from 'react';
 import {Visit} from '../types/vaccination';
 import {Button, Row, Col, Modal} from 'react-bootstrap';
-import DownloadCertificateButton from "./DownloadCertificateButton";
+import DownloadCertificateButton from "./buttons/DownloadPDFButton";
 import {UnauthorizedRequestError} from "../types/requestErrors";
 import {logOut} from "../logic/login";
 import {useAuth} from "./AuthComponents";

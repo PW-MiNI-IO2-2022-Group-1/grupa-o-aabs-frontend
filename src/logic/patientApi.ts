@@ -3,7 +3,7 @@ import { AuthContextType } from "../types/auth";
 import { EditPatientDetailsData } from "../types/patientAPITypes";
 import { Patient, Role } from "../types/users";
 import { BASE_URL } from './config';
-import { Timeslot, Vaccine, validDiseases } from "../types/vaccination";
+import {Timeslot, Vaccine, validDiseases, Visit} from "../types/vaccination";
 import {apiGet, apiGetPdf, apiPost, apiPut, checkStatusAndGetBody, checkStatusAndIgnoreBody} from "./API";
 import {StatusCodes} from "http-status-codes";
 import {UnauthorizedRequestError} from "../types/requestErrors";
@@ -14,8 +14,11 @@ export function registerPatient(registrationData: RegistrationData) {
         .then(checkStatusAndGetBody);
 }
 
-export function downloadCertificate(auth: AuthContextType, id: number) {
-    return apiGetPdf(`${BASE_URL}/patient/vaccinations/${id}/certificate`, auth)
+export function downloadCertificate(auth: AuthContextType, visit: Visit) {
+    const id = visit.vaccination!.id;
+    const p = visit.vaccination!.patient;
+    const name = `${p?.firstName}_${p?.lastName}_${visit.vaccination!.vaccine!.name}_certificate.pdf`
+    return apiGetPdf(`${BASE_URL}/patient/vaccinations/${id}/certificate`, auth, name)
 }
 
 export function editPatientDetails(auth: AuthContextType, 
