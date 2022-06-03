@@ -8,7 +8,9 @@ import moment from "moment";
 import {wait} from "@testing-library/user-event/dist/utils";
 
 const onSubmit = jest.fn();
+
 jest.setTimeout(10000);
+
 describe("Set Schedule Form", () => {
     it('validates form on save', async () => {
         render(<ScheduleForm onSubmit={onSubmit}/>)
@@ -52,7 +54,7 @@ describe("Set Schedule Form", () => {
 
     }
 });
-
+jest.setTimeout(5000)
 const initSlots = [
     {
         beginning: {
@@ -76,4 +78,3 @@ const initSlots = [
     },
 
 ];
-jest.setTimeout(5000);
