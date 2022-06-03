@@ -16,22 +16,5 @@ export function PatientFrontPage(): JSX.Element {
                 onClick={() => navigate('/patient/editDetails')}>
                     Edit patient details
         </button>
-        <DownloadPDFButton onDownload={() => downloadCertificate(auth, v)}/>
     </div>);
-}
-
-const v: Visit = {
-    id: 1,
-    date: new Date(),
-    vaccination: {
-        id: 19,
-        vaccine: {
-            id: 1,
-            name: "as",
-            disease: "dis",
-            requiredDoses: 3,
-        },
-        status: "Completed",
-        patient: null,
-    }
 }
