@@ -8,7 +8,7 @@ import moment from "moment";
 import {wait} from "@testing-library/user-event/dist/utils";
 
 const onSubmit = jest.fn();
-
+jest.setTimeout(10000);
 describe("Set Schedule Form", () => {
     it('validates form on save', async () => {
         render(<ScheduleForm onSubmit={onSubmit}/>)
@@ -22,7 +22,7 @@ describe("Set Schedule Form", () => {
     beginning.setHours(0,0,0,0);
     for (let i = 0; i < 7; i++) {
         const myDay = addDays(beginning, i);
-        const regEx = new RegExp(moment(myDay).format("MMM D, YYYY").toLowerCase(), 'i');
+        const regEx = new RegExp(moment(myDay).format("MMMM D, YYYY").toLowerCase(), 'i');
 
         it(`changes week on calendar to beginning of the week on day ${i + 1} of the week clicked`, async () => {
             render(<ScheduleForm onSubmit={onSubmit}/>)
@@ -76,3 +76,4 @@ const initSlots = [
     },
 
 ];
+jest.setTimeout(5000);
