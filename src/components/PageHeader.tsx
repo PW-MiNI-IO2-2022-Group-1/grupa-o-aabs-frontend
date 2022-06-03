@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router';
 import { useAuth } from './AuthComponents';
 import { logOut } from '../logic/login';
 import './PageHeader.css';
+import { Role } from '../types/users';
 
 function PageHeader({children} : {children: React.ReactNode}) {
     const auth = useAuth();
@@ -13,8 +14,14 @@ function PageHeader({children} : {children: React.ReactNode}) {
     }
 
     const goToFrontPage = () => {
-        if(auth.user == null)
+        if(auth.role === null)
             navigate('/');
+        else if(auth.role === Role.Patient)
+            navigate('/patient');
+        else if(auth.role === Role.Doctor)
+            navigate('/patient');
+        else if(auth.role === Role.Admin)
+            navigate('/admin');
     }
 
     return (<>

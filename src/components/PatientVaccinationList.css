@@ -1,0 +1,23 @@
+.vaccination-table {
+    font-size: 20px;
+}
+
+.noselect {
+    user-select: none;
+}
+
+.Completed-text {
+    color: darkgreen;
+}
+
+.Planned-text {
+    color: darkblue;
+}
+
+.Canceled-text {
+    color: darkred;
+}
+
+.data-row {
+    cursor: pointer;
+}

@@ -3,7 +3,7 @@ import { AuthContextType } from "../types/auth";
 import { EditPatientDetailsData } from "../types/patientAPITypes";
 import { Patient, Role } from "../types/users";
 import { BASE_URL } from './config';
-import { Timeslot, Vaccine, validDiseases } from "../types/vaccination";
+import { PatientVaccination, Timeslot, Vaccine, validDiseases } from "../types/vaccination";
 import { apiGet, apiPost, apiPut, checkStatusAndGetBody, checkStatusAndIgnoreBody } from "./API";
 import {StatusCodes} from "http-status-codes";
 import {UnauthorizedRequestError} from "../types/requestErrors";
@@ -68,7 +68,22 @@ export function reserveTimeslot(auth: AuthContextType, timeslot: Timeslot,
         .then(checkStatusAndIgnoreBody);
 }
 
-function showFile(blob: BlobPart){
+export function getVaccinationHistory(auth: AuthContextType, page: number): Promise<[PatientVaccination[], number]> {
+    return apiGet(`${BASE_URL}/patient/vaccinations?page=${page}`, auth)
+        .then(checkStatusAndGetBody)
+        .then((body) => {
+            console.log(body);
+            const totalPages: number = body.pagination.totalPages as number;
+            const vaccinations: PatientVaccination[] = body.data as PatientVaccination[];
+            for (let vaccination of vaccinations) {
+                vaccination.vaccinationSlot.date
+                    = new Date(vaccination.vaccinationSlot.date);
+            }
+            return [vaccinations, totalPages];
+        });
+}
+
+function showFile(blob: BlobPart) {
     // It is necessary to create a new blob object with mime-type explicitly set
     // otherwise only Chrome works like it should
     const newBlob = new Blob([blob], {type: "application/pdf"});

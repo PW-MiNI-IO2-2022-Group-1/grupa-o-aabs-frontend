@@ -24,15 +24,17 @@ function DownloadCertificateButton({visit}: ({visit: Visit})) {
         })
         setLoading(false)
     }
+
     return (
-            <Button /*disabled={visit.vaccination?.status !== "Completed"}*/
-                onClick={downloadFile}
-                variant="light"
-            >
-                {loading?
-                    <Spinner animation="border"/>:
-                    <Download color="royalblue"/>}
-            </Button>
+        <Button /*disabled={visit.vaccination?.status !== "Completed"}*/
+            onClick={downloadFile}
+            variant="dark"
+        >
+            Download a certificate &nbsp; &nbsp;
+            {loading?
+            <Spinner animation="border"/>:
+            <Download color="white"/>}
+        </Button>
 
     )
 }

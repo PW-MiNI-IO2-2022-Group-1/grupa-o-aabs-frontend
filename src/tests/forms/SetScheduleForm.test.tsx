@@ -8,7 +8,9 @@ import moment from "moment";
 import {wait} from "@testing-library/user-event/dist/utils";
 
 const onSubmit = jest.fn();
-jest.setTimeout(10000)
+
+jest.setTimeout(10000);
+
 describe("Set Schedule Form", () => {
     it('validates form on save', async () => {
         render(<ScheduleForm onSubmit={onSubmit}/>)
