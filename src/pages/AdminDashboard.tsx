@@ -4,7 +4,7 @@ import { Container, Table, Row, Col, Button } from 'react-bootstrap';
 import * as Icons from 'react-bootstrap-icons';
 import {Doctor, Patient} from '../types/users';
 import {useEffect, useState} from 'react';
-import {useEditDoctorModal} from '../components/modals//useEditDoctorModal';
+import {useEditDoctorModal} from '../components/modals/useEditDoctorModal';
 import {useAddDoctorModal} from '../components/modals/useAddDoctorModal';
 import {useSimpleModal} from '../components/modals/useSimpleModal';
 import {NewDoctorData} from '../types/adminAPITypes';
@@ -13,6 +13,7 @@ import { UnauthorizedRequestError } from '../types/requestErrors';
 import { logOut } from '../logic/login';
 import {useNavigate} from "react-router-dom";
 import PaginationMenu from '../components/PaginationMenu';
+import {useEditPatientModal} from "../components/modals/useEditPatientModal";
 
 function AdminDashboard(): JSX.Element {
     const auth = useAuth();
@@ -26,7 +27,8 @@ function AdminDashboard(): JSX.Element {
     const [pageNumber, setPageNumber] = useState<number>(1);
 
     const [showErrorModal, renderErrorModal] = useSimpleModal();
-    const [showEditModal, renderEditModal] = useEditDoctorModal();
+    const [showEditDoctorModal, renderEditDoctorModal] = useEditDoctorModal();
+    const [showEditPatientModal, renderEditPatientModal] = useEditPatientModal();
     const [showAddModal, renderAddModal] = useAddDoctorModal();
 
     const handleApiError = (reason: any) => {
@@ -58,10 +60,22 @@ function AdminDashboard(): JSX.Element {
             .then(() => loadDoctors());
     }
 
+    const deletePatient = (patient: Patient) => {
+        setLoading(true);
+        API.deletePatient(auth, patient).catch(handleApiError)
+            .then(() => loadDoctors());
+    }
+
     const editDoctor = (doctor: Doctor) => {
         setLoading(true);
         API.editDoctor(auth, doctor).catch(handleApiError)
             .then(() => loadDoctors());
+    }
+
+    const editPatient = (patient: Patient) => {
+        setLoading(true);
+        API.editPatient(auth, patient).catch(handleApiError)
+            .then(() => loadPatients());
     }
 
     const createDoctor = (doctorData: NewDoctorData) => {
@@ -87,7 +101,7 @@ function AdminDashboard(): JSX.Element {
             <td style={{width: '100px'}}>
                 <Icons.PencilSquare className='text-primary modifyBtn'
                                     style={{cursor: 'pointer'}}
-                                    onClick={() => showEditModal(doctor, editDoctor)}/>
+                                    onClick={() => showEditDoctorModal(doctor, editDoctor)}/>
                 <Icons.Trash3Fill className='text-danger deleteBtn'
                                   id={'delete' + doctor.id + 'Btn'}
                                   style={{cursor: 'pointer'}}
@@ -103,10 +117,19 @@ function AdminDashboard(): JSX.Element {
             <td style={{width: '350px'}}>{patient.email}</td>
             <td style={{width: '350px'}}>{patient.pesel}</td>
             <td style={{width: '350px'}}>{patient.address.city}</td>
-            <td style={{width: '350px'}}>{patient.address.zipCode}</td>
+            <td style={{width: '300px'}}>{patient.address.zipCode}</td>
             <td style={{width: '350px'}}>{patient.address.street}</td>
-            <td style={{width: '350px'}}>{patient.address.houseNumber}</td>
-            <td style={{width: '350px'}}>{patient.address.localNumber}</td>
+            <td style={{width: '300px'}}>{patient.address.houseNumber}</td>
+            <td style={{width: '300px'}}>{patient.address.localNumber}</td>
+            <td style={{width: '100px'}}>
+                <Icons.PencilSquare className='text-primary modifyBtn'
+                                    style={{cursor: 'pointer'}}
+                                    onClick={() => showEditPatientModal(patient, editPatient)}/>
+                <Icons.Trash3Fill className='text-danger deleteBtn'
+                                  id={'delete' + patient.id + 'Btn'}
+                                  style={{cursor: 'pointer'}}
+                                  onClick={() => deletePatient(patient)}/>
+            </td>
         </tr>);
     }
 
@@ -197,7 +220,7 @@ function AdminDashboard(): JSX.Element {
             <Table bordered className='text-center'>
                 <thead className='table-dark'>
                 <tr>
-                    <th colSpan={9}>Patients</th>
+                    <th colSpan={10}>Patients</th>
                 </tr>
                 </thead>
                 <thead className='table-dark'>
@@ -211,6 +234,7 @@ function AdminDashboard(): JSX.Element {
                     <th scope='col'>Street</th>
                     <th scope='col'>House number</th>
                     <th scope='col'>Local number</th>
+                    <th scope='col'>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -221,23 +245,29 @@ function AdminDashboard(): JSX.Element {
     }
 
     return (<>
-        {renderEditModal()}
+        {renderEditDoctorModal()}
+        {renderEditPatientModal()}
         {renderAddModal()}
         {renderErrorModal()}
         <Container>
             <Row className="d-flex justify-content-center">
                 {loading &&
-                <div className='spinner-border text-large'
-                    style={{width: '100px', height: '100px'}} id='loadingIndicator'></div>}
-                {!loading && <Container>
-                    <Row className="d-flex justify-content-start">
-                        <Button onClick={changeToDoctorsOrPatients} style={{margin: '20px'}}>
-                            {'Show ' + (patientsOrDoctors === 'doctors' ? 'patients' : 'doctors')}
-                        </Button>
-                        <Button variant="dark" onClick={() => navigate("/admin/vaccinations")}>
-                            Vaccinations
-                        </Button>
+                    <div className='spinner-border text-large'
+                         style={{width: '100px', height: '100px'}} id='loadingIndicator'></div>}
+                {!loading && <Container style={{fontSize: '20px'}}>
+                    <Row className="d-flex justify-content-center">
+                        <Col className="d-flex justify-content-start">
+                            <Button onClick={changeToDoctorsOrPatients}>
+                                {'Show ' + (patientsOrDoctors === 'doctors' ? 'patients' : 'doctors')}
+                            </Button>
+                        </Col>
+                        <Col className="d-flex justify-content-end">
+                            <Button variant="dark" onClick={() => navigate("/admin/vaccinations")}>
+                                Vaccinations
+                            </Button>
+                        </Col>
                     </Row>
+
                     {patientsOrDoctors === 'doctors' ? renderDoctorTable() : renderPatientTable()}
                     {renderPaginationMenu()}
                 </Container>}
