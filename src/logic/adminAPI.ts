@@ -79,3 +79,29 @@ export function downloadReport(auth: AuthState, start: Date, end: Date): Promise
     let name = `${moment(start).format("YYYY-MM-DD")}_to_${moment(end).format("YYYY-MM-DD")}_vaccinations_report.pdf`
     return apiGetPdf(`${BASE_URL}/admin/vaccinations/report/download?startDate=${sDate}&endDate=${eDate}`,auth, name)
 }
+
+export function getVaccinations(auth: AuthState,
+                                doctorId: number | null,
+                                patientId: number | null,
+                                page: number | null,
+                                disease: string | null) {
+    let url = `${BASE_URL}/admin/vaccinations`
+    let isFirst = true
+    if(doctorId !== null){
+        url += `${isFirst? '?' : '&'}doctorId=${doctorId}`
+        isFirst = false
+    }
+    if(patientId !== null){
+        url += `${isFirst? '?' : '&'}patientId=${patientId}`
+        isFirst = false
+    }
+    if(disease !== null){
+        url += `${isFirst? '?' : '&'}disease=${disease}`
+        isFirst = false
+    }
+    if(page !== null){
+        url += `${isFirst? '?' : '&'}page=${page}`
+    }
+
+    return apiGet(url, auth).then(checkStatusAndGetBody);
+}
