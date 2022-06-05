@@ -122,14 +122,14 @@ function AdminVaccinationsPage() {
             <Table bordered className='text-center'>
                 <thead className='table-dark'>
                 <tr>
-                    <th colSpan={5}>Vaccinationss</th>
+                    <th colSpan={5}>Vaccinations</th>
                 </tr>
                 </thead>
                 <thead className='table-dark'>
                 <tr>
                     <th scope='col'>Date</th>
                     <th scope='col'>Status</th>
-                    <th scope='col'>Vaccine</th>
+                    <th scope='col'>Disease</th>
                     <th scope='col'>Patient</th>
                     <th scope='col'>Doctor</th>
                 </tr>
