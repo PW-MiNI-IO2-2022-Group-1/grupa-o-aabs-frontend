@@ -18,6 +18,7 @@ import VaccineRegistrationPage from './pages/VaccineRegistrationPage';
 import PatientDashboard from './pages/PatientDashboard';
 import ReportBugPage from './pages/ReportBugPage';
 import AdminVaccinationReportPage from "./pages/AdminVaccinationReportPage";
+import AdminVaccinationsPage from "./pages/AdminVaccinationsPage";
 
 export default function App() {
     return (
@@ -54,10 +55,18 @@ export default function App() {
                         }
                     />
                     <Route
-                        path='/admin/report/vaccinations'
+                        path='/admin/vaccinations/report'
                         element={
                             <RequireAuth role={Role.Admin} authLocation={'/loginAdmin'}>
                                 <AdminVaccinationReportPage/>
+                            </RequireAuth>
+                        }
+                    />
+                    <Route
+                        path='/admin/vaccinations'
+                        element={
+                            <RequireAuth role={Role.Admin} authLocation={'/loginAdmin'}>
+                                <AdminVaccinationsPage/>
                             </RequireAuth>
                         }
                     />
