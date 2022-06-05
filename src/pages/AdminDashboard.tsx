@@ -255,13 +255,17 @@ function AdminDashboard(): JSX.Element {
                     <div className='spinner-border text-large'
                          style={{width: '100px', height: '100px'}} id='loadingIndicator'></div>}
                 {!loading && <Container style={{fontSize: '20px'}}>
-                    <Row className="d-flex justify-content-start">
-                        <Button onClick={changeToDoctorsOrPatients} style={{margin: '20px'}}>
-                            {'Show ' + (patientsOrDoctors === 'doctors' ? 'patients' : 'doctors')}
-                        </Button>
-                        <Button variant="dark" onClick={() => navigate("/admin/vaccinations")}>
-                            Vaccinations
-                        </Button>
+                    <Row className="d-flex justify-content-center">
+                        <Col className="d-flex justify-content-start">
+                            <Button onClick={changeToDoctorsOrPatients}>
+                                {'Show ' + (patientsOrDoctors === 'doctors' ? 'patients' : 'doctors')}
+                            </Button>
+                        </Col>
+                        <Col className="d-flex justify-content-end">
+                            <Button variant="dark" onClick={() => navigate("/admin/vaccinations")}>
+                                Vaccinations
+                            </Button>
+                        </Col>
                     </Row>
 
                     {patientsOrDoctors === 'doctors' ? renderDoctorTable() : renderPatientTable()}
