@@ -29,7 +29,7 @@ function VaccinationDateChoiceForm(props: VaccinationDateChoiceFormProps) {
             else
                 showModal('Error', 'Unexpected error');
         });
-    }, [auth, showModal]);
+    }, []);
 
     const formatTime = (time: Date): string => {
         let hours = time.getHours();

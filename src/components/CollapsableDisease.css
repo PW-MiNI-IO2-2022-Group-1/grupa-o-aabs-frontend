@@ -1,0 +1,7 @@
+.btn:focus {
+    outline: 0 !important;
+    box-shadow: none !important;
+}
+.col_stretch {
+    width: 100% !important;
+}

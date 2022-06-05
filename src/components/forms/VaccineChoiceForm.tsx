@@ -30,7 +30,7 @@ function VaccineChoiceForm(props: VaccineChoiceFormProps) {
             else
                 showModal('Error', 'Unexpected error');
         });
-    }, [auth, showModal]);
+    }, []);
 
     const filterVaccines = (value: Vaccine, index: number, 
             array: Vaccine[]): boolean => {

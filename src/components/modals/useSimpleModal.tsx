@@ -49,7 +49,7 @@ export function useSimpleModal(): [(title: string, message: string, callback?: (
             </Modal.Header>
             <Modal.Body>{state.message}</Modal.Body>
             <Modal.Footer>
-                <Button variant='primary' onClick={onClose}>
+                <Button variant='dark' onClick={onClose}>
                     OK
                 </Button>
             </Modal.Footer>

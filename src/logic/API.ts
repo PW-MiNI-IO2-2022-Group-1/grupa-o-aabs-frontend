@@ -15,7 +15,7 @@ export function apiCall(url: string, method: string, auth?: AuthState,
             method: method,
             headers: headers,
             body: body
-        }).then()
+        });
 }
 
 export function apiGet(url: string, auth?: AuthState, body?: string) {
@@ -46,4 +46,40 @@ export function checkStatusAndIgnoreBody(response: Response): void {
     if(response.status === StatusCodes.UNAUTHORIZED)
         throw new UnauthorizedRequestError('You are not authorized');
     throw response;
+}
+
+export function apiGetPdf(url: string, auth?: AuthState, name?: string,) {
+
+    return fetch(url, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/pdf',
+            'Authorization': auth?.token ?? ''
+        }
+    }).then((response) => {
+        if (response.ok) {
+            return response.blob();
+        }
+        if (response.status === StatusCodes.UNAUTHORIZED)
+            throw new UnauthorizedRequestError('You are not authorized');
+        throw response;
+    }).then((b)=> showFile(b, name ?? 'file.pdf'))
+}
+
+function showFile(blob: BlobPart, name: string){
+    // It is necessary to create a new blob object with mime-type explicitly set
+    // otherwise only Chrome works like it should
+    const newBlob = new Blob([blob], {type: "application/pdf"});
+
+    // For other browsers:
+    // Create a link pointing to the ObjectURL containing the blob.
+    const data = window.URL.createObjectURL(newBlob);
+    const link = document.createElement('a');
+    link.href = data;
+    link.download=name;
+    link.click();
+    setTimeout(function(){
+        // For Firefox it is necessary to delay revoking the ObjectURL
+        window.URL.revokeObjectURL(data);
+    }, 100);
 }

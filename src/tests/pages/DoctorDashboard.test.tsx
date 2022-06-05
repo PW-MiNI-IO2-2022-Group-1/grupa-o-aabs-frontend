@@ -228,17 +228,17 @@ const server = setupServer(
     }),
     rest.get('*/doctor/vaccination-slots', async (request: MockedRequest, response: ResponseComposition, ctx) => {
         return response(
-            ctx.json(mockedInfo),
+            ctx.json(mockedVaccinelessInfo),
             ctx.status(200)
         )
     }),
 );
 
-const mockedInfo = {
+const mockedVaccinelessInfo = {
     pagination: {
         currentPage: 1,
         totalPages: 10,
-        currentRecords: 5,
+        currentRecords: 3,
         totalRecords: 30
     },
     data: [
@@ -257,57 +257,67 @@ const mockedInfo = {
             date: "2024-06-20T12:00:00Z",
             vaccination: null
         },
-        {
-            id: 4,
-            date: "2024-06-20T10:30:00Z",
-            vaccination: {
-                id: 1,
-                vaccine: {
-                    id: 1,
-                    name: "Phizer",
-                    disease: "COVID-19",
-                    requiredDoses: 2
-                },
-                status: "Planned",
-                patient: {
-                    id: 1,
-                    firstName: "Patient",
-                    lastName: "Patient",
-                    pesel: "003005039981",
-                    email: "john.doe@patient.com",
-                    address: {
-                        id: 1,
-                        city: "Biłgoraj",
-                        zipCode: "23-400",
-                        street: "Aleja chorych",
-                        houseNumber: "25",
-                    }
-                }
-            }
-        },
-        {
-            id: 5,
-            date: "2024-06-20T10:15:00Z",
-            vaccination: {
-                id: 1,
-                vaccine: null,
-                status: "Planned",
-                patient: {
-                    id: 1,
-                    firstName: "Patient2",
-                    lastName: "Patient2",
-                    pesel: "22222222222",
-                    email: "john.doe2@patient.com",
-                    address: {
-                        id: 1,
-                        city: "Chernobyl",
-                        zipCode: "69-420",
-                        street: "Jana Pawła II",
-                        houseNumber: "21",
-                        localNumber: "37"
-                    }
-                }
-            }
-        },
     ]
+}
+const mockedVaccinedInfo = {
+    pagination: {
+        currentPage: 1,
+        totalPages: 10,
+        currentRecords: 3,
+        totalRecords: 30
+    },
+    data: [
+        {
+    id: 4,
+        date: "2024-06-20T10:30:00Z",
+    vaccination: {
+    id: 1,
+        vaccine: {
+        id: 1,
+            name: "Phizer",
+            disease: "COVID-19",
+            requiredDoses: 2
+    },
+    status: "Planned",
+        patient: {
+        id: 1,
+            firstName: "Patient",
+            lastName: "Patient",
+            pesel: "003005039981",
+            email: "john.doe@patient.com",
+            address: {
+            id: 1,
+                city: "Biłgoraj",
+                zipCode: "23-400",
+                street: "Aleja chorych",
+                houseNumber: "25",
+        }
+    }
+}
+},
+        {
+    id: 5,
+        date: "2024-06-20T10:15:00Z",
+    vaccination: {
+    id: 1,
+        vaccine: null,
+        status: "Planned",
+        patient: {
+        id: 1,
+            firstName: "Patient2",
+            lastName: "Patient2",
+            pesel: "22222222222",
+            email: "john.doe2@patient.com",
+            address: {
+            id: 1,
+                city: "Chernobyl",
+                zipCode: "69-420",
+                street: "Jana Pawła II",
+                houseNumber: "21",
+                localNumber: "37"
+        }
+    }
+}
+},
+        ]
 }
