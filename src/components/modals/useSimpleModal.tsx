@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 
 interface SimpleModalState {
@@ -47,7 +47,13 @@ export function useSimpleModal(): [(title: string, message: string, callback?: (
             <Modal.Header>
                 <Modal.Title>{state.title}</Modal.Title>     
             </Modal.Header>
-            <Modal.Body>{state.message}</Modal.Body>
+            <Modal.Body>{state.message.split('\n').map((line) => {
+                return (
+                    <>{line}
+                        <br/>
+                    </>
+                )
+            })}</Modal.Body>
             <Modal.Footer>
                 <Button variant='dark' onClick={onClose}>
                     OK

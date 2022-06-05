@@ -9,7 +9,7 @@ import * as API from "../logic/adminAPI";
 import moment from "moment";
 import {Vaccine} from "../types/vaccination";
 import {Doctor, Patient} from "../types/users";
-import {VaccinationFilterData} from "../types/adminAPITypes";
+import AdminVaccinationForm, {VaccinationFilterData} from "../components/forms/AdminVaccinationsForm";
 import {useNavigate} from "react-router-dom";
 
 
@@ -21,18 +21,16 @@ function AdminVaccinationsPage() {
     const [showInfoModal, renderInfoModal] = useSimpleModal();
     const [vaccinations, setVaccinations] = useState<Object[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-
+    const defaultFilter = {
+        doctorId: undefined,
+        patientId: undefined,
+        disease: undefined,
+    }
     const [page, setPage] = useState<number>(1);
     const [pageNumber, setPageNumber] = useState<number>(1);
-    const [filterData, setFilterData] = useState<VaccinationFilterData>({
-        doctorId: 21,
-        patientId: null,
-        disease: null,
-    });
+    const [filterData, setFilterData] = useState<VaccinationFilterData>(defaultFilter);
 
-    const onSubmit = (data: VaccinationFilterData) => {
-        setFilterData(data);
-    }
+    const handleSubmit = (data: VaccinationFilterData) => setFilterData(data)
 
     const handleApiError = (reason: any) => {
         if(reason instanceof UnauthorizedRequestError)
@@ -40,12 +38,16 @@ function AdminVaccinationsPage() {
         else
             switch (reason.status) {
                 case 422:
-                    showErrorModal('Error', reason.data);
+                    reason.json().then((reason: any) =>{
+                        const message = `${reason.data?.doctorId !== undefined? reason.data.doctorId + '\n' : ''}${reason.data?.patientId !== undefined? reason.data.patientId + '\n' : ''}${reason.data?.disease !== undefined? reason.data.disease + '\n' : ''}`
+                        showErrorModal('Error', message,);
+                    })
                     break;
                 default:
-                    showErrorModal('Error', 'Unknown error');
+                    showErrorModal('Error', 'Unknown error', );
             }
-
+        setVaccinations([])
+        setLoading(false)
     }
     const loadVaccinations = () => {
         API.getVaccinations(auth, filterData.doctorId, filterData.patientId, page, filterData.disease).then((pair) => {
@@ -83,8 +85,8 @@ function AdminVaccinationsPage() {
             <tr>
                 <td>{moment(new Date(vaccination.vaccinationSlot.date)).format('HH:mm DD.MM.YYYY')}</td>
                 <td>{vaccination.status}</td>
-                <td>
-                    <button style={{width: "100%", border: "0px", backgroundColor: "transparent",}}
+                <td style={{padding: "0px"}}>
+                    <button style={{width: "100%", height: "100%", padding: "0px", border: "0px", backgroundColor: "transparent",}}
 
                             onClick={() => showVaccineInfo(vaccination!.vaccine)}
                             disabled={vaccination?.vaccine === null || vaccination?.vaccine === undefined}>
@@ -92,16 +94,16 @@ function AdminVaccinationsPage() {
                 'Vaccine not chosen' : vaccination.vaccine.disease }
                     </button>
                 </td>
-                <td>
-                    <button style={{width: "100%", border: "0px", backgroundColor: "transparent",}}
+                <td style={{padding: "0px"}}>
+                    <button style={{width: "100%", height: "100%", padding: "0px", border: "0px", backgroundColor: "transparent",}}
                             onClick={() => showPatientInfo(vaccination!.patient)}
                             disabled={vaccination?.patient === null || vaccination?.patient === undefined}>
                         {vaccination?.patient === null || vaccination?.patient === undefined?
                             'Patient not assigned' : vaccination.patient.firstName + " " + vaccination.patient.lastName}
                     </button>
                 </td>
-                <td>
-                    <button style={{width: "100%", border: "0px", backgroundColor: "transparent",}}
+                <td style={{padding: "0px"}}>
+                    <button style={{width: '100px', height: "100%", padding: "0px", border: "0px", backgroundColor: "transparent",}}
                              onClick={() => showDoctorInfo(vaccination!.doctor)}
                              disabled={vaccination?.doctor === null || vaccination?.doctor === undefined}>
                     {vaccination?.doctor === null || vaccination?.doctor === undefined?
@@ -144,8 +146,11 @@ function AdminVaccinationsPage() {
         <Container>
             {renderErrorModal()}
             {renderInfoModal()}
-            <Row style={{paddingBottom:"4px",}}>
-                <Col className="d-flex justify-content-start">
+            <Row style={{paddingBottom:"4px",}} >
+                <Col className="d-flex justify-content-stretch">
+                    <AdminVaccinationForm onSubmit={handleSubmit}/>
+                </Col>
+                <Col className="d-flex justify-content-start col-auto">
                     <Button variant="dark" onClick={() => navigate("/admin/vaccinations/report")}>
                         Vaccination Report
                     </Button>
@@ -155,7 +160,7 @@ function AdminVaccinationsPage() {
                 {loading &&
                     <div className='spinner-border text-large'
                          style={{width: '100px', height: '100px'}} id='loadingIndicator'/>}
-                {!loading && <Container>
+                {!loading && vaccinations.length !== 0 && <Container>
                     {renderVaccinationTable()}
                     <PaginationMenu
                         currentPage = {page}

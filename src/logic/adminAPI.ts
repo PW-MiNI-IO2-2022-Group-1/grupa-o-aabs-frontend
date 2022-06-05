@@ -5,6 +5,8 @@ import { Doctor, Patient } from "../types/users";
 import {NewDoctorData, ReportDisease} from "../types/adminAPITypes";
 import moment from "moment";
 import {checkStatusAndGetBody, checkStatusAndIgnoreBody, apiGet, apiPut, apiDelete, apiPost, apiGetPdf} from "./API";
+import {StatusCodes} from "http-status-codes";
+import {UnauthorizedRequestError} from "../types/requestErrors";
 
 export function getDoctors(auth: AuthState, page: number): Promise<[Doctor[], Pagination]> {
     return apiGet(`${BASE_URL}/admin/doctors?page=${page.toString()}`, auth)
@@ -81,27 +83,32 @@ export function downloadReport(auth: AuthState, start: Date, end: Date): Promise
 }
 
 export function getVaccinations(auth: AuthState,
-                                doctorId: number | null,
-                                patientId: number | null,
-                                page: number | null,
-                                disease: string | null) {
+                                doctorId: number | undefined,
+                                patientId: number | undefined,
+                                page: number | undefined,
+                                disease: string | undefined) {
     let url = `${BASE_URL}/admin/vaccinations`
     let isFirst = true
-    if(doctorId !== null){
+    if(doctorId !== undefined){
         url += `${isFirst? '?' : '&'}doctorId=${doctorId}`
         isFirst = false
     }
-    if(patientId !== null){
+    if(patientId !== undefined){
         url += `${isFirst? '?' : '&'}patientId=${patientId}`
         isFirst = false
     }
-    if(disease !== null){
+    if(disease !== undefined && disease !== ""){
         url += `${isFirst? '?' : '&'}disease=${disease}`
         isFirst = false
     }
-    if(page !== null){
+    if(page !== undefined){
         url += `${isFirst? '?' : '&'}page=${page}`
     }
 
-    return apiGet(url, auth).then(checkStatusAndGetBody);
+    return apiGet(url, auth).then((response) => {
+        if(response.ok) return response.json();
+        if(response.status === StatusCodes.UNAUTHORIZED)
+            throw new UnauthorizedRequestError('You are not authorized');
+        throw response;
+    });
 }
