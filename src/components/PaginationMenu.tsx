@@ -20,7 +20,7 @@ export default function PaginationMenu(props: PaginationMenuProps) {
             </li>
             {visiblePages.map(x => {
                 return (<li key={'page-item-' + x.toString()} style={{cursor: 'pointer'}} className='page-item'>
-                    <a className={'page-link ' + (props.currentPage == x ? ' text-light bg-dark' : ' text-dark')}
+                    <a className={'page-link ' + (props.currentPage === x ? ' text-light bg-dark' : ' text-dark')}
                         onClick={() => {
                             props.setPage(x);
                             return false;

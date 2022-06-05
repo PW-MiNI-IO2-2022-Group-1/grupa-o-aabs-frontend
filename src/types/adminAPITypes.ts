@@ -15,3 +15,9 @@ export type ReportVaccine = {
     name: string,
     count: number
 }
+
+export type VaccinationFilterData = {
+    disease: string | null;
+    patientId: number | null;
+    doctorId: number | null;
+}
