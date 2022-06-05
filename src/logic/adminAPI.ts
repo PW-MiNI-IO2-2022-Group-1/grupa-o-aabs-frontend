@@ -1,7 +1,7 @@
 import { AuthState } from "../types/auth";
 import { BASE_URL } from "./config";
 import { Pagination } from '../types/pagination';
-import { Doctor } from "../types/users";
+import { Doctor, Patient } from "../types/users";
 import {NewDoctorData, ReportDisease} from "../types/adminAPITypes";
 import moment from "moment";
 import {checkStatusAndGetBody, checkStatusAndIgnoreBody, apiGet, apiPut, apiDelete, apiPost, apiGetPdf} from "./API";
@@ -13,6 +13,16 @@ export function getDoctors(auth: AuthState, page: number): Promise<[Doctor[], Pa
             const pagination: Pagination = json.pagination;
             const doctors: Doctor[] = json.data;
             return [doctors, pagination];
+        });
+}
+
+export function getPatients(auth: AuthState, page: number): Promise<[Patient[], Pagination]> {
+    return apiGet(`${BASE_URL}/admin/patients?page=${page.toString()}`, auth)
+        .then(checkStatusAndGetBody)
+        .then((json) => {
+            const pagination: Pagination = json.pagination;
+            const patients: Patient[] = json.data;
+            return [patients, pagination];
         });
 }
 
