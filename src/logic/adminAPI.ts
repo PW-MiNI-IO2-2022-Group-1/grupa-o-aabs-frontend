@@ -5,7 +5,6 @@ import { Doctor, Patient } from "../types/users";
 import {NewDoctorData, ReportDisease} from "../types/adminAPITypes";
 import moment from "moment";
 import {checkStatusAndGetBody, checkStatusAndIgnoreBody, apiGet, apiPut, apiDelete, apiPost, apiGetPdf} from "./API";
-import {Vaccination} from "../types/vaccination";
 
 export function getDoctors(auth: AuthState, page: number): Promise<[Doctor[], Pagination]> {
     return apiGet(`${BASE_URL}/admin/doctors?page=${page.toString()}`, auth)
@@ -65,6 +64,7 @@ export function downloadReport(auth: AuthState, start: Date, end: Date): Promise
     let eDate = encodeURIComponent(end.toISOString());
     let name = `${moment(start).format("YYYY-MM-DD")}_to_${moment(end).format("YYYY-MM-DD")}_vaccinations_report.pdf`
     return apiGetPdf(`${BASE_URL}/admin/vaccinations/report/download?startDate=${sDate}&endDate=${eDate}`,auth, name)
+}
 
 export function getVaccinations(auth: AuthState,
                                 doctorId: number | null,
@@ -89,5 +89,5 @@ export function getVaccinations(auth: AuthState,
         url += `${isFirst? '?' : '&'}page=${page}`
     }
 
-    return apiGet(url, auth).then(checkStatusAndGetBody)
+    return apiGet(url, auth).then(checkStatusAndGetBody);
 }

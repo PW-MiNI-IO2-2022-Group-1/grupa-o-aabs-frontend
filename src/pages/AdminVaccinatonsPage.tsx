@@ -46,7 +46,7 @@ function AdminVaccinatonsPage() {
 
     }
     const loadVaccinations = () => {
-        API.getVaccinations(auth, filterData.doctorId, filterData.patientId, page, filterData.disease).then(pair => {
+        API.getVaccinations(auth, filterData.doctorId, filterData.patientId, page, filterData.disease).then((pair) => {
             setVaccinations(pair.data);
             setPageNumber(pair.pagination.totalPages);
             setLoading(false);
