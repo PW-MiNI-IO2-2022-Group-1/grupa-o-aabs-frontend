@@ -12,6 +12,7 @@ import * as API from '../logic/adminAPI';
 import { UnauthorizedRequestError } from '../types/requestErrors';
 import { logOut } from '../logic/login';
 import {useNavigate} from "react-router-dom";
+import PaginationMenu from '../components/PaginationMenu';
 
 function AdminDashboard(): JSX.Element {
     const auth = useAuth();
@@ -101,35 +102,6 @@ function AdminDashboard(): JSX.Element {
         return false;
     }
 
-    const renderPaginationMenu = () => {
-        const visiblePages: number[] = [];
-        const minPage = Math.max(1, page - 3);
-        const maxPage = Math.min(pageNumber, page + 3);
-        for(let i = minPage; i <= maxPage; i++)
-            visiblePages.push(i);
-        return (<nav className='d-flex justify-content-center'>
-            <ul className='pagination'>
-                <li className='page-item' style={{cursor: 'pointer'}}>
-                    <a className='page-link'
-                       onClick={() => modifyPage(-1)}>&laquo;</a>
-                </li>
-                {visiblePages.map(x => {
-                    return (<li style={{cursor: 'pointer'}} className={'page-item' + (page == x ? ' active' : '')}>
-                        <a className='page-link'
-                            onClick={() => {
-                                setPage(x);
-                                return false;
-                            }}
-                        >{x}</a>
-                    </li>);
-                })}
-                <li style={{cursor: 'pointer'}} className='page-item'>
-                    <a className='page-link' onClick={() => modifyPage(1)}>&raquo;</a>
-                </li>
-            </ul>
-        </nav>);
-    }
-
     return (<>
         {renderEditModal()}
         {renderAddModal()}
@@ -161,15 +133,19 @@ function AdminDashboard(): JSX.Element {
                     </tr>
                     </thead>
                     <tbody>
-                    {doctors.map(renderDoctorRow)}
-                    {renderAddNewDoctorRow()}
+                        {doctors.map(renderDoctorRow)}
+                        {renderAddNewDoctorRow()}
                     </tbody>
                 </Table>
-                {renderPaginationMenu()}
+                <PaginationMenu
+                    currentPage = {page}
+                    pageCount = {pageNumber}
+                    setPage = {setPage}
+                    modifyPage = {modifyPage}
+                />
             </Container>}
-            </Row>
+        </Row>
         </Container>
-
     </>);
 
 }

@@ -15,7 +15,7 @@ import FrontAuthPage from './pages/FrontPage';
 import PageHeader from './components/PageHeader';
 import RegisterPatientPage from "./pages/RegisterPatientPage";
 import VaccineRegistrationPage from './pages/VaccineRegistrationPage';
-import { PatientFrontPage } from './pages/PatientFrontPage';
+import PatientDashboard from './pages/PatientDashboard';
 import ReportBugPage from './pages/ReportBugPage';
 import AdminVaccinationReportPage from "./pages/AdminVaccinationReportPage";
 
@@ -34,14 +34,6 @@ export default function App() {
                         element={
                             <RequireAuth role={Role.Doctor} authLocation={'/loginDoctor'}>
                                 <DoctorDashboard />
-                            </RequireAuth>
-                        }
-                    />
-                    <Route
-                        path='/patient'
-                        element={
-                            <RequireAuth role={Role.Patient} authLocation={'/loginPatient'}>
-                                    <PatientFrontPage/>
                             </RequireAuth>
                         }
                     />
@@ -86,6 +78,12 @@ export default function App() {
                         path='/patient/vaccineRegistration'
                         element={<RequireAuth role={Role.Patient} authLocation={'/loginPatient'}>
                             <VaccineRegistrationPage/>
+                        </RequireAuth>}
+                    />
+                    <Route
+                        path='/patient'
+                        element={<RequireAuth role={Role.Patient} authLocation={'/loginPatient'}>
+                            <PatientDashboard/>
                         </RequireAuth>}
                     />
                     
