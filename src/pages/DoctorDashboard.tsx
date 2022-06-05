@@ -110,6 +110,7 @@ function DoctorDashboard() {
                         value={startDate}
                         format='dd.MM.y'
                         data-testid='Start'
+                        className="col_stretch"
                     /></Col>
                 </Row>
                 <Row style={{padding: '2px'}}>
@@ -124,6 +125,7 @@ function DoctorDashboard() {
                         value={endDate}
                         format='dd.MM.y'
                         data-testid='End'
+                        className="col_stretch"
                     /></Col>
                 </Row>
                 <Row style={{padding: '2px'}} xs={'auto'}>

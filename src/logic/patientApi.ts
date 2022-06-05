@@ -3,10 +3,8 @@ import { AuthContextType } from "../types/auth";
 import { EditPatientDetailsData } from "../types/patientAPITypes";
 import { Patient, Role } from "../types/users";
 import { BASE_URL } from './config';
-import { PatientVaccination, Timeslot, Vaccine, validDiseases } from "../types/vaccination";
-import { apiGet, apiPost, apiPut, checkStatusAndGetBody, checkStatusAndIgnoreBody } from "./API";
-import {StatusCodes} from "http-status-codes";
-import {UnauthorizedRequestError} from "../types/requestErrors";
+import { PatientVaccination, Timeslot, Vaccine, validDiseases, Visit } from "../types/vaccination";
+import { apiGet, apiGetPdf, apiPost, apiPut, checkStatusAndGetBody, checkStatusAndIgnoreBody } from "./API";
 
 export function registerPatient(registrationData: RegistrationData) {
     return apiPost(`${BASE_URL}/patient/registration`, undefined,
@@ -14,19 +12,11 @@ export function registerPatient(registrationData: RegistrationData) {
         .then(checkStatusAndGetBody);
 }
 
-export function downloadCertificate(auth: AuthContextType, id: number) {
-    return fetch(`${BASE_URL}/patient/vaccinations/${id}/certificate`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/pdf',
-            'Authorization': auth?.token ?? ''
-        }
-    }).then((response) => {
-        if (response.ok) return response.blob();
-        if (response.status === StatusCodes.UNAUTHORIZED)
-            throw new UnauthorizedRequestError('You are not authorized');
-        throw response;
-    }).then(showFile)
+export function downloadCertificate(auth: AuthContextType, visit: Visit) {
+    const id = visit.vaccination!.id;
+    const p = visit.vaccination!.patient;
+    const name = `${p?.firstName}_${p?.lastName}_${visit.vaccination!.vaccine!.name}_certificate.pdf`
+    return apiGetPdf(`${BASE_URL}/patient/vaccinations/${id}/certificate`, auth, name)
 }
 
 export function editPatientDetails(auth: AuthContextType, 

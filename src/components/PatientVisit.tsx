@@ -3,11 +3,6 @@ import './PatientVisit.css';
 import React, {useState} from 'react';
 import {Visit} from '../types/vaccination';
 import {Button, Row, Col, Modal} from 'react-bootstrap';
-import DownloadCertificateButton from "./DownloadCertificateButton";
-import {UnauthorizedRequestError} from "../types/requestErrors";
-import {logOut} from "../logic/login";
-import {useAuth} from "./AuthComponents";
-import {useNavigate} from "react-router-dom";
 
 
 interface patientVisitProps {

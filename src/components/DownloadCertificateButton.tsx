@@ -7,13 +7,15 @@ import {useAuth} from "./AuthComponents";
 import {UnauthorizedRequestError} from "../types/requestErrors";
 import {logOut} from "../logic/login";
 import {useNavigate} from "react-router-dom";
+
 function DownloadCertificateButton({visit}: ({visit: Visit})) {
     const [loading, setLoading] = useState(false)
     const auth = useAuth()
     const navigate = useNavigate()
+
     const downloadFile = () => {
         setLoading(true)
-        downloadCertificate(auth, visit.vaccination?.id ?? -1).catch((error) => {
+        downloadCertificate(auth, visit).catch((error) => {
             if(error instanceof UnauthorizedRequestError){
                 logOut(auth)
                 navigate('/patientLogin')
