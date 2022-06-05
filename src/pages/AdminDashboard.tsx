@@ -1,6 +1,6 @@
 import {useAuth} from '../components/AuthComponents';
 import 'bootstrap';
-import {Container, Table, Button} from 'react-bootstrap';
+import { Container, Table, Row, Col, Button } from 'react-bootstrap';
 import * as Icons from 'react-bootstrap-icons';
 import {Doctor, Patient} from '../types/users';
 import {useEffect, useState} from 'react';
@@ -9,12 +9,15 @@ import {useAddDoctorModal} from '../components/modals/useAddDoctorModal';
 import {useSimpleModal} from '../components/modals/useSimpleModal';
 import {NewDoctorData} from '../types/adminAPITypes';
 import * as API from '../logic/adminAPI';
-import {UnauthorizedRequestError} from '../types/requestErrors';
-import {logOut} from '../logic/login';
+import { UnauthorizedRequestError } from '../types/requestErrors';
+import { logOut } from '../logic/login';
+import {useNavigate} from "react-router-dom";
+import PaginationMenu from '../components/PaginationMenu';
 import {useEditPatientModal} from "../components/modals/useEditPatientModal";
 
 function AdminDashboard(): JSX.Element {
     const auth = useAuth();
+    const navigate = useNavigate();
     const [doctors, setDoctors] = useState<Doctor[]>([]);
     const [patients, setPatients] = useState<Patient[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -246,16 +249,27 @@ function AdminDashboard(): JSX.Element {
         {renderEditPatientModal()}
         {renderAddModal()}
         {renderErrorModal()}
-        {loading &&
-            <div className='spinner-border text-large'
-                 style={{width: '100px', height: '100px'}} id='loadingIndicator'></div>}
-        {!loading && <Container style={{fontSize: '20px'}}>
-            <Button onClick={changeToDoctorsOrPatients} style={{margin: '20px'}}>
-                {'Show ' + (patientsOrDoctors === 'doctors' ? 'patients' : 'doctors')}
-            </Button>
-            {patientsOrDoctors === 'doctors' ? renderDoctorTable() : renderPatientTable()}
-            {renderPaginationMenu()}
-        </Container>}
+        <Container>
+            <Row style={{paddingBottom:"2px",}}>
+                <Col className="d-flex justify-content-end">
+                    <Button variant="dark" onClick={() => navigate("/admin/report/vaccinations")}>
+                        Vaccination Report
+                    </Button>
+                </Col>
+            </Row>
+            <Row className="d-flex justify-content-center">
+                {loading &&
+                    <div className='spinner-border text-large'
+                         style={{width: '100px', height: '100px'}} id='loadingIndicator'></div>}
+                {!loading && <Container style={{fontSize: '20px'}}>
+                    <Button onClick={changeToDoctorsOrPatients} style={{margin: '20px'}}>
+                        {'Show ' + (patientsOrDoctors === 'doctors' ? 'patients' : 'doctors')}
+                    </Button>
+                    {patientsOrDoctors === 'doctors' ? renderDoctorTable() : renderPatientTable()}
+                    {renderPaginationMenu()}
+                </Container>}
+        </Row>
+        </Container>
     </>);
 
 }

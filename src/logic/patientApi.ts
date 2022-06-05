@@ -3,13 +3,20 @@ import { AuthContextType } from "../types/auth";
 import { EditPatientDetailsData } from "../types/patientAPITypes";
 import { Patient, Role } from "../types/users";
 import { BASE_URL } from './config';
-import { Timeslot, Vaccine, validDiseases } from "../types/vaccination";
-import { apiGet, apiPost, apiPut, checkStatusAndGetBody, checkStatusAndIgnoreBody } from "./API";
+import { PatientVaccination, Timeslot, Vaccine, validDiseases, Visit } from "../types/vaccination";
+import { apiGet, apiGetPdf, apiPost, apiPut, checkStatusAndGetBody, checkStatusAndIgnoreBody } from "./API";
 
 export function registerPatient(registrationData: RegistrationData) {
     return apiPost(`${BASE_URL}/patient/registration`, undefined,
             JSON.stringify(registrationData))
         .then(checkStatusAndGetBody);
+}
+
+export function downloadCertificate(auth: AuthContextType, visit: Visit) {
+    const id = visit.vaccination!.id;
+    const p = visit.vaccination!.patient;
+    const name = `${p?.firstName}_${p?.lastName}_${visit.vaccination!.vaccine!.name}_certificate.pdf`
+    return apiGetPdf(`${BASE_URL}/patient/vaccinations/${id}/certificate`, auth, name)
 }
 
 export function editPatientDetails(auth: AuthContextType, 
@@ -36,7 +43,7 @@ export function getAvailableVaccines(auth: AuthContextType): Promise<Vaccine[]> 
 }
 
 export function getAvailableTimeslots(auth: AuthContextType): Promise<Timeslot[]> {
-    return apiGet(`${BASE_URL}/patient/vaccination-slots`, auth)
+    return apiGet(`${BASE_URL}/vaccination-slots`, auth)
         .then(checkStatusAndGetBody)
         .then((json) => (json as any[]).map(x => {
             let d: Date = new Date(x.date);
@@ -49,4 +56,37 @@ export function reserveTimeslot(auth: AuthContextType, timeslot: Timeslot,
     return apiPut(`${BASE_URL}/patient/vaccination-slots/${timeslot.id}`, auth,
             `{"vaccineId": ${vaccine.id}}`)
         .then(checkStatusAndIgnoreBody);
+}
+
+export function getVaccinationHistory(auth: AuthContextType, page: number): Promise<[PatientVaccination[], number]> {
+    return apiGet(`${BASE_URL}/patient/vaccinations?page=${page}`, auth)
+        .then(checkStatusAndGetBody)
+        .then((body) => {
+            console.log(body);
+            const totalPages: number = body.pagination.totalPages as number;
+            const vaccinations: PatientVaccination[] = body.data as PatientVaccination[];
+            for (let vaccination of vaccinations) {
+                vaccination.vaccinationSlot.date
+                    = new Date(vaccination.vaccinationSlot.date);
+            }
+            return [vaccinations, totalPages];
+        });
+}
+
+function showFile(blob: BlobPart) {
+    // It is necessary to create a new blob object with mime-type explicitly set
+    // otherwise only Chrome works like it should
+    const newBlob = new Blob([blob], {type: "application/pdf"});
+
+    // For other browsers:
+    // Create a link pointing to the ObjectURL containing the blob.
+    const data = window.URL.createObjectURL(newBlob);
+    const link = document.createElement('a');
+    link.href = data;
+    link.download="file.pdf";
+    link.click();
+    setTimeout(function(){
+        // For Firefox it is necessary to delay revoking the ObjectURL
+        window.URL.revokeObjectURL(data);
+    }, 100);
 }

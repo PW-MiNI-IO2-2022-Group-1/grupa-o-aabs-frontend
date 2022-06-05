@@ -63,7 +63,7 @@ export function RequireAuth({ children, authLocation, role}
     let auth: AuthContextType = useAuth();
     const location = useLocation();
 
-    if (auth.token === null || auth.role !== role) {
+    if (auth.token === null || (role !== null && auth.role !== role)) {
         // Redirect them to the /login page, but save the current location they were
         // trying to go to when they were redirected. This allows us to send them
         // along to that page after they login, which is a nicer user experience

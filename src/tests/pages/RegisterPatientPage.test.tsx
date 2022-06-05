@@ -41,6 +41,7 @@ jest.mock("../../components/forms/RegisterPatientForm", () => {
         return (<button onClick={() => props.onSubmit(mockedData)}>Click</button>)
     };
 });
+
 describe('RegisterPatientPage', () => {
 
     beforeEach(() => {
